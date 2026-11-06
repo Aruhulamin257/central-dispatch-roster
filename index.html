@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Central Dispatch – Smart Roster | Police Headquarters</title>
 
-  <!-- PWA & Mobile Web Setup -->
+  <!-- PWA & Mobile Web Capabilities -->
   <meta name="theme-color" content="#081326">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -15,8 +15,9 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-  <!-- Firebase SDKs (Compat for Firestore & Realtime Sync) -->
+  <!-- Firebase SDKs: App, Auth & Firestore -->
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
 
   <!-- Google Fonts: Hind Siliguri (Bengali) & Inter -->
@@ -49,7 +50,7 @@
 
   <style>
     body { font-family: 'Hind Siliguri', sans-serif; -webkit-tap-highlight-color: transparent; }
-    .badge-glow { box-shadow: 0 0 15px rgba(205, 168, 81, 0.4); }
+    .badge-glow { box-shadow: 0 0 15px rgba(205, 168, 81, 0.45); }
     @media print {
       .no-print { display: none !important; }
       body { background: white !important; color: black !important; }
@@ -58,17 +59,26 @@
 </head>
 <body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col">
 
-  <!-- ==================== HEADER ==================== -->
+  <!-- ==================== HEADER SECTION ==================== -->
   <header class="bg-gradient-to-r from-police-dark via-police-navy to-police-royal text-white shadow-xl sticky top-0 z-40 border-b-2 border-police-gold">
     <div class="max-w-7xl mx-auto px-4 py-2.5 flex items-center justify-between">
       
-      <!-- Brand & Title -->
+      <!-- Brand & Police HQ Crest -->
       <div class="flex items-center space-x-3 rtl:space-x-reverse">
-        <div class="w-11 h-11 md:w-12 md:h-12 rounded-full border-2 border-police-gold bg-police-dark flex items-center justify-center badge-glow shrink-0">
-          <i class="fa-solid fa-shield-halved text-police-gold text-xl md:text-2xl"></i>
+        <div class="w-12 h-12 rounded-full border-2 border-police-gold bg-[#081326] p-0.5 flex items-center justify-center badge-glow shrink-0 overflow-hidden shadow">
+          <!-- Police HQ Stylized Crest -->
+          <svg viewBox="0 0 100 100" class="w-full h-full">
+            <path d="M50 5 L88 20 L88 55 C88 75 50 95 50 95 C50 95 12 75 12 55 L12 20 Z" fill="#0f244a" stroke="#cda851" stroke-width="3"/>
+            <rect x="20" y="16" width="60" height="12" fill="#cda851" rx="2"/>
+            <text x="50" y="24" fill="#081326" font-size="6.5" font-weight="bold" text-anchor="middle" font-family="'Hind Siliguri', sans-serif">শৃঙ্খলা • নিরাপত্তা • প্রগতি</text>
+            <circle cx="50" cy="50" r="17" fill="none" stroke="#ffffff" stroke-width="1.5"/>
+            <path d="M40 52 L50 42 L60 52 L50 62 Z" fill="#cda851"/>
+            <path d="M30 68 L70 32 M70 68 L30 32" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+            <text x="50" y="85" fill="#ffffff" font-size="6.5" font-weight="bold" text-anchor="middle" font-family="'Hind Siliguri', sans-serif">পুলিশ হেডকোয়ার্টার্স</text>
+          </svg>
         </div>
         <div>
-          <h1 class="text-base md:text-xl font-bold tracking-wide uppercase text-police-gold">
+          <h1 class="text-base md:text-xl font-bold tracking-wide uppercase text-police-gold flex items-center gap-2">
             CENTRAL DISPATCH – SMART ROSTER
           </h1>
           <p class="text-[11px] md:text-xs text-slate-300 font-medium">
@@ -77,30 +87,31 @@
         </div>
       </div>
 
-      <!-- Cloud Sync & Admin Status -->
+      <!-- Cloud Status & Firebase Auth Area -->
       <div class="flex items-center space-x-2">
         <div id="cloudStatusBadge" class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-950/80 text-emerald-300 border border-emerald-500/40">
           <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span id="cloudStatusText">ক্লাউড সিঙ্ক সক্রিয়</span>
+          <span id="cloudStatusText">ক্লাউড সিঙ্ক চালু</span>
         </div>
 
-        <button id="adminAuthBtn" onclick="toggleAdminLoginModal()" class="px-3.5 py-1.5 bg-police-gold/20 hover:bg-police-gold/30 border border-police-gold text-amber-300 hover:text-white rounded-lg text-xs md:text-sm font-bold flex items-center gap-1.5 transition shadow">
-          <i class="fa-solid fa-lock" id="adminLockIcon"></i>
-          <span id="adminBtnText">অ্যাডমিন প্রবেশ</span>
+        <!-- Auth Button -->
+        <button id="adminAuthBtn" onclick="handleAuthButtonClick()" class="px-3.5 py-1.5 bg-police-gold/20 hover:bg-police-gold/30 border border-police-gold text-amber-300 hover:text-white rounded-lg text-xs md:text-sm font-bold flex items-center gap-1.5 transition shadow">
+          <i class="fa-solid fa-user-lock" id="adminLockIcon"></i>
+          <span id="adminBtnText">ইমেইল লগইন</span>
         </button>
       </div>
     </div>
 
-    <!-- Live Time & Ticker -->
+    <!-- Live Ticker Bar -->
     <div class="bg-police-dark text-xs py-1.5 px-4 text-slate-300 flex flex-wrap justify-between items-center gap-2 border-t border-police-border">
       <div class="flex items-center gap-2">
-        <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-police-gold text-police-dark">বাংলাদেশ সময়</span>
+        <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-police-gold text-police-dark">বর্তমান সময়</span>
         <span id="currentLiveDateTime" class="font-mono text-amber-200">লোড হচ্ছে...</span>
       </div>
       <div class="flex items-center gap-3 text-[11px]">
-        <span><i class="fa-solid fa-arrows-rotate text-emerald-400 mr-1"></i>শুক্র ও শনিবার ডিউটি রোটেশন</span>
+        <span><i class="fa-solid fa-arrows-rotate text-emerald-400 mr-1"></i>ডিউটি বার: শুক্রবার ও শনিবার</span>
         <span class="text-slate-500">|</span>
-        <span id="headerActiveMemberCount">সদস্য: ৭ জন</span>
+        <span id="headerActiveMemberCount">সদস্য: ০ জন</span>
       </div>
     </div>
   </header>
@@ -112,7 +123,10 @@
         <i class="fa-solid fa-chart-pie"></i> ড্যাশবোর্ড
       </button>
       <button onclick="switchTab('roster')" id="tab-roster" class="nav-tab px-4 py-2 rounded-lg text-xs md:text-sm font-medium text-slate-600 hover:text-police-royal flex items-center gap-2 whitespace-nowrap">
-        <i class="fa-solid fa-calendar-days"></i> সাপ্তাহিক রোস্টার
+        <i class="fa-solid fa-list-check"></i> সাপ্তাহিক রোস্টার
+      </button>
+      <button onclick="switchTab('calendar')" id="tab-calendar" class="nav-tab px-4 py-2 rounded-lg text-xs md:text-sm font-medium text-slate-600 hover:text-police-royal flex items-center gap-2 whitespace-nowrap">
+        <i class="fa-solid fa-calendar-days"></i> রোস্টার ক্যালেন্ডার
       </button>
       <button onclick="switchTab('members')" id="tab-members" class="nav-tab px-4 py-2 rounded-lg text-xs md:text-sm font-medium text-slate-600 hover:text-police-royal flex items-center gap-2 whitespace-nowrap">
         <i class="fa-solid fa-users-gear"></i> সদস্য ব্যবস্থাপনা ও ক্রম
@@ -157,7 +171,7 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         
         <!-- CARD: Current Weekend Duty -->
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 relative overflow-hidden">
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 relative overflow-hidden" id="cardCurrentDutyBox">
           <div class="absolute top-0 right-0 bg-police-royal text-white text-[11px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
             বর্তমান উইকেন্ড ডিউটি
           </div>
@@ -165,7 +179,7 @@
             <i class="fa-solid fa-star text-police-gold"></i> শুক্রবার ও শনিবারের দায়িত্বপ্রাপ্ত
           </div>
           <div id="currentDutyCardBody" class="mt-2">
-            <!-- Dynamic Content -->
+            <!-- Dynamically Loaded -->
           </div>
         </div>
 
@@ -178,18 +192,18 @@
             <i class="fa-solid fa-forward text-slate-400"></i> পরবর্তী শুক্র ও শনিবারের দায়িত্ব
           </div>
           <div id="nextDutyCardBody" class="mt-2">
-            <!-- Dynamic Content -->
+            <!-- Dynamically Loaded -->
           </div>
         </div>
 
       </div>
 
-      <!-- Counters -->
+      <!-- Quick Metrics Counters -->
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
           <div>
-            <p class="text-xs text-slate-500 font-semibold">সক্রিয় রোস্টার সদস্য</p>
-            <p class="text-2xl font-bold text-police-navy mt-1" id="statActiveMembers">৭</p>
+            <p class="text-xs text-slate-500 font-semibold">সক্রিয় সদস্য</p>
+            <p class="text-2xl font-bold text-police-navy mt-1" id="statActiveMembers">০</p>
           </div>
           <div class="w-10 h-10 rounded-xl bg-blue-50 text-police-royal flex items-center justify-center text-lg">
             <i class="fa-solid fa-users"></i>
@@ -216,7 +230,7 @@
         <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
           <div>
             <p class="text-xs text-slate-500 font-semibold">সিনিয়র অফিসার</p>
-            <p class="text-2xl font-bold text-purple-700 mt-1" id="statSeniorOfficers">৩</p>
+            <p class="text-2xl font-bold text-purple-700 mt-1" id="statSeniorOfficers">০</p>
           </div>
           <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-lg">
             <i class="fa-solid fa-user-tie"></i>
@@ -244,7 +258,7 @@
       <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-wrap justify-between items-center gap-3">
         <div>
           <h2 class="text-base font-bold text-police-navy">ধারাবাহিক সাপ্তাহিক রোস্টার তালিকা</h2>
-          <p class="text-xs text-slate-500">প্রতি শুক্র ও শনিবার স্বয়ংক্রিয় চক্রাকারে ৭ জনের মধ্যে ডিউটি বণ্টিত হয়।</p>
+          <p class="text-xs text-slate-500">প্রতি শুক্র ও শনিবার স্বয়ংক্রিয় চক্রাকারে ডিউটি বণ্টিত হয়।</p>
         </div>
         <div class="flex items-center gap-2">
           <button onclick="window.print()" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold flex items-center gap-1.5 border border-slate-300">
@@ -253,18 +267,63 @@
         </div>
       </div>
 
-      <!-- Roster Container -->
+      <!-- Roster List Container -->
       <div id="rosterListContainer" class="space-y-3">
-        <!-- Roster cards injected via JS -->
+        <!-- Rendered by JS -->
       </div>
     </section>
 
-    <!-- 3. MEMBER MANAGEMENT & SEQUENCE VIEW -->
+    <!-- 3. CALENDAR VIEW -->
+    <section id="view-calendar" class="hidden space-y-4">
+      <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-wrap justify-between items-center gap-3">
+        <div>
+          <h2 class="text-base font-bold text-police-navy flex items-center gap-2">
+            <i class="fa-solid fa-calendar-days text-police-royal"></i> মাসিক রোস্টার ডিউটি ক্যালেন্ডার
+          </h2>
+          <p class="text-xs text-slate-500">প্রতিটি শুক্র ও শনিবারে নির্ধারিত ও বিকল্প সদস্যদের নাম সরাসরি ক্যালেন্ডারে প্রদর্শিত হচ্ছে।</p>
+        </div>
+        
+        <!-- Month Navigation -->
+        <div class="flex items-center gap-2">
+          <button onclick="changeCalendarMonth(-1)" class="p-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-xs font-bold text-slate-700">
+            <i class="fa-solid fa-chevron-left"></i> পূর্ববর্তী মাস
+          </button>
+          <span id="calendarCurrentMonthTitle" class="text-sm font-bold text-police-navy px-3 py-1 bg-blue-50 border border-blue-200 rounded-lg min-w-[130px] text-center font-mono">
+            লোড হচ্ছে...
+          </span>
+          <button onclick="changeCalendarMonth(1)" class="p-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-xs font-bold text-slate-700">
+            পরবর্তী মাস <i class="fa-solid fa-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Interactive Calendar Table -->
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-3 sm:p-4 overflow-x-auto">
+        <div class="min-w-[650px]">
+          <!-- Day Headers -->
+          <div class="grid grid-cols-7 gap-1 text-center font-bold text-xs uppercase mb-2">
+            <div class="py-2 bg-slate-100 text-slate-600 rounded">রবি</div>
+            <div class="py-2 bg-slate-100 text-slate-600 rounded">সোম</div>
+            <div class="py-2 bg-slate-100 text-slate-600 rounded">মঙ্গল</div>
+            <div class="py-2 bg-slate-100 text-slate-600 rounded">বুধ</div>
+            <div class="py-2 bg-slate-100 text-slate-600 rounded">বৃহস্পতি</div>
+            <div class="py-2 bg-police-navy text-police-gold rounded shadow-sm">শুক্রবার (ডিউটি)</div>
+            <div class="py-2 bg-police-navy text-police-gold rounded shadow-sm">শনিবার (ডিউটি)</div>
+          </div>
+          <!-- Days Grid -->
+          <div id="calendarGrid" class="grid grid-cols-7 gap-1.5 text-xs">
+            <!-- Dynamically Rendered by JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. MEMBER MANAGEMENT & SEQUENCE VIEW -->
     <section id="view-members" class="hidden space-y-4">
       <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-wrap justify-between items-center gap-3">
         <div>
-          <h2 class="text-base font-bold text-police-navy">ডেসপাচ শাখার সদস্যবৃন্দ ও রোস্টার পরিক্রমার ক্রম</h2>
-          <p class="text-xs text-slate-500">অ্যাডমিন হিসেবে আপনি সদস্যদের ক্রম [উপরে/নিচে] সাজিয়ে রোস্টারের সিরিয়াল নির্ধারণ করতে পারবেন।</p>
+          <h2 class="text-base font-bold text-police-navy">ডেসপাচ শাখার সদস্যবৃন্দ ও রোটেশন ক্রম</h2>
+          <p class="text-xs text-slate-500">আপনার ৭ জন সদস্যকে যোগ করুন। [উপরে / নিচে] তীর দিয়ে ক্রম সাজিয়ে কে কার পর ডিউটি পাবেন তা নিয়ন্ত্রণ করুন।</p>
         </div>
         <button onclick="openMemberModal()" class="admin-only hidden px-4 py-2 bg-police-royal hover:bg-police-navy text-white rounded-lg text-xs font-bold flex items-center gap-1.5 shadow">
           <i class="fa-solid fa-user-plus"></i> নতুন সদস্য যোগ করুন
@@ -273,7 +332,7 @@
 
       <!-- Members Grid -->
       <div id="memberGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <!-- Populated via JS -->
+        <!-- Rendered by JS -->
       </div>
 
       <!-- Senior Officers (Viewers) Section -->
@@ -283,7 +342,7 @@
             <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2">
               <i class="fa-solid fa-shield text-police-gold"></i> সংশ্লিষ্ট ঊর্ধ্বতন কর্মকর্তাবৃন্দ (সিনিয়র ভিউয়ার)
             </h3>
-            <p class="text-xs text-slate-500">তাঁরা রোস্টারের সদস্য নন; ডিউটি ও রিপোর্ট তদারকি করবেন।</p>
+            <p class="text-xs text-slate-500">তাঁরা রোস্টারের অংশ নন; ডিউটি ও রিপোর্ট তদারকি করবেন।</p>
           </div>
           <button onclick="openSeniorOfficerModal()" class="admin-only hidden px-3 py-1.5 bg-purple-700 hover:bg-purple-800 text-white rounded-lg text-xs font-bold">
             <i class="fa-solid fa-plus mr-1"></i> অফিসার যোগ করুন
@@ -295,12 +354,12 @@
       </div>
     </section>
 
-    <!-- 4. DUTY HISTORY & REPORTS VIEW -->
+    <!-- 5. DUTY HISTORY & REPORTS VIEW -->
     <section id="view-history" class="hidden space-y-4">
       <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-wrap justify-between items-center gap-3">
         <div>
           <h2 class="text-base font-bold text-police-navy">ডিউটি ইতিহাস ও অফিসিয়াল এক্সেল রিপোর্ট</h2>
-          <p class="text-xs text-slate-500">অতীতের সকল সম্পন্ন ডিউটি ও প্রতিস্থাপনের পূর্ণাঙ্গ তথ্যভাণ্ডার।</p>
+          <p class="text-xs text-slate-500">সম্পন্ন, প্রতিস্থাপিত ও বিগত ডিউটির সম্পূর্ণ ডাটাবেজ।</p>
         </div>
         <div class="flex items-center gap-2">
           <button onclick="exportToCSV()" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 shadow">
@@ -350,33 +409,21 @@
       </div>
     </section>
 
-    <!-- 5. SETTINGS & CLOUD VIEW -->
+    <!-- 6. SETTINGS & CLOUD VIEW -->
     <section id="view-settings" class="hidden space-y-4">
       
-      <!-- Cloud Project Info -->
+      <!-- Cloud Info -->
       <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
         <h2 class="text-base font-bold text-police-navy mb-1 flex items-center gap-2">
           <i class="fa-solid fa-cloud text-emerald-600"></i> Firebase ক্লাউড ডেটাবেজ স্ট্যাটাস
         </h2>
         <p class="text-xs text-slate-500 mb-3">
-          আপনার প্রজেক্টের সাথে ডেটাবেজ সরাসরি সংযুক্ত রয়েছে। যেকোনো পরিবর্তন সাথে সাথে সব ডিভাইসে সিঙ্ক হচ্ছে।
+          আপনার প্রজেক্টের সাথে ডেটাবেজ সরাসরি সংযুক্ত রয়েছে।
         </p>
         <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs space-y-1 font-mono text-slate-700">
           <p><span class="font-bold text-police-navy">Project ID:</span> dispatch-roster-phq</p>
           <p><span class="font-bold text-police-navy">Auth Domain:</span> dispatch-roster-phq.firebaseapp.com</p>
-          <p><span class="font-bold text-police-navy">সিঙ্ক স্ট্যাটাস:</span> <span id="settingsSyncStatus" class="text-emerald-600 font-bold">অনলাইন ও সংযুক্ত</span></p>
-        </div>
-      </div>
-
-      <!-- Admin PIN Change -->
-      <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm admin-only hidden">
-        <h2 class="text-base font-bold text-police-navy mb-1 flex items-center gap-2">
-          <i class="fa-solid fa-key text-police-gold"></i> অ্যাডমিন সিকিউরিটি পিন পরিবর্তন
-        </h2>
-        <p class="text-xs text-slate-500 mb-3">আপনার বর্তমান অ্যাডমিন পিন কোড পরিবর্তন করুন (বর্তমান পিন: <span id="currentPinDisplay" class="font-bold text-police-navy">1234</span>)।</p>
-        <div class="flex flex-wrap items-center gap-2 max-w-sm">
-          <input type="password" id="newAdminPin" maxlength="6" placeholder="নতুন পিন (৪-৬ ডিজিট)" class="text-xs p-2.5 border border-slate-300 rounded-lg flex-1 font-mono">
-          <button onclick="changeAdminPin()" class="px-4 py-2 bg-police-royal hover:bg-police-navy text-white rounded-lg text-xs font-bold">আপডেট করুন</button>
+          <p><span class="font-bold text-police-navy">লগইন করা অ্যাডমিন:</span> <span id="settingsAdminEmail" class="text-emerald-700 font-bold">লগইন নেই (ভিউয়ার মোড)</span></p>
         </div>
       </div>
 
@@ -425,54 +472,41 @@
 
   <!-- ==================== MODALS ==================== -->
 
-  <!-- 1. NOTICE EDIT MODAL -->
-  <div id="modalNoticeEdit" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-md w-full p-5 shadow-2xl border-t-4 border-police-gold">
-      <div class="flex justify-between items-center pb-2 border-b border-slate-100">
-        <h3 class="font-bold text-sm text-police-navy flex items-center gap-1.5">
-          <i class="fa-solid fa-bullhorn text-police-gold"></i> কেন্দ্রীয় নোটিশ আপডেট
-        </h3>
-        <button onclick="closeNoticeModal()" class="text-slate-400 hover:text-slate-600 text-lg">&times;</button>
+  <!-- 1. FIREBASE EMAIL LOGIN MODAL -->
+  <div id="modalFirebaseLogin" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl border-t-4 border-police-navy text-center">
+      <div class="w-12 h-12 rounded-full bg-police-dark text-police-gold flex items-center justify-center mx-auto mb-2 text-xl">
+        <i class="fa-solid fa-user-shield"></i>
       </div>
-      <div class="mt-3">
-        <textarea id="noticeInputArea" rows="4" class="w-full text-xs p-2.5 border border-slate-300 rounded-lg focus:outline-police-royal"></textarea>
-      </div>
-      <div class="mt-4 flex gap-2">
-        <button onclick="closeNoticeModal()" class="flex-1 py-2 bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg">বাতিল</button>
-        <button onclick="saveNoticeText()" class="flex-1 py-2 bg-police-royal hover:bg-police-navy text-white text-xs font-bold rounded-lg shadow">আপডেট করুন</button>
-      </div>
-    </div>
-  </div>
+      <h3 class="text-sm font-bold text-police-navy">Firebase ইমেইল লগইন (অ্যাডমিন)</h3>
+      <p class="text-xs text-slate-500 mt-1">রোস্টার পরিচালনা ও এডিট করতে আপনার ফায়ারবেস অথেনটিকেশন ইমেইল ও পাসওয়ার্ড দিন।</p>
 
-  <!-- 2. WHATSAPP CONFIRMATION MODAL -->
-  <div id="modalWhatsAppConfirm" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl border-t-4 border-emerald-600">
-      <div class="text-center">
-        <div class="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl">
-          <i class="fa-brands fa-whatsapp"></i>
+      <form onsubmit="handleFirebaseLogin(event)" class="space-y-3 mt-4 text-left">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">অ্যাডমিন ইমেইল:</label>
+          <input type="email" id="authEmailInput" required placeholder="admin@police.gov.bd" class="w-full text-xs p-2.5 border border-slate-300 rounded-lg focus:outline-police-royal">
         </div>
-        <h3 class="text-base font-bold text-slate-800">হোয়াটসঅ্যাপ বার্তা নিশ্চিতকরণ</h3>
-        <p class="text-xs text-slate-600 mt-2 leading-relaxed" id="waConfirmPromptText">
-          আপনি কি উক্ত সদস্যকে আগামী শুক্রবার ও শনিবারের রোস্টার ডিউটি জানাতে চান?
-        </p>
-      </div>
-      <div class="mt-5 flex gap-2">
-        <button onclick="closeWhatsAppModal()" class="flex-1 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold rounded-lg transition">
-          না (বাতিল)
-        </button>
-        <button id="waModalConfirmBtn" class="flex-1 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-lg shadow-md transition">
-          হ্যাঁ (মেসেজ পাঠান)
-        </button>
-      </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">পাসওয়ার্ড:</label>
+          <input type="password" id="authPasswordInput" required placeholder="••••••••" class="w-full text-xs p-2.5 border border-slate-300 rounded-lg focus:outline-police-royal">
+        </div>
+
+        <div id="authErrorMessage" class="text-red-600 text-xs hidden"></div>
+
+        <div class="mt-4 flex gap-2 pt-2">
+          <button type="button" onclick="closeFirebaseLoginModal()" class="flex-1 py-2 bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg">বাতিল</button>
+          <button type="submit" id="loginSubmitBtn" class="flex-1 py-2 bg-police-royal hover:bg-police-navy text-white text-xs font-bold rounded-lg shadow">লগইন</button>
+        </div>
+      </form>
     </div>
   </div>
 
-  <!-- 3. DUTY REPLACEMENT MODAL -->
+  <!-- 2. DUTY REPLACEMENT & ABSENCE MODAL -->
   <div id="modalReplacement" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-md w-full p-5 shadow-2xl border-t-4 border-police-royal">
+    <div class="bg-white rounded-2xl max-w-md w-full p-5 shadow-2xl border-t-4 border-amber-500">
       <div class="flex justify-between items-center pb-2 border-b border-slate-100">
         <h3 class="font-bold text-sm text-police-navy flex items-center gap-1.5">
-          <i class="fa-solid fa-user-pen text-police-gold"></i> বিকল্প ডিউটি / প্রতিস্থাপন নির্ধারণ
+          <i class="fa-solid fa-user-pen text-amber-500"></i> অনুপস্থিতি ও বিকল্প ডিউটি নির্ধারণ
         </h3>
         <button onclick="closeReplacementModal()" class="text-slate-400 hover:text-slate-600 text-lg">&times;</button>
       </div>
@@ -487,25 +521,35 @@
           <input type="text" id="repOriginalMemberName" readonly class="w-full p-2 bg-slate-100 border border-slate-300 rounded font-bold text-slate-800">
         </div>
         <div>
+          <label class="block font-semibold text-slate-600 mb-1">স্ট্যাটাস / অনুপস্থিতির ধরন *</label>
+          <select id="repStatusType" class="w-full p-2 border border-slate-300 rounded font-bold text-slate-800 focus:outline-police-royal">
+            <option value="Replaced">বিকল্প সদস্য ডিউটি করবেন (Replaced)</option>
+            <option value="Absent">অনুপস্থিত / ছুটি (কোনো বিকল্প ছাড়া)</option>
+          </select>
+        </div>
+        <div id="substituteSelectContainer">
           <label class="block font-semibold text-slate-600 mb-1">বিকল্প সদস্য নির্বাচন করুন *</label>
           <select id="repSubstituteMemberSelect" class="w-full p-2 border border-slate-300 rounded font-bold text-slate-800 focus:outline-police-royal">
             <!-- Populated via JS -->
           </select>
         </div>
         <div>
-          <label class="block font-semibold text-slate-600 mb-1">ডিউটি পরিবর্তনের কারণ / মন্তব্য *</label>
-          <textarea id="repReason" rows="3" placeholder="যেমন: অসুস্থতাজনিত ছুটি / অনুমোদিত নৈমিত্তিক ছুটি..." class="w-full p-2 border border-slate-300 rounded"></textarea>
+          <label class="block font-semibold text-slate-600 mb-1">ছুটির ধরন / পরিবর্তনের কারণ *</label>
+          <textarea id="repReason" rows="2" placeholder="যেমন: আকস্মিক অসুস্থতা / অনুমোদিত নৈমিত্তিক ছুটি..." class="w-full p-2 border border-slate-300 rounded"></textarea>
         </div>
       </div>
 
       <div class="mt-4 flex gap-2">
+        <button onclick="revertReplacement()" id="btnRevertReplacement" class="hidden py-2 px-3 bg-red-100 hover:bg-red-200 text-red-700 text-xs font-bold rounded-lg border border-red-300">
+          পূর্বাবস্থায় ফেরান
+        </button>
         <button onclick="closeReplacementModal()" class="flex-1 py-2 bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg">বাতিল</button>
         <button onclick="confirmDutyReplacement()" class="flex-1 py-2 bg-police-royal hover:bg-police-navy text-white text-xs font-bold rounded-lg shadow">সংরক্ষণ করুন</button>
       </div>
     </div>
   </div>
 
-  <!-- 4. ADD / EDIT MEMBER MODAL -->
+  <!-- 3. ADD / EDIT MEMBER MODAL -->
   <div id="modalMember" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl max-w-md w-full p-5 shadow-2xl border-t-4 border-police-gold">
       <div class="flex justify-between items-center pb-2 border-b border-slate-100">
@@ -534,8 +578,8 @@
         </div>
 
         <div>
-          <label class="block font-semibold text-slate-600 mb-1">সদস্যের নাম *</label>
-          <input type="text" id="memFormName" required placeholder="পূর্ণ নাম লিখুন" class="w-full p-2 border border-slate-300 rounded">
+          <label class="block font-semibold text-slate-600 mb-1">সদস্যের পুরো নাম *</label>
+          <input type="text" id="memFormName" required placeholder="আসল নাম লিখুন" class="w-full p-2 border border-slate-300 rounded">
         </div>
 
         <div class="grid grid-cols-2 gap-2">
@@ -552,7 +596,7 @@
         <div class="pt-2 border-t border-slate-100 flex items-center justify-between">
           <label class="flex items-center gap-2 cursor-pointer font-medium text-slate-700">
             <input type="checkbox" id="memFormInRoster" checked class="w-4 h-4 text-police-royal rounded">
-            <span>রোস্টারে ডিউটি পাবেন</span>
+            <span>রোস্টারে অন্তর্ভুক্ত থাকবে</span>
           </label>
           <label class="flex items-center gap-2 cursor-pointer font-medium text-slate-700">
             <input type="checkbox" id="memFormIsActive" checked class="w-4 h-4 text-emerald-600 rounded">
@@ -568,7 +612,7 @@
     </div>
   </div>
 
-  <!-- 5. ADD / EDIT SENIOR OFFICER MODAL -->
+  <!-- 4. ADD / EDIT SENIOR OFFICER MODAL -->
   <div id="modalSeniorOfficer" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl border-t-4 border-purple-700">
       <div class="flex justify-between items-center pb-2 border-b border-slate-100">
@@ -599,22 +643,44 @@
     </div>
   </div>
 
-  <!-- 6. ADMIN LOGIN MODAL -->
-  <div id="modalAdminLogin" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-xs w-full p-5 shadow-2xl border-t-4 border-police-navy text-center">
-      <div class="w-12 h-12 rounded-full bg-police-dark text-police-gold flex items-center justify-center mx-auto mb-2 text-xl">
-        <i class="fa-solid fa-user-shield"></i>
+  <!-- 5. NOTICE EDIT MODAL -->
+  <div id="modalNoticeEdit" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-5 shadow-2xl border-t-4 border-police-gold">
+      <div class="flex justify-between items-center pb-2 border-b border-slate-100">
+        <h3 class="font-bold text-sm text-police-navy flex items-center gap-1.5">
+          <i class="fa-solid fa-bullhorn text-police-gold"></i> কেন্দ্রীয় নোটিশ আপডেট
+        </h3>
+        <button onclick="closeNoticeModal()" class="text-slate-400 hover:text-slate-600 text-lg">&times;</button>
       </div>
-      <h3 class="text-sm font-bold text-police-navy">অ্যাডমিন প্রবেশাধিকার</h3>
-      <p class="text-xs text-slate-500 mt-1">সমস্ত তথ্য এডিট করার জন্য পিন দিন।</p>
-
-      <div class="mt-4">
-        <input type="password" id="adminPinInput" maxlength="6" placeholder="ডিফল্ট পিন: 1234" class="w-full text-center text-lg tracking-widest font-mono p-2.5 border border-slate-300 rounded-lg focus:outline-police-royal">
+      <div class="mt-3">
+        <textarea id="noticeInputArea" rows="4" class="w-full text-xs p-2.5 border border-slate-300 rounded-lg focus:outline-police-royal"></textarea>
       </div>
-
       <div class="mt-4 flex gap-2">
-        <button onclick="toggleAdminLoginModal()" class="flex-1 py-2 bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg">বাতিল</button>
-        <button onclick="verifyAdminPin()" class="flex-1 py-2 bg-police-royal hover:bg-police-navy text-white text-xs font-bold rounded-lg shadow">লগইন</button>
+        <button onclick="closeNoticeModal()" class="flex-1 py-2 bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg">বাতিল</button>
+        <button onclick="saveNoticeText()" class="flex-1 py-2 bg-police-royal hover:bg-police-navy text-white text-xs font-bold rounded-lg shadow">আপডেট করুন</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. WHATSAPP CONFIRMATION MODAL -->
+  <div id="modalWhatsAppConfirm" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl border-t-4 border-emerald-600">
+      <div class="text-center">
+        <div class="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl">
+          <i class="fa-brands fa-whatsapp"></i>
+        </div>
+        <h3 class="text-base font-bold text-slate-800">হোয়াটসঅ্যাপ বার্তা নিশ্চিতকরণ</h3>
+        <p class="text-xs text-slate-600 mt-2 leading-relaxed" id="waConfirmPromptText">
+          আপনি কি উক্ত সদস্যকে আগামী শুক্রবার ও শনিবারের রোস্টার ডিউটি জানাতে চান?
+        </p>
+      </div>
+      <div class="mt-5 flex gap-2">
+        <button onclick="closeWhatsAppModal()" class="flex-1 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold rounded-lg transition">
+          না (বাতিল)
+        </button>
+        <button id="waModalConfirmBtn" class="flex-1 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-lg shadow-md transition">
+          হ্যাঁ (মেসেজ পাঠান)
+        </button>
       </div>
     </div>
   </div>
@@ -627,10 +693,10 @@
     </div>
   </footer>
 
-  <!-- ==================== JAVASCRIPT ENGINE & FIREBASE ==================== -->
+  <!-- ==================== JAVASCRIPT LOGIC ==================== -->
   <script>
     /* ==========================================================
-       FIREBASE CONFIGURATION (YOUR REAL PROJECT)
+       FIREBASE CONFIGURATION
        ========================================================== */
     const firebaseConfig = {
       apiKey: "AIzaSyDK1tTGKuvFjQWoU0OEKdrUdPDbtoeYKtU",
@@ -642,101 +708,80 @@
     };
 
     let firestoreDb = null;
+    let auth = null;
+    let currentUser = null;
 
     /* ==========================================================
-       DATA MODEL & DEFAULT REPOSITORY
+       DATA MODEL (EMPTY BY DEFAULT - NO DUMMY DATA)
        ========================================================== */
-    const DEFAULT_MEMBERS = [
-      { id: 'mem-1', rank: 'কনস্টেবল', rankNo: 'সি/১০১', name: 'মো: রফিকুল ইসলাম', bp: '৮৯০১২৩৪৫০১', phone: '01711000001', inRoster: true, active: true },
-      { id: 'mem-2', rank: 'কনস্টেবল', rankNo: 'সি/১০২', name: 'মো: শফিকুল আলম', bp: '৮৯০১২৩৪৫০২', phone: '01711000002', inRoster: true, active: true },
-      { id: 'mem-3', rank: 'কনস্টেবল', rankNo: 'সি/১০৩', name: 'মো: কামরুল হাসান', bp: '৮৯০১২৩৪৫০৩', phone: '01711000003', inRoster: true, active: true },
-      { id: 'mem-4', rank: 'কনস্টেবল', rankNo: 'সি/১০৪', name: 'মো: তারেক রহমান', bp: '৮৯০১২৩৪৫০৪', phone: '01711000004', inRoster: true, active: true },
-      { id: 'mem-5', rank: 'কনস্টেবল', rankNo: 'সি/১০৫', name: 'মো: নাজমুল হুদা', bp: '৮৯০১২৩৪৫০৫', phone: '01711000005', inRoster: true, active: true },
-      { id: 'mem-6', rank: 'কনস্টেবল', rankNo: 'সি/১০৬', name: 'মো: আরিফুল হক', bp: '৮৯০১২৩৪৫০৬', phone: '01711000006', inRoster: true, active: true },
-      { id: 'mem-7', rank: 'কনস্টেবল', rankNo: 'সি/১০৭', name: 'মো: জাহিদুল ইসলাম', bp: '৮৯০১২৩৪৫০৭', phone: '01711000007', inRoster: true, active: true }
-    ];
-
-    const DEFAULT_SENIORS = [
-      { id: 'sen-1', role: 'শাখা প্রধান / পুলিশ পরিদর্শক', name: 'মোহাম্মদ আব্দুল করিম', bp: '৭৫০১২৩৪৫৬৭' },
-      { id: 'sen-2', role: 'তদারকি কর্মকর্তা / এএসআই', name: 'এস এম আসাদুজ্জামান', bp: '৮২০৯৮৭৬৫৪৩' },
-      { id: 'sen-3', role: 'ডিউটি মনিটরিং অফিসার', name: 'মো: জিয়াউর রহমান', bp: '৮১০৫৬৭৮৯০১' }
-    ];
-
     const DEFAULT_TEMPLATES = {
       regular: `জনাব {RANK} {RANK_NO} {NAME},\n\nআপনাকে আগামী {DATES} পুলিশ হেডকোয়ার্টার্সের কেন্দ্রীয় ডেসপাচ শাখার সাপ্তাহিক রোস্টার ডিউটি পালনের জন্য নির্ধারণ করা হয়েছে।\n\nআপনাকে সকাল ০৯:০০ ঘটিকার পূর্বে অফিসে উপস্থিত হয়ে যথাযথভাবে দায়িত্ব পালন করার জন্য অনুরোধ করা হলো।\n\nধন্যবাদান্তে,\nকেন্দ্রীয় ডেসপাচ শাখা\nপুলিশ হেডকোয়ার্টার্স।`,
       replace: `জনাব {RANK} {RANK_NO} {NAME},\n\nনির্ধারিত রোস্টার সদস্যের অনুপস্থিতির কারণে আগামী {DATES} আপনাকে তাঁর পরিবর্তে কেন্দ্রীয় ডেসপাচ শাখার রোস্টার ডিউটি পালনের জন্য অনুরোধ করা হলো।\n\nআপনাকে সকাল ০৯:০০ ঘটিকার পূর্বে অফিসে উপস্থিত হয়ে যথাযথ দায়িত্ব পালনের অনুরোধ করা হলো।\n\nধন্যবাদান্তে,\nকেন্দ্রীয় ডেসপাচ শাখা\nপুলিশ হেডকোয়ার্টার্স।`
     };
 
     let appState = {
-      isAdmin: false,
-      adminPin: '1234',
+      members: [],       // Clean: User adds the exact 7 members!
+      seniors: [],       // Clean: User adds senior officers
+      dutyOverrides: {}, // Keyed by Friday ISO string e.g., '2026-11-06'
+      dutyHistory: [],
       noticeText: 'নির্ধারিত শুক্রবার ও শনিবার সকাল ০৯:০০ ঘটিকার পূর্বে অফিসে উপস্থিত হয়ে কেন্দ্রীয় ডেসপাচ শাখার গুরুত্বপূর্ণ ডাক ও চিঠিপত্র বিতরণ ও গ্রহণের দায়িত্ব যথাযথভাবে পালন করার জন্য অনুরোধ করা হলো।',
-      members: [],
-      seniors: [],
-      dutyOverrides: {}, 
-      dutyHistory: [],   
       templates: DEFAULT_TEMPLATES,
       rosterAnchorDate: '2026-11-06' // Fri Nov 6, 2026
     };
 
+    let calendarViewDate = new Date(2026, 10, 1); // Starts at November 2026
     let pendingWhatsAppUrl = null;
     let currentReplaceTarget = null;
     let isRemoteUpdate = false;
 
     /* ==========================================================
-       STARTUP & INITIALIZATION
+       STARTUP & LOCAL STORAGE
        ========================================================== */
     window.addEventListener('DOMContentLoaded', () => {
       loadLocalState();
       initLiveClock();
       renderAll();
-      initFirebaseCloud();
+      initFirebase();
     });
 
     function loadLocalState() {
-      const saved = localStorage.getItem('CD_SMART_ROSTER_V2');
+      const saved = localStorage.getItem('CD_SMART_ROSTER_CLEAN_V3');
       if (saved) {
         try {
           const parsed = JSON.parse(saved);
           appState = { ...appState, ...parsed };
         } catch(e) { console.error(e); }
       }
-      
-      const savedAdmin = localStorage.getItem('CD_ADMIN_SESSION');
-      if (savedAdmin === 'true') {
-        appState.isAdmin = true;
-      }
-
-      if (!appState.members || appState.members.length === 0) appState.members = [...DEFAULT_MEMBERS];
-      if (!appState.seniors || appState.seniors.length === 0) appState.seniors = [...DEFAULT_SENIORS];
       if (!appState.templates) appState.templates = DEFAULT_TEMPLATES;
 
       document.getElementById('dashNoticeText').innerText = appState.noticeText;
-      document.getElementById('currentPinDisplay').innerText = appState.adminPin;
       document.getElementById('templateRegularMsg').value = appState.templates.regular;
       document.getElementById('templateReplaceMsg').value = appState.templates.replace;
     }
 
     function saveState() {
-      localStorage.setItem('CD_SMART_ROSTER_V2', JSON.stringify(appState));
+      localStorage.setItem('CD_SMART_ROSTER_CLEAN_V3', JSON.stringify(appState));
       syncToFirestore();
     }
 
     /* ==========================================================
-       FIREBASE FIRESTORE REAL-TIME SYNC
+       FIREBASE AUTH & FIRESTORE REAL-TIME SYNC
        ========================================================== */
-    function initFirebaseCloud() {
+    function initFirebase() {
       try {
         if (!firebase.apps.length) {
           firebase.initializeApp(firebaseConfig);
         }
         firestoreDb = firebase.firestore();
+        auth = firebase.auth();
 
-        const badge = document.getElementById('cloudStatusBadge');
-        badge.classList.remove('hidden');
-        badge.classList.add('inline-flex');
+        // Listen for Firebase Auth State Changes (Email Login)
+        auth.onAuthStateChanged((user) => {
+          currentUser = user;
+          updateAuthUI();
+        });
 
-        // Listen for live updates across all devices
+        // Listen for live Firestore data
         firestoreDb.collection("roster_data").doc("central_dispatch").onSnapshot((doc) => {
           if (doc.exists) {
             const data = doc.data();
@@ -749,25 +794,19 @@
               appState.noticeText = data.noticeText;
               document.getElementById('dashNoticeText').innerText = data.noticeText;
             }
-            if (data.adminPin) {
-              appState.adminPin = data.adminPin;
-              document.getElementById('currentPinDisplay').innerText = data.adminPin;
-            }
             if (data.templates) appState.templates = data.templates;
 
-            localStorage.setItem('CD_SMART_ROSTER_V2', JSON.stringify(appState));
+            localStorage.setItem('CD_SMART_ROSTER_CLEAN_V3', JSON.stringify(appState));
             renderAll();
             isRemoteUpdate = false;
-          } else {
-            // First time setup: push default data to cloud
-            syncToFirestore();
           }
-        }, (error) => {
-          console.warn("Firestore listener fallback mode:", error);
+        }, (err) => {
+          console.warn("Firestore offline mode:", err);
           document.getElementById('cloudStatusText').textContent = 'অফলাইন মোড';
         });
-      } catch (err) {
-        console.warn("Firebase Init Fallback:", err);
+
+      } catch(err) {
+        console.warn("Firebase Init Error:", err);
       }
     }
 
@@ -779,10 +818,76 @@
           dutyOverrides: appState.dutyOverrides,
           dutyHistory: appState.dutyHistory,
           noticeText: appState.noticeText,
-          adminPin: appState.adminPin,
           templates: appState.templates,
           lastUpdated: new Date().toISOString()
-        }).catch(e => console.warn('Sync failed:', e));
+        }).catch(e => console.warn('Cloud sync error:', e));
+      }
+    }
+
+    /* ==========================================================
+       AUTH HANDLERS
+       ========================================================== */
+    function handleAuthButtonClick() {
+      if (currentUser) {
+        if (confirm(`আপনি কি অ্যাডমিন (${currentUser.email}) থেকে লগআউট করতে চান?`)) {
+          auth.signOut().then(() => {
+            alert('লগআউট সম্পন্ন হয়েছে।');
+          });
+        }
+      } else {
+        document.getElementById('authEmailInput').value = '';
+        document.getElementById('authPasswordInput').value = '';
+        document.getElementById('authErrorMessage').classList.add('hidden');
+        document.getElementById('modalFirebaseLogin').classList.remove('hidden');
+      }
+    }
+
+    function closeFirebaseLoginModal() {
+      document.getElementById('modalFirebaseLogin').classList.add('hidden');
+    }
+
+    function handleFirebaseLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('authEmailInput').value.trim();
+      const pass = document.getElementById('authPasswordInput').value.trim();
+      const submitBtn = document.getElementById('loginSubmitBtn');
+      const errBox = document.getElementById('authErrorMessage');
+
+      submitBtn.disabled = true;
+      submitBtn.innerText = 'লগইন হচ্ছে...';
+      errBox.classList.add('hidden');
+
+      auth.signInWithEmailAndPassword(email, pass)
+        .then(() => {
+          closeFirebaseLoginModal();
+          alert('সফলভাবে অ্যাডমিন হিসেবে লগইন হয়েছে!');
+        })
+        .catch((error) => {
+          errBox.textContent = 'লগইন ব্যর্থ হয়েছে: ' + (error.message || 'ভুল ইমেইল বা পাসওয়ার্ড');
+          errBox.classList.remove('hidden');
+        })
+        .finally(() => {
+          submitBtn.disabled = false;
+          submitBtn.innerText = 'লগইন';
+        });
+    }
+
+    function updateAuthUI() {
+      const adminEls = document.querySelectorAll('.admin-only');
+      const lockIcon = document.getElementById('adminLockIcon');
+      const btnText = document.getElementById('adminBtnText');
+      const settingsEmail = document.getElementById('settingsAdminEmail');
+
+      if (currentUser) {
+        adminEls.forEach(el => el.classList.remove('hidden'));
+        lockIcon.className = 'fa-solid fa-lock-open text-emerald-400';
+        btnText.textContent = 'লগআউট';
+        settingsEmail.textContent = currentUser.email + ' (সুপার অ্যাডমিন)';
+      } else {
+        adminEls.forEach(el => el.classList.add('hidden'));
+        lockIcon.className = 'fa-solid fa-user-lock';
+        btnText.textContent = 'ইমেইল লগইন';
+        settingsEmail.textContent = 'লগইন নেই (ভিউয়ার মোড)';
       }
     }
 
@@ -820,7 +925,7 @@
     }
 
     /* ==========================================================
-       ROSTER ALGORITHM (CYCLICAL FRIDAY & SATURDAY)
+       ROSTER ROTATION ALGORITHM
        ========================================================== */
     function getActiveRosterMembers() {
       return appState.members.filter(m => m.active && m.inRoster);
@@ -871,7 +976,7 @@
         dateKey,
         scheduledMember,
         isReplaced: !!override,
-        activeMember: override ? getMemberById(override.substituteId) : scheduledMember,
+        activeMember: (override && override.substituteId) ? getMemberById(override.substituteId) : scheduledMember,
         overrideData: override || null
       };
     }
@@ -886,10 +991,11 @@
     function renderAll() {
       renderDashboard();
       renderRoster();
+      renderCalendar();
       renderMembers();
       renderSeniorOfficers();
       renderHistoryTable();
-      updateAdminUI();
+      updateAuthUI();
     }
 
     function renderDashboard() {
@@ -902,16 +1008,31 @@
       document.getElementById('statCompletedDuties').textContent = toBanglaDigits(completed);
       document.getElementById('statReplacedDuties').textContent = toBanglaDigits(Object.keys(appState.dutyOverrides).length);
 
+      const curBody = document.getElementById('currentDutyCardBody');
+      const nextBody = document.getElementById('nextDutyCardBody');
+      const quickContainer = document.getElementById('quickRosterList');
+
+      if (activeMembers.length === 0) {
+        curBody.innerHTML = `
+          <div class="text-center py-6 text-slate-400">
+            <i class="fa-solid fa-users text-3xl mb-2 text-slate-300"></i>
+            <p class="text-sm font-semibold">কোনো সদস্য এখনো যোগ করা হয়নি।</p>
+            <p class="text-xs text-slate-500 mt-1">লগইন করে 'সদস্য ব্যবস্থাপনা' থেকে আপনার ৭ জন সদস্য যুক্ত করুন।</p>
+          </div>
+        `;
+        nextBody.innerHTML = `<p class="text-xs text-slate-400 py-6 text-center">সদস্য যুক্ত করার পর প্রদর্শিত হবে।</p>`;
+        quickContainer.innerHTML = `<p class="text-xs text-slate-400 py-4 text-center">রোস্টার শুরু করতে সদস্য যুক্ত করুন।</p>`;
+        return;
+      }
+
       const weekends = getUpcomingFridays(5);
-      if (weekends.length === 0 || activeMembers.length === 0) return;
 
       // Card 1: Current Weekend
       const cur = getRosterForWeekend(weekends[0].friday);
       const curFriStr = formatBanglaDate(weekends[0].friday);
       const curSatStr = formatBanglaDate(weekends[0].saturday);
-      const curBody = document.getElementById('currentDutyCardBody');
 
-      if (cur) {
+      if (cur && cur.activeMember) {
         const mem = cur.activeMember;
         const isRep = cur.isReplaced;
         curBody.innerHTML = `
@@ -942,9 +1063,12 @@
             </div>
           </div>
           ${isRep ? `
-            <div class="mt-3 p-2.5 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-900 flex items-center gap-2">
-              <i class="fa-solid fa-triangle-exclamation text-amber-600 text-sm"></i>
-              <span>উক্ত সদস্যের নির্ধারিত রোস্টার ডিউটি পরিবর্তে বিকল্প সদস্য দায়িত্ব পালন করছেন। (মূল সদস্য: ${cur.scheduledMember.name})</span>
+            <div class="mt-3 p-2.5 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-900 flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-triangle-exclamation text-amber-600 text-sm"></i>
+                <span>মূল সদস্য: <del>${cur.scheduledMember.name}</del> (${cur.overrideData.reason})</span>
+              </div>
+              <button onclick="openReplacementModal('${cur.dateKey}', '${cur.scheduledMember.id}', '${curFriStr} ও ${curSatStr}')" class="admin-only hidden text-red-600 font-bold hover:underline ml-2">পূর্বাবস্থায় আনুন</button>
             </div>
           ` : ''}
         `;
@@ -954,9 +1078,8 @@
       const nextR = getRosterForWeekend(weekends[1].friday);
       const nextFriStr = formatBanglaDate(weekends[1].friday);
       const nextSatStr = formatBanglaDate(weekends[1].saturday);
-      const nextBody = document.getElementById('nextDutyCardBody');
 
-      if (nextR) {
+      if (nextR && nextR.activeMember) {
         const nextMem = nextR.activeMember;
         nextBody.innerHTML = `
           <div class="flex items-center justify-between">
@@ -968,10 +1091,10 @@
               </p>
             </div>
             <div class="flex gap-1.5">
-              <button onclick="triggerWhatsApp('${nextMem.id}', '${nextFriStr}', '${nextSatStr}', false)" class="p-2.5 bg-emerald-100 hover:bg-emerald-200 text-emerald-800 rounded-lg text-xs" title="WhatsApp নোটিশ">
+              <button onclick="triggerWhatsApp('${nextMem.id}', '${nextFriStr}', '${nextSatStr}', false)" class="p-2.5 bg-emerald-100 hover:bg-emerald-200 text-emerald-800 rounded-lg text-xs" title="WhatsApp">
                 <i class="fa-brands fa-whatsapp text-base"></i>
               </button>
-              <a href="tel:${nextMem.phone}" class="p-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-lg text-xs" title="সরাসরি কল">
+              <a href="tel:${nextMem.phone}" class="p-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-lg text-xs" title="কল">
                 <i class="fa-solid fa-phone text-base"></i>
               </a>
             </div>
@@ -979,10 +1102,10 @@
         `;
       }
 
-      // Quick 4-Week List
-      const quickContainer = document.getElementById('quickRosterList');
+      // 4-Week Preview
       quickContainer.innerHTML = weekends.slice(0, 4).map((w, idx) => {
         const ros = getRosterForWeekend(w.friday);
+        if (!ros || !ros.activeMember) return '';
         const fStr = formatBanglaDate(w.friday);
         const sStr = formatBanglaDate(w.saturday);
         const mem = ros.activeMember;
@@ -1009,11 +1132,23 @@
 
     function renderRoster() {
       const container = document.getElementById('rosterListContainer');
-      const weekends = getUpcomingFridays(10);
+      const activeMembers = getActiveRosterMembers();
 
+      if (activeMembers.length === 0) {
+        container.innerHTML = `
+          <div class="bg-white p-8 rounded-xl border border-slate-200 text-center text-slate-400">
+            <i class="fa-solid fa-calendar-xmark text-4xl mb-3 text-slate-300"></i>
+            <h3 class="text-base font-bold text-slate-700">রোস্টারে কোনো সদস্য নেই</h3>
+            <p class="text-xs text-slate-500 mt-1">প্রথমে সদস্য ব্যবস্থাপনা ট্যাবে গিয়ে সদস্য যুক্ত করুন।</p>
+          </div>
+        `;
+        return;
+      }
+
+      const weekends = getUpcomingFridays(10);
       container.innerHTML = weekends.map((w, idx) => {
         const ros = getRosterForWeekend(w.friday);
-        if (!ros) return '';
+        if (!ros || !ros.activeMember) return '';
         const fStr = formatBanglaDate(w.friday);
         const sStr = formatBanglaDate(w.saturday);
         const mem = ros.activeMember;
@@ -1036,7 +1171,7 @@
                 <p class="text-xs text-slate-500 font-mono mt-0.5">BP: ${toBanglaDigits(mem.bp)} • মোবা: ${mem.phone}</p>
                 ${ros.isReplaced ? `
                   <p class="text-xs text-amber-800 mt-1 font-medium">
-                    * মূল রোস্টার সদস্য: ${orig.rank} ${orig.name} (কারণ: ${ros.overrideData.reason})
+                    * মূল সদস্য: <del>${orig.rank} ${orig.name}</del> (কারণ: ${ros.overrideData.reason})
                   </p>
                 ` : ''}
               </div>
@@ -1050,9 +1185,9 @@
                 <i class="fa-solid fa-phone"></i> কল
               </a>
               <button onclick="openReplacementModal('${ros.dateKey}', '${orig.id}', '${fStr} ও ${sStr}')" class="admin-only hidden px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-bold flex items-center gap-1 shadow-sm">
-                <i class="fa-solid fa-user-pen"></i> বিকল্প নির্ধারণ
+                <i class="fa-solid fa-user-pen"></i> ডিউটি বদল
               </button>
-              <button onclick="markDutyCompleted('${ros.dateKey}', '${mem.id}', '${fStr} ও ${sStr}')" class="admin-only hidden px-2.5 py-1.5 bg-police-navy hover:bg-police-dark text-white rounded-lg text-xs font-bold" title="ডিউটি সম্পন্ন হিসেবে চিহ্নিত করুন">
+              <button onclick="markDutyCompleted('${ros.dateKey}', '${mem.id}', '${fStr} ও ${sStr}')" class="admin-only hidden px-2.5 py-1.5 bg-police-navy hover:bg-police-dark text-white rounded-lg text-xs font-bold">
                 <i class="fa-solid fa-check"></i> সম্পন্ন
               </button>
             </div>
@@ -1061,8 +1196,100 @@
       }).join('');
     }
 
+    /* ==========================================================
+       CALENDAR VIEW WITH MEMBER NAMES
+       ========================================================== */
+    function changeCalendarMonth(delta) {
+      calendarViewDate.setMonth(calendarViewDate.getMonth() + delta);
+      renderCalendar();
+    }
+
+    function renderCalendar() {
+      const grid = document.getElementById('calendarGrid');
+      const title = document.getElementById('calendarCurrentMonthTitle');
+      
+      const year = calendarViewDate.getFullYear();
+      const month = calendarViewDate.getMonth();
+      const monthsBangla = ["জানুয়ারি", "ফেব্রুয়ারি", "মার্চ", "এপ্রিল", "মে", "জুন", "জুলাই", "আগস্ট", "সেপ্টেম্বর", "অক্টোবর", "নভেম্বর", "ডিসেম্বর"];
+      title.textContent = `${monthsBangla[month]} ${toBanglaDigits(year)}`;
+
+      grid.innerHTML = '';
+
+      const firstDayIndex = new Date(year, month, 1).getDay(); // 0 is Sun
+      const totalDays = new Date(year, month + 1, 0).getDate();
+
+      // Empty padding cells before 1st date
+      for (let i = 0; i < firstDayIndex; i++) {
+        grid.innerHTML += `<div class="p-2 bg-slate-50 border border-slate-100 rounded-lg min-h-[95px] opacity-40"></div>`;
+      }
+
+      // Generate days
+      for (let day = 1; day <= totalDays; day++) {
+        const currentDate = new Date(year, month, day);
+        const dayOfWeek = currentDate.getDay(); // 5 = Fri, 6 = Sat
+        const isDutyDay = (dayOfWeek === 5 || dayOfWeek === 6);
+
+        // Find corresponding Friday for this weekend
+        let friDate = new Date(currentDate);
+        if (dayOfWeek === 6) {
+          friDate.setDate(currentDate.getDate() - 1);
+        }
+
+        let dutyInfo = isDutyDay ? getRosterForWeekend(friDate) : null;
+
+        let cellHtml = `
+          <div class="p-2 border rounded-xl min-h-[105px] flex flex-col justify-between transition ${isDutyDay ? 'bg-blue-50/70 border-police-royal/40 shadow-xs' : 'bg-white border-slate-200'}">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-xs ${isDutyDay ? 'text-police-royal bg-white px-1.5 py-0.5 rounded shadow-xs' : 'text-slate-700'}">
+                ${toBanglaDigits(day)}
+              </span>
+              ${isDutyDay ? `<span class="text-[9px] font-bold px-1 rounded ${dayOfWeek===5?'bg-police-navy text-police-gold':'bg-slate-700 text-white'}">${dayOfWeek===5?'শুক্র':'শনি'}</span>` : ''}
+            </div>
+        `;
+
+        if (isDutyDay && dutyInfo && dutyInfo.activeMember) {
+          const mem = dutyInfo.activeMember;
+          const isRep = dutyInfo.isReplaced;
+          const orig = dutyInfo.scheduledMember;
+
+          cellHtml += `
+            <div class="mt-1.5 p-1 rounded bg-white border ${isRep ? 'border-amber-300' : 'border-blue-200'} text-[11px] leading-tight">
+              ${isRep ? `<span class="text-[9px] font-bold text-amber-700 block">বিকল্প:</span>` : ''}
+              <p class="font-bold text-police-navy truncate">${mem.rank} ${mem.name}</p>
+              ${isRep ? `<p class="text-[9px] text-slate-400 line-through truncate">মূল: ${orig.name}</p>` : ''}
+            </div>
+            <button onclick="openReplacementModal('${dutyInfo.dateKey}', '${orig.id}', '${formatBanglaDate(dutyInfo.scheduledMember ? friDate : currentDate)}')" class="admin-only hidden mt-1 text-[10px] text-police-royal hover:underline font-bold text-left">
+              ডিউটি পরিবর্তন
+            </button>
+          `;
+        } else if (isDutyDay) {
+          cellHtml += `<p class="text-[10px] text-slate-400 mt-2">সদস্য নেই</p>`;
+        } else {
+          cellHtml += `<div class="flex-1"></div>`;
+        }
+
+        cellHtml += `</div>`;
+        grid.innerHTML += cellHtml;
+      }
+    }
+
     function renderMembers() {
       const container = document.getElementById('memberGrid');
+      
+      if (appState.members.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full bg-white p-8 rounded-xl border-2 border-dashed border-slate-300 text-center">
+            <i class="fa-solid fa-user-plus text-4xl text-police-gold mb-3"></i>
+            <h3 class="text-base font-bold text-police-navy">আপনার শাখার কোনো সদস্য এখনো যুক্ত করা হয়নি</h3>
+            <p class="text-xs text-slate-500 mt-1 mb-4">অ্যাডমিন হিসেবে লগইন করে আপনার ৭ জন সদস্যের নাম ও BP নম্বর যুক্ত করুন।</p>
+            <button onclick="openMemberModal()" class="admin-only hidden px-4 py-2 bg-police-royal text-white rounded-lg text-xs font-bold shadow">
+              প্রথম সদস্য যোগ করুন
+            </button>
+          </div>
+        `;
+        return;
+      }
+
       container.innerHTML = appState.members.map((mem, index) => `
         <div class="bg-white rounded-xl border ${mem.active ? 'border-slate-200' : 'border-red-200 bg-red-50/20'} p-4 shadow-sm relative flex flex-col justify-between">
           <div>
@@ -1125,6 +1352,10 @@
 
     function renderSeniorOfficers() {
       const container = document.getElementById('seniorOfficersList');
+      if (appState.seniors.length === 0) {
+        container.innerHTML = `<p class="col-span-full text-xs text-slate-400 py-3">কোনো কর্মকর্তা যুক্ত করা হয়নি।</p>`;
+        return;
+      }
       container.innerHTML = appState.seniors.map(off => `
         <div class="bg-white p-3 rounded-lg border border-slate-200 flex items-center justify-between shadow-sm">
           <div class="flex items-center gap-3">
@@ -1188,9 +1419,6 @@
             </td>
             <td class="p-3 text-slate-600">${item.notes || '—'}</td>
             <td class="p-3 text-center no-print admin-only hidden">
-              <button onclick="editHistoryItem('${item.id}')" class="text-police-royal hover:text-police-dark p-1 mr-1" title="স্ট্যাটাস এডিট">
-                <i class="fa-solid fa-pen-to-square"></i>
-              </button>
               <button onclick="deleteHistoryItem('${item.id}')" class="text-red-500 hover:text-red-700 p-1" title="মুছে ফেলুন">
                 <i class="fa-solid fa-trash-can"></i>
               </button>
@@ -1201,487 +1429,33 @@
     }
 
     /* ==========================================================
-       ADMIN ACTIONS & REORDER
-       ========================================================== */
-    function moveMemberOrder(index, direction) {
-      const newIndex = index + direction;
-      if (newIndex < 0 || newIndex >= appState.members.length) return;
-      
-      const temp = appState.members[index];
-      appState.members[index] = appState.members[newIndex];
-      appState.members[newIndex] = temp;
-      
-      saveState();
-      renderAll();
-    }
-
-    function deleteMemberPermanently(id) {
-      const mem = getMemberById(id);
-      if (!mem) return;
-      if (confirm(`আপনি কি সদস্য "${mem.name}"-কে তালিকা থেকে মুছে ফেলতে চান? (তার ডিউটির ইতিহাস মুছে যাবে না)`)) {
-        appState.members = appState.members.filter(m => m.id !== id);
-        saveState();
-        renderAll();
-      }
-    }
-
-    function openSeniorOfficerModal(id = null) {
-      const form = document.getElementById('seniorOfficerForm');
-      form.reset();
-
-      if (id) {
-        const off = appState.seniors.find(s => s.id === id);
-        if (!off) return;
-        document.getElementById('seniorModalTitle').textContent = 'অফিসারের তথ্য সম্পাদনা';
-        document.getElementById('seniorFormId').value = off.id;
-        document.getElementById('seniorFormRole').value = off.role;
-        document.getElementById('seniorFormName').value = off.name;
-        document.getElementById('seniorFormBP').value = off.bp;
-      } else {
-        document.getElementById('seniorModalTitle').textContent = 'নতুন কর্মকর্তা যোগ করুন';
-        document.getElementById('seniorFormId').value = '';
-      }
-
-      document.getElementById('modalSeniorOfficer').classList.remove('hidden');
-    }
-
-    function closeSeniorOfficerModal() {
-      document.getElementById('modalSeniorOfficer').classList.add('hidden');
-    }
-
-    function handleSaveSeniorOfficer(e) {
-      e.preventDefault();
-      const id = document.getElementById('seniorFormId').value;
-      const role = document.getElementById('seniorFormRole').value.trim();
-      const name = document.getElementById('seniorFormName').value.trim();
-      const bp = document.getElementById('seniorFormBP').value.trim();
-
-      if (id) {
-        const idx = appState.seniors.findIndex(s => s.id === id);
-        if (idx !== -1) appState.seniors[idx] = { id, role, name, bp };
-      } else {
-        appState.seniors.push({
-          id: 'sen-' + Date.now(),
-          role,
-          name,
-          bp
-        });
-      }
-
-      saveState();
-      closeSeniorOfficerModal();
-      renderSeniorOfficers();
-      alert('কর্মকর্তার তথ্য সফলভাবে সংরক্ষিত হয়েছে!');
-    }
-
-    function deleteSeniorOfficer(id) {
-      if (confirm('আপনি কি এই কর্মকর্তাকে তালিকা থেকে বাদ দিতে চান?')) {
-        appState.seniors = appState.seniors.filter(s => s.id !== id);
-        saveState();
-        renderSeniorOfficers();
-      }
-    }
-
-    function openNoticeModal() {
-      document.getElementById('noticeInputArea').value = appState.noticeText;
-      document.getElementById('modalNoticeEdit').classList.remove('hidden');
-    }
-
-    function closeNoticeModal() {
-      document.getElementById('modalNoticeEdit').classList.add('hidden');
-    }
-
-    function saveNoticeText() {
-      const text = document.getElementById('noticeInputArea').value.trim();
-      if (!text) {
-        alert('নোটিশ খালি রাখা যাবে না।');
-        return;
-      }
-      appState.noticeText = text;
-      document.getElementById('dashNoticeText').innerText = text;
-      saveState();
-      closeNoticeModal();
-      alert('নোটিশ সফলভাবে আপডেট হয়েছে!');
-    }
-
-    function editHistoryItem(id) {
-      const item = appState.dutyHistory.find(h => h.id === id);
-      if (!item) return;
-
-      const newStatus = prompt('নতুন স্ট্যাটাস লিখুন (Completed / Replaced / Absent):', item.status);
-      if (newStatus) {
-        const newNotes = prompt('মন্তব্য আপডেট করুন:', item.notes || '');
-        item.status = newStatus.trim();
-        item.notes = newNotes !== null ? newNotes.trim() : item.notes;
-        saveState();
-        renderHistoryTable();
-      }
-    }
-
-    /* ==========================================================
-       WHATSAPP TRIGGER (MANDATORY CONFIRMATION)
-       ========================================================== */
-    function triggerWhatsApp(memberId, friDateStr, satDateStr, isReplaced = false) {
-      const member = getMemberById(memberId);
-      if (!member) return;
-
-      const dateText = `শুক্রবার (${friDateStr}) এবং শনিবার (${satDateStr})`;
-      let template = isReplaced ? appState.templates.replace : appState.templates.regular;
-
-      let message = template
-        .replace(/{RANK}/g, member.rank || '')
-        .replace(/{RANK_NO}/g, member.rankNo ? `(${member.rankNo})` : '')
-        .replace(/{NAME}/g, member.name || '')
-        .replace(/{DATES}/g, dateText);
-
-      let phoneNum = member.phone.replace(/[^0-9]/g, '');
-      if (phoneNum.startsWith('0')) phoneNum = '88' + phoneNum;
-
-      pendingWhatsAppUrl = `https://wa.me/${phoneNum}?text=${encodeURIComponent(message)}`;
-
-      const modal = document.getElementById('modalWhatsAppConfirm');
-      document.getElementById('waConfirmPromptText').innerHTML = `
-        আপনি কি <strong>${member.rank} ${member.name}</strong>-কে আগামী <strong>${dateText}</strong>-এর রোস্টার ডিউটি জানাতে চান?
-      `;
-
-      document.getElementById('waModalConfirmBtn').onclick = () => {
-        if (pendingWhatsAppUrl) window.open(pendingWhatsAppUrl, '_blank');
-        closeWhatsAppModal();
-      };
-
-      modal.classList.remove('hidden');
-    }
-
-    function triggerQuickWhatsApp(phone, name) {
-      let phoneNum = phone.replace(/[^0-9]/g, '');
-      if (phoneNum.startsWith('0')) phoneNum = '88' + phoneNum;
-      const prompt = `জনাব ${name}, পুলিশ হেডকোয়ার্টার্স কেন্দ্রীয় ডেসপাচ শাখা থেকে যোগাযোগ করা হচ্ছে।`;
-      window.open(`https://wa.me/${phoneNum}?text=${encodeURIComponent(prompt)}`, '_blank');
-    }
-
-    function closeWhatsAppModal() {
-      document.getElementById('modalWhatsAppConfirm').classList.add('hidden');
-      pendingWhatsAppUrl = null;
-    }
-
-    /* ==========================================================
-       DUTY REPLACEMENT / ATTENDANCE
+       DUTY REPLACEMENT & ABSENCE LOGIC (FULLY FUNCTIONAL)
        ========================================================== */
     function openReplacementModal(dateKey, originalMemberId, dateDisplay) {
       currentReplaceTarget = { dateKey, originalMemberId };
       const origMem = getMemberById(originalMemberId);
+      const existingOverride = appState.dutyOverrides[dateKey];
 
       document.getElementById('repDutyDates').value = dateDisplay;
-      document.getElementById('repOriginalMemberName').value = `${origMem.rank} ${origMem.name} (BP: ${origMem.bp})`;
-      document.getElementById('repReason').value = '';
+      document.getElementById('repOriginalMemberName').value = origMem ? `${origMem.rank} ${origMem.name} (BP: ${origMem.bp})` : 'অজানা';
+      document.getElementById('repReason').value = existingOverride ? existingOverride.reason : '';
 
+      // Populate other candidates
       const select = document.getElementById('repSubstituteMemberSelect');
       const candidates = appState.members.filter(m => m.active && m.id !== originalMemberId);
       select.innerHTML = candidates.map(c => `
-        <option value="${c.id}">${c.rank} ${c.rankNo ? `(${c.rankNo})` : ''} ${c.name} - BP: ${c.bp}</option>
+        <option value="${c.id}" ${existingOverride && existingOverride.substituteId === c.id ? 'selected' : ''}>${c.rank} ${c.rankNo ? `(${c.rankNo})` : ''} ${c.name} - BP: ${c.bp}</option>
       `).join('');
+
+      const revertBtn = document.getElementById('btnRevertReplacement');
+      if (existingOverride) {
+        revertBtn.classList.remove('hidden');
+      } else {
+        revertBtn.classList.add('hidden');
+      }
 
       document.getElementById('modalReplacement').classList.remove('hidden');
     }
 
     function closeReplacementModal() {
-      document.getElementById('modalReplacement').classList.add('hidden');
-      currentReplaceTarget = null;
-    }
-
-    function confirmDutyReplacement() {
-      if (!currentReplaceTarget) return;
-      const subId = document.getElementById('repSubstituteMemberSelect').value;
-      const reason = document.getElementById('repReason').value.trim();
-
-      if (!reason) {
-        alert('অনুগ্রহ করে ডিউটি পরিবর্তনের কারণ উল্লেখ করুন।');
-        return;
-      }
-
-      appState.dutyOverrides[currentReplaceTarget.dateKey] = {
-        substituteId: subId,
-        originalId: currentReplaceTarget.originalMemberId,
-        reason: reason,
-        replacedAt: new Date().toISOString()
-      };
-
-      appState.dutyHistory.push({
-        id: 'hist-' + Date.now(),
-        dateKey: currentReplaceTarget.dateKey,
-        dateBangla: document.getElementById('repDutyDates').value,
-        memberId: currentReplaceTarget.originalMemberId,
-        replacementId: subId,
-        status: 'Replaced',
-        notes: reason,
-        timestamp: new Date().toISOString()
-      });
-
-      saveState();
-      closeReplacementModal();
-      renderAll();
-      alert('বিকল্প সদস্য সফলভাবে রোস্টারে নির্ধারণ করা হয়েছে।');
-    }
-
-    function markDutyCompleted(dateKey, memberId, dateBangla) {
-      if (!confirm('উক্ত সদস্য ডিউটি সম্পন্ন করেছেন হিসেবে সংরক্ষণ করতে চান?')) return;
-
-      const override = appState.dutyOverrides[dateKey];
-      appState.dutyHistory.push({
-        id: 'hist-' + Date.now(),
-        dateKey: dateKey,
-        dateBangla: dateBangla,
-        memberId: memberId,
-        replacementId: override ? override.substituteId : null,
-        status: 'Completed',
-        notes: 'ডিউটি সফলভাবে সম্পন্ন হয়েছে।',
-        timestamp: new Date().toISOString()
-      });
-
-      saveState();
-      renderAll();
-      alert('ডিউটি সম্পন্ন হিসেবে ইতিহাসে যোগ হয়েছে।');
-    }
-
-    /* ==========================================================
-       MEMBER SAVE/EDIT
-       ========================================================== */
-    function openMemberModal(memberId = null) {
-      const form = document.getElementById('memberForm');
-      form.reset();
-
-      if (memberId) {
-        const mem = getMemberById(memberId);
-        if (!mem) return;
-        document.getElementById('memberModalTitle').textContent = 'সদস্যের তথ্য সম্পাদনা';
-        document.getElementById('memFormId').value = mem.id;
-        document.getElementById('memFormRank').value = mem.rank;
-        document.getElementById('memFormRankNo').value = mem.rankNo || '';
-        document.getElementById('memFormName').value = mem.name;
-        document.getElementById('memFormBP').value = mem.bp;
-        document.getElementById('memFormPhone').value = mem.phone;
-        document.getElementById('memFormInRoster').checked = !!mem.inRoster;
-        document.getElementById('memFormIsActive').checked = !!mem.active;
-      } else {
-        document.getElementById('memberModalTitle').textContent = 'নতুন সদস্য যোগ করুন';
-        document.getElementById('memFormId').value = '';
-        document.getElementById('memFormInRoster').checked = true;
-        document.getElementById('memFormIsActive').checked = true;
-      }
-
-      document.getElementById('modalMember').classList.remove('hidden');
-    }
-
-    function closeMemberModal() {
-      document.getElementById('modalMember').classList.add('hidden');
-    }
-
-    function handleSaveMember(e) {
-      e.preventDefault();
-      const id = document.getElementById('memFormId').value;
-      const rank = document.getElementById('memFormRank').value;
-      const rankNo = document.getElementById('memFormRankNo').value.trim();
-      const name = document.getElementById('memFormName').value.trim();
-      const bp = document.getElementById('memFormBP').value.trim();
-      const phone = document.getElementById('memFormPhone').value.trim();
-      const inRoster = document.getElementById('memFormInRoster').checked;
-      const active = document.getElementById('memFormIsActive').checked;
-
-      if (id) {
-        const idx = appState.members.findIndex(m => m.id === id);
-        if (idx !== -1) {
-          appState.members[idx] = { ...appState.members[idx], rank, rankNo, name, bp, phone, inRoster, active };
-        }
-      } else {
-        appState.members.push({
-          id: 'mem-' + Date.now(),
-          rank,
-          rankNo,
-          name,
-          bp,
-          phone,
-          inRoster,
-          active
-        });
-      }
-
-      saveState();
-      closeMemberModal();
-      renderAll();
-      alert('সদস্যের তথ্য সফলভাবে সংরক্ষিত হয়েছে!');
-    }
-
-    function toggleMemberActive(id) {
-      const mem = getMemberById(id);
-      if (!mem) return;
-      if (confirm(`আপনি কি ${mem.name}-কে ${mem.active ? 'নিষ্ক্রিয়' : 'পুনরায় সক্রিয়'} করতে চান?`)) {
-        mem.active = !mem.active;
-        saveState();
-        renderAll();
-      }
-    }
-
-    /* ==========================================================
-       ADMIN AUTH & PERSISTENCE
-       ========================================================== */
-    function toggleAdminLoginModal() {
-      if (appState.isAdmin) {
-        if (confirm('আপনি কি অ্যাডমিন মোড থেকে লগআউট করতে চান?')) {
-          appState.isAdmin = false;
-          localStorage.removeItem('CD_ADMIN_SESSION');
-          updateAdminUI();
-          alert('লগআউট সম্পন্ন হয়েছে। সফটওয়্যার এখন ভিউয়ার মোডে রয়েছে।');
-        }
-      } else {
-        document.getElementById('adminPinInput').value = '';
-        document.getElementById('modalAdminLogin').classList.remove('hidden');
-      }
-    }
-
-    function verifyAdminPin() {
-      const pin = document.getElementById('adminPinInput').value;
-      if (pin === appState.adminPin) {
-        appState.isAdmin = true;
-        localStorage.setItem('CD_ADMIN_SESSION', 'true');
-        document.getElementById('modalAdminLogin').classList.add('hidden');
-        updateAdminUI();
-        alert('সুপার অ্যাডমিন আনলক হয়েছে! এখন সব এডিট বাটন সক্রিয়।');
-      } else {
-        alert('ভুল পিন কোড! পুনরায় চেষ্টা করুন (ডিফল্ট: 1234)।');
-      }
-    }
-
-    function updateAdminUI() {
-      const adminEls = document.querySelectorAll('.admin-only');
-      const lockIcon = document.getElementById('adminLockIcon');
-      const btnText = document.getElementById('adminBtnText');
-
-      if (appState.isAdmin) {
-        adminEls.forEach(el => el.classList.remove('hidden'));
-        lockIcon.className = 'fa-solid fa-lock-open text-amber-400';
-        btnText.textContent = 'লগআউট';
-      } else {
-        adminEls.forEach(el => el.classList.add('hidden'));
-        lockIcon.className = 'fa-solid fa-lock';
-        btnText.textContent = 'অ্যাডমিন প্রবেশ';
-      }
-    }
-
-    function changeAdminPin() {
-      const newPin = document.getElementById('newAdminPin').value.trim();
-      if (newPin.length < 4) {
-        alert('পিন কোড কমপক্ষে ৪ ডিজিটের হতে হবে।');
-        return;
-      }
-      appState.adminPin = newPin;
-      saveState();
-      document.getElementById('currentPinDisplay').innerText = newPin;
-      document.getElementById('newAdminPin').value = '';
-      alert('অ্যাডমিন পিন সফলভাবে পরিবর্তন হয়েছে!');
-    }
-
-    /* ==========================================================
-       EXCEL EXPORT & FILTERS
-       ========================================================== */
-    function exportToCSV() {
-      if (appState.dutyHistory.length === 0) {
-        alert('ডাউনলোড করার মতো কোনো ডিউটি ইতিহাস নেই।');
-        return;
-      }
-
-      let csv = "\uFEFFক্রমিক,তারিখ ও বার,মূল সদস্য,পদবি,BP নম্বর,বিকল্প সদস্য,বিকল্প BP,স্ট্যাটাস,মন্তব্য\n";
-      appState.dutyHistory.forEach((h, i) => {
-        const m = getMemberById(h.memberId) || { name: '', rank: '', bp: '' };
-        const rep = h.replacementId ? getMemberById(h.replacementId) : null;
-        csv += `${i+1},"${h.dateBangla}","${m.name}","${m.rank}","${m.bp}","${rep?rep.name:''}","${rep?rep.bp:''}","${h.status}","${h.notes||''}"\n`;
-      });
-
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = `Central_Dispatch_Roster_${new Date().toISOString().split('T')[0]}.csv`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-    }
-
-    function filterHistoryTable() {
-      const q = document.getElementById('historySearchInput').value.toLowerCase();
-      const s = document.getElementById('historyStatusFilter').value;
-      const rows = document.querySelectorAll('#historyTableBody tr');
-
-      rows.forEach(r => {
-        const text = r.innerText.toLowerCase();
-        const mQ = text.includes(q);
-        const mS = !s || text.includes(s.toLowerCase());
-        r.style.display = (mQ && mS) ? '' : 'none';
-      });
-    }
-
-    function deleteHistoryItem(id) {
-      if (!confirm('আপনি কি এই রেকর্ডটি মুছে ফেলতে চান?')) return;
-      appState.dutyHistory = appState.dutyHistory.filter(h => h.id !== id);
-      saveState();
-      renderHistoryTable();
-    }
-
-    function saveMessageTemplates() {
-      appState.templates.regular = document.getElementById('templateRegularMsg').value;
-      appState.templates.replace = document.getElementById('templateReplaceMsg').value;
-      saveState();
-      alert('বার্তা টেমপ্লেট সংরক্ষিত হয়েছে।');
-    }
-
-    function backupDataJSON() {
-      const blob = new Blob([JSON.stringify(appState, null, 2)], { type: 'application/json' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = `Central_Dispatch_Backup_${new Date().toISOString().split('T')[0]}.json`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-    }
-
-    function restoreDataJSON(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        try {
-          const imported = JSON.parse(e.target.result);
-          if (imported.members) {
-            appState = { ...appState, ...imported };
-            saveState();
-            renderAll();
-            alert('ব্যাকআপ সফলভাবে রিস্টোর হয়েছে!');
-          }
-        } catch(err) { alert('ভুল ব্যাকআপ ফাইল!'); }
-      };
-      reader.readAsText(file);
-    }
-
-    /* ==========================================================
-       TAB SWITCHING
-       ========================================================== */
-    function switchTab(tabId) {
-      document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden'));
-      document.querySelectorAll('.nav-tab').forEach(b => {
-        b.classList.remove('bg-blue-50', 'text-police-royal', 'border-b-2', 'border-police-royal');
-        b.classList.add('text-slate-600');
-      });
-
-      const sec = document.getElementById('view-' + tabId);
-      const btn = document.getElementById('tab-' + tabId);
-      if (sec) sec.classList.remove('hidden');
-      if (btn) {
-        btn.classList.add('bg-blue-50', 'text-police-royal', 'border-b-2', 'border-police-royal');
-        btn.classList.remove('text-slate-600');
-      }
-
-      if (tabId === 'roster') renderRoster();
-      if (tabId === 'members') renderMembers();
-      if (tabId === 'history') renderHistoryTable();
-    }
-  </script>
-</body>
-</html>
+      document.getElementById('modalReplacement').
