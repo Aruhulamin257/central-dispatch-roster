@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Central Dispatch – Smart Roster | Police Headquarters</title>
 
-  <!-- PWA & Mobile Web Capabilities -->
   <meta name="theme-color" content="#081326">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -15,7 +14,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-  <!-- Firebase SDKs: App, Auth & Firestore -->
+  <!-- Firebase SDKs (Compat Version) -->
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
@@ -64,11 +63,11 @@
   <header class="bg-gradient-to-r from-police-dark via-police-navy to-police-royal text-white shadow-xl sticky top-0 z-40 border-b-2 border-police-gold">
     <div class="max-w-7xl mx-auto px-4 py-2.5 flex items-center justify-between">
       
-      <!-- Brand & Police HQ Crest -->
+      <!-- Logo & Branch Identity -->
       <div class="flex items-center space-x-3 rtl:space-x-reverse">
         <div class="w-12 h-12 rounded-full border-2 border-police-gold bg-[#081326] p-0.5 flex items-center justify-center badge-glow shrink-0 overflow-hidden shadow">
           <svg viewBox="0 0 100 100" class="w-full h-full">
-            <path d="M50 5 L88 20 L88 55 C88 75 50 95 50 95 C50 95 12 75 12 55 L12 20 Z" fill="#0f244a" stroke="#cda851" stroke-width="3"/>
+            <path d="M50 5 L88 20 L88 55 C88 75 50 95 50 95 C50 95 12 75 12 20 Z" fill="#0f244a" stroke="#cda851" stroke-width="3"/>
             <rect x="20" y="16" width="60" height="12" fill="#cda851" rx="2"/>
             <text x="50" y="24" fill="#081326" font-size="6.5" font-weight="bold" text-anchor="middle" font-family="'Hind Siliguri', sans-serif">শৃঙ্খলা • নিরাপত্তা • প্রগতি</text>
             <circle cx="50" cy="50" r="17" fill="none" stroke="#ffffff" stroke-width="1.5"/>
@@ -87,14 +86,14 @@
         </div>
       </div>
 
-      <!-- Cloud Status & Auth Button -->
+      <!-- Cloud Status & Admin Button -->
       <div class="flex items-center space-x-2">
         <div id="cloudStatusBadge" class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-950/80 text-emerald-300 border border-emerald-500/40">
           <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span id="cloudStatusText">ক্লাউড সিঙ্ক চালু</span>
+          <span id="cloudStatusText">ক্লাউড প্রস্তুত</span>
         </div>
 
-        <button id="adminAuthBtn" onclick="handleAuthButtonClick()" class="px-3.5 py-1.5 bg-police-gold/20 hover:bg-police-gold/30 border border-police-gold text-amber-300 hover:text-white rounded-lg text-xs md:text-sm font-bold flex items-center gap-1.5 transition shadow">
+        <button id="adminAuthBtn" onclick="openLoginModal()" class="px-3.5 py-1.5 bg-police-gold/20 hover:bg-police-gold/30 border border-police-gold text-amber-300 hover:text-white rounded-lg text-xs md:text-sm font-bold flex items-center gap-1.5 transition shadow">
           <i class="fa-solid fa-user-lock" id="adminLockIcon"></i>
           <span id="adminBtnText">অ্যাডমিন লগইন</span>
         </button>
@@ -105,7 +104,7 @@
     <div class="bg-police-dark text-xs py-1.5 px-4 text-slate-300 flex flex-wrap justify-between items-center gap-2 border-t border-police-border">
       <div class="flex items-center gap-2">
         <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-police-gold text-police-dark">বর্তমান সময়</span>
-        <span id="currentLiveDateTime" class="font-mono text-amber-200">লোড হচ্ছে...</span>
+        <span id="currentLiveDateTime" class="font-mono text-amber-200">সময় গণনা শুরু হচ্ছে...</span>
       </div>
       <div class="flex items-center gap-3 text-[11px]">
         <span><i class="fa-solid fa-arrows-rotate text-emerald-400 mr-1"></i>ডিউটি বার: শুক্রবার ও শনিবার</span>
@@ -389,6 +388,7 @@
         <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs space-y-1 font-mono text-slate-700 mt-3">
           <p><span class="font-bold text-police-navy">Project ID:</span> central-dispatch-roster</p>
           <p><span class="font-bold text-police-navy">বর্তমান লগইন স্ট্যাটাস:</span> <span id="settingsAdminEmail" class="text-amber-700 font-bold">লগইন নেই (ভিউয়ার মোড)</span></p>
+          <p class="text-[11px] text-slate-500 pt-1">জরুরি অ্যাডমিন আনলক পিন: <strong>1234</strong> (অফলাইনেও কার্যকর)</p>
         </div>
       </div>
 
@@ -436,36 +436,54 @@
 
   <!-- ==================== MODALS ==================== -->
 
-  <!-- 1. STANDARD FIREBASE EMAIL & PASSWORD LOGIN MODAL -->
+  <!-- 1. UNIVERSAL FAIL-SAFE LOGIN MODAL -->
   <div id="modalFirebaseLogin" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl border-t-4 border-police-navy text-center">
       <div class="w-12 h-12 rounded-full bg-police-dark text-police-gold flex items-center justify-center mx-auto mb-2 text-xl">
         <i class="fa-solid fa-shield-halved"></i>
       </div>
       <h3 class="text-base font-bold text-police-navy">অ্যাডমিন প্রবেশাধিকার</h3>
-      <p class="text-xs text-slate-500 mt-1">রোস্টার পরিচালনা ও এডিট করতে আপনার ফায়ারবেস অথেনটিকেশন ইমেইল ও পাসওয়ার্ড দিন।</p>
+      <p class="text-xs text-slate-500 mt-1">ফায়ারবেস ইমেইল-পাসওয়ার্ড অথবা জরুরি মাস্টার পিন ব্যবহার করুন।</p>
 
-      <form onsubmit="handleFirebaseEmailLogin(event)" class="space-y-3 mt-4 text-left text-xs">
+      <!-- Tab Buttons for Login Options -->
+      <div class="flex border-b border-slate-200 mt-4 mb-3 text-xs font-semibold">
+        <button type="button" onclick="switchLoginMethod('email')" id="btnLoginTabEmail" class="flex-1 py-1.5 border-b-2 border-police-royal text-police-royal">ইমেইল পাসওয়ার্ড</button>
+        <button type="button" onclick="switchLoginMethod('pin')" id="btnLoginTabPin" class="flex-1 py-1.5 border-b-2 border-transparent text-slate-500">মাস্টার পিন</button>
+      </div>
+
+      <!-- Option A: Email Login -->
+      <form id="formEmailLogin" onsubmit="handleFirebaseEmailLogin(event)" class="space-y-2.5 text-left text-xs">
         <div>
-          <label class="block font-semibold text-slate-700 mb-1">অ্যাডমিন ইমেইল:</label>
-          <input type="email" id="authEmailInput" required placeholder="admin@police.gov.bd" class="w-full p-2.5 border border-slate-300 rounded-lg focus:outline-police-royal">
+          <label class="block font-semibold text-slate-700 mb-0.5">অ্যাডমিন ইমেইল:</label>
+          <input type="email" id="authEmailInput" required placeholder="admin@police.gov.bd" class="w-full p-2 border border-slate-300 rounded-lg focus:outline-police-royal">
         </div>
         <div>
-          <label class="block font-semibold text-slate-700 mb-1">পাসওয়ার্ড:</label>
-          <input type="password" id="authPasswordInput" required placeholder="••••••••" class="w-full p-2.5 border border-slate-300 rounded-lg focus:outline-police-royal">
+          <label class="block font-semibold text-slate-700 mb-0.5">পাসওয়ার্ড:</label>
+          <input type="password" id="authPasswordInput" required placeholder="••••••••" class="w-full p-2 border border-slate-300 rounded-lg focus:outline-police-royal">
         </div>
-
         <div id="authErrorMessage" class="text-red-600 text-[11px] hidden"></div>
-
         <div class="flex gap-2 pt-2">
-          <button type="button" onclick="closeFirebaseLoginModal()" class="flex-1 py-2 bg-slate-200 text-slate-700 rounded-lg font-semibold">বাতিল</button>
+          <button type="button" onclick="closeLoginModal()" class="flex-1 py-2 bg-slate-200 text-slate-700 rounded-lg font-semibold">বাতিল</button>
           <button type="submit" id="emailLoginBtn" class="flex-1 py-2 bg-police-royal hover:bg-police-navy text-white font-bold rounded-lg shadow">লগইন</button>
         </div>
       </form>
+
+      <!-- Option B: Master PIN Login (Emergency/Offline) -->
+      <form id="formPinLogin" onsubmit="handleMasterPinLogin(event)" class="space-y-3 text-left text-xs hidden">
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">জরুরি মাস্টার পিন দিন (ডিফল্ট: 1234):</label>
+          <input type="password" id="authPinInput" maxlength="6" placeholder="৪ ডিজিট পিন" class="w-full text-center text-lg tracking-widest font-mono p-2 border border-slate-300 rounded-lg focus:outline-police-royal">
+        </div>
+        <div class="flex gap-2 pt-2">
+          <button type="button" onclick="closeLoginModal()" class="flex-1 py-2 bg-slate-200 text-slate-700 rounded-lg font-semibold">বাতিল</button>
+          <button type="submit" class="flex-1 py-2 bg-police-royal hover:bg-police-navy text-white font-bold rounded-lg shadow">পিন দিয়ে আনলক</button>
+        </div>
+      </form>
+
     </div>
   </div>
 
-  <!-- 2. ADD / EDIT MEMBER MODAL (WITH PHOTO UPLOAD) -->
+  <!-- 2. ADD / EDIT MEMBER MODAL -->
   <div id="modalMember" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl max-w-md w-full p-5 shadow-2xl border-t-4 border-police-gold">
       <div class="flex justify-between items-center pb-2 border-b border-slate-100">
@@ -481,7 +499,7 @@
         <div class="flex items-center gap-3 p-2.5 bg-slate-50 border border-slate-200 rounded-xl">
           <img id="memPhotoPreview" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2394a3b8'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E" class="w-14 h-14 rounded-full object-cover border-2 border-police-gold bg-white shrink-0">
           <div class="flex-1">
-            <label class="block font-semibold text-slate-700 mb-1">সদস্যের পাসপোর্ট ছবি আপলোড:</label>
+            <label class="block font-semibold text-slate-700 mb-1">পাসপোর্ট ছবি আপলোড:</label>
             <input type="file" id="memPhotoFileInput" accept="image/*" onchange="handlePhotoSelection(event)" class="text-[11px] text-slate-600 file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:text-[10px] file:font-semibold file:bg-police-royal file:text-white hover:file:bg-police-navy cursor-pointer">
           </div>
         </div>
@@ -504,7 +522,7 @@
         </div>
 
         <div>
-          <label class="block font-semibold text-slate-600 mb-1">সদস্যের নাম *</label>
+          <label class="block font-semibold text-slate-600 mb-1">সদস্যের পুরো নাম *</label>
           <input type="text" id="memFormName" required placeholder="পূর্ণ নাম লিখুন" class="w-full p-2 border border-slate-300 rounded">
         </div>
 
@@ -635,1059 +653,4 @@
   </div>
 
   <!-- 6. WHATSAPP CONFIRMATION MODAL -->
-  <div id="modalWhatsAppConfirm" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl border-t-4 border-emerald-600">
-      <div class="text-center">
-        <div class="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl">
-          <i class="fa-brands fa-whatsapp"></i>
-        </div>
-        <h3 class="text-base font-bold text-slate-800">হোয়াটসঅ্যাপ বার্তা নিশ্চিতকরণ</h3>
-        <p class="text-xs text-slate-600 mt-2 leading-relaxed" id="waConfirmPromptText">
-          আপনি কি উক্ত সদস্যকে আগামী শুক্রবার ও শনিবারের রোস্টার ডিউটি জানাতে চান?
-        </p>
-      </div>
-      <div class="mt-5 flex gap-2">
-        <button onclick="closeWhatsAppModal()" class="flex-1 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold rounded-lg transition">
-          না (বাতিল)
-        </button>
-        <button id="waModalConfirmBtn" class="flex-1 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-lg shadow-md transition">
-          হ্যাঁ (মেসেজ পাঠান)
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- FOOTER -->
-  <footer class="bg-police-dark text-slate-400 text-xs py-3 text-center border-t border-police-border mt-auto no-print">
-    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-1">
-      <span>কেন্দ্রীয় ডেসপাচ শাখা – স্মার্ট রোস্টার ডিউটি ব্যবস্থাপনা • পুলিশ হেডকোয়ার্টার্স</span>
-      <span>নিরাপদ ও সংরক্ষিত © ২০২৬</span>
-    </div>
-  </footer>
-
-  <!-- ==================== JAVASCRIPT LOGIC ==================== -->
-  <script>
-    /* ==========================================================
-       FIREBASE CONFIGURATION
-       ========================================================== */
-    const firebaseConfig = {
-      apiKey: "AIzaSyCqezTn_5OSrKGUD_PQwiv5WepxkM-iS3U",
-      authDomain: "central-dispatch-roster.firebaseapp.com",
-      projectId: "central-dispatch-roster",
-      storageBucket: "central-dispatch-roster.firebasestorage.app",
-      messagingSenderId: "633314161205",
-      appId: "1:633314161205:web:c47bc1ca7ba17ed302377c"
-    };
-
-    let firestoreDb = null;
-    let auth = null;
-    let currentUser = null;
-
-    /* ==========================================================
-       DATA MODEL
-       ========================================================== */
-    const DEFAULT_TEMPLATES = {
-      regular: `জনাব {RANK} {RANK_NO} {NAME},\n\nআপনাকে আগামী {DATES} পুলিশ হেডকোয়ার্টার্সের কেন্দ্রীয় ডেসপাচ শাখার সাপ্তাহিক রোস্টার ডিউটি পালনের জন্য নির্ধারণ করা হয়েছে।\n\nআপনাকে সকাল ০৯:০০ ঘটিকার পূর্বে অফিসে উপস্থিত হয়ে যথাযথভাবে দায়িত্ব পালন করার জন্য অনুরোধ করা হলো।\n\nধন্যবাদান্তে,\nকেন্দ্রীয় ডেসপাচ শাখা\nপুলিশ হেডকোয়ার্টার্স।`,
-      replace: `জনাব {RANK} {RANK_NO} {NAME},\n\nনির্ধারিত রোস্টার সদস্যের অনুপস্থিতির কারণে আগামী {DATES} আপনাকে তাঁর পরিবর্তে কেন্দ্রীয় ডেসপাচ শাখার রোস্টার ডিউটি পালনের জন্য অনুরোধ করা হলো।\n\nআপনাকে সকাল ০৯:০০ ঘটিকার পূর্বে অফিসে উপস্থিত হয়ে যথাযথ দায়িত্ব পালনের অনুরোধ করা হলো।\n\nধন্যবাদান্তে,\nকেন্দ্রীয় ডেসপাচ শাখা\nপুলিশ হেডকোয়ার্টার্স।`
-    };
-
-    let appState = {
-      members: [],       // Clean array for real members
-      seniors: [],       
-      dutyOverrides: {}, 
-      dutyHistory: [],   
-      completedLog: {},  // Map of weekend dates marked as completed { '2026-11-06': { completedAt: '...', completedBy: '...' } }
-      noticeText: 'নির্ধারিত শুক্রবার ও শনিবার সকাল ০৯:০০ ঘটিকার পূর্বে অফিসে উপস্থিত হয়ে কেন্দ্রীয় ডেসপাচ শাখার গুরুত্বপূর্ণ ডাক ও চিঠিপত্র বিতরণ ও গ্রহণের দায়িত্ব যথাযথভাবে পালন করার জন্য অনুরোধ করা হলো।',
-      templates: DEFAULT_TEMPLATES,
-      rosterAnchorDate: '2026-11-06'
-    };
-
-    let calendarViewDate = new Date(2026, 10, 1);
-    let pendingWhatsAppUrl = null;
-    let currentReplaceTarget = null;
-    let isRemoteUpdate = false;
-
-    /* ==========================================================
-       STARTUP & LOCAL STORAGE
-       ========================================================== */
-    window.addEventListener('DOMContentLoaded', () => {
-      loadLocalState();
-      initLiveClock();
-      renderAll();
-      initFirebase();
-    });
-
-    function loadLocalState() {
-      const saved = localStorage.getItem('CD_SMART_ROSTER_VFINAL');
-      if (saved) {
-        try {
-          const parsed = JSON.parse(saved);
-          appState = { ...appState, ...parsed };
-        } catch(e) { console.error(e); }
-      }
-      if (!appState.templates) appState.templates = DEFAULT_TEMPLATES;
-      if (!appState.completedLog) appState.completedLog = {};
-
-      document.getElementById('dashNoticeText').innerText = appState.noticeText;
-      document.getElementById('templateRegularMsg').value = appState.templates.regular;
-      document.getElementById('templateReplaceMsg').value = appState.templates.replace;
-    }
-
-    function saveState() {
-      localStorage.setItem('CD_SMART_ROSTER_VFINAL', JSON.stringify(appState));
-      syncToFirestore();
-    }
-
-    /* ==========================================================
-       FIREBASE AUTH (STANDARD EMAIL & PASSWORD)
-       ========================================================== */
-    function initFirebase() {
-      try {
-        if (!firebase.apps.length) {
-          firebase.initializeApp(firebaseConfig);
-        }
-        firestoreDb = firebase.firestore();
-        auth = firebase.auth();
-
-        auth.onAuthStateChanged((user) => {
-          currentUser = user;
-          updateAuthUI();
-        });
-
-        // Real-time Firestore sync
-        firestoreDb.collection("roster_data").doc("central_dispatch").onSnapshot((doc) => {
-          if (doc.exists) {
-            const data = doc.data();
-            isRemoteUpdate = true;
-            if (data.members) appState.members = data.members;
-            if (data.seniors) appState.seniors = data.seniors;
-            if (data.dutyOverrides) appState.dutyOverrides = data.dutyOverrides;
-            if (data.dutyHistory) appState.dutyHistory = data.dutyHistory;
-            if (data.completedLog) appState.completedLog = data.completedLog;
-            if (data.noticeText) {
-              appState.noticeText = data.noticeText;
-              document.getElementById('dashNoticeText').innerText = data.noticeText;
-            }
-            if (data.templates) appState.templates = data.templates;
-
-            localStorage.setItem('CD_SMART_ROSTER_VFINAL', JSON.stringify(appState));
-            renderAll();
-            isRemoteUpdate = false;
-          }
-        }, (err) => {
-          console.warn("Firestore sync warning:", err);
-          document.getElementById('cloudStatusText').textContent = 'অফলাইন মোড';
-        });
-
-      } catch(err) {
-        console.warn("Firebase Init Error:", err);
-      }
-    }
-
-    function syncToFirestore() {
-      if (firestoreDb && !isRemoteUpdate) {
-        firestoreDb.collection("roster_data").doc("central_dispatch").set({
-          members: appState.members,
-          seniors: appState.seniors,
-          dutyOverrides: appState.dutyOverrides,
-          dutyHistory: appState.dutyHistory,
-          completedLog: appState.completedLog,
-          noticeText: appState.noticeText,
-          templates: appState.templates,
-          lastUpdated: new Date().toISOString()
-        }).catch(e => console.warn('Sync error:', e));
-      }
-    }
-
-    function updateAuthUI() {
-      const adminEls = document.querySelectorAll('.admin-only');
-      const lockIcon = document.getElementById('adminLockIcon');
-      const btnText = document.getElementById('adminBtnText');
-      const settingsEmail = document.getElementById('settingsAdminEmail');
-
-      if (currentUser) {
-        adminEls.forEach(el => el.classList.remove('hidden'));
-        lockIcon.className = 'fa-solid fa-lock-open text-emerald-400';
-        btnText.textContent = 'লগআউট';
-        settingsEmail.textContent = currentUser.email + ' (সক্রিয় অ্যাডমিন)';
-      } else {
-        adminEls.forEach(el => el.classList.add('hidden'));
-        lockIcon.className = 'fa-solid fa-user-lock';
-        btnText.textContent = 'অ্যাডমিন লগইন';
-        settingsEmail.textContent = 'লগইন নেই (ভিউয়ার মোড)';
-      }
-    }
-
-    function handleAuthButtonClick() {
-      if (currentUser) {
-        if (confirm(`আপনি কি (${currentUser.email}) থেকে লগআউট করতে চান?`)) {
-          auth.signOut().then(() => {
-            alert('লগআউট সম্পন্ন হয়েছে।');
-          });
-        }
-      } else {
-        document.getElementById('authEmailInput').value = '';
-        document.getElementById('authPasswordInput').value = '';
-        document.getElementById('authErrorMessage').classList.add('hidden');
-        document.getElementById('modalFirebaseLogin').classList.remove('hidden');
-      }
-    }
-
-    function closeFirebaseLoginModal() {
-      document.getElementById('modalFirebaseLogin').classList.add('hidden');
-    }
-
-    function handleFirebaseEmailLogin(e) {
-      e.preventDefault();
-      const email = document.getElementById('authEmailInput').value.trim();
-      const pass = document.getElementById('authPasswordInput').value.trim();
-      const submitBtn = document.getElementById('emailLoginBtn');
-      const errBox = document.getElementById('authErrorMessage');
-
-      submitBtn.disabled = true;
-      submitBtn.innerText = 'যাচাই করা হচ্ছে...';
-      errBox.classList.add('hidden');
-
-      auth.signInWithEmailAndPassword(email, pass)
-        .then(() => {
-          closeFirebaseLoginModal();
-          alert('সফলভাবে অ্যাডমিন হিসেবে লগইন হয়েছে!');
-        })
-        .catch((error) => {
-          errBox.textContent = 'লগইন ব্যর্থ হয়েছে: ' + (error.message || 'ভুল ইমেইল বা পাসওয়ার্ড');
-          errBox.classList.remove('hidden');
-        })
-        .finally(() => {
-          submitBtn.disabled = false;
-          submitBtn.innerText = 'লগইন';
-        });
-    }
-
-    /* ==========================================================
-       IMAGE COMPRESSOR & PHOTO UPLOAD LOGIC
-       ========================================================== */
-    function handlePhotoSelection(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const img = new Image();
-        img.onload = () => {
-          const canvas = document.createElement('canvas');
-          const MAX_SIZE = 160;
-          let width = img.width;
-          let height = img.height;
-
-          if (width > height) {
-            if (width > MAX_SIZE) {
-              height *= MAX_SIZE / width;
-              width = MAX_SIZE;
-            }
-          } else {
-            if (height > MAX_SIZE) {
-              width *= MAX_SIZE / height;
-              height = MAX_SIZE;
-            }
-          }
-
-          canvas.width = width;
-          canvas.height = height;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, width, height);
-          
-          const base64Data = canvas.toDataURL('image/jpeg', 0.82);
-          document.getElementById('memPhotoPreview').src = base64Data;
-          document.getElementById('memFormPhotoBase64').value = base64Data;
-        };
-        img.src = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
-
-    /* ==========================================================
-       HELPERS & LIVE CLOCK
-       ========================================================== */
-    function toBanglaDigits(n) {
-      if (n === null || n === undefined) return '';
-      const bn = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
-      return n.toString().replace(/\d/g, d => bn[d]);
-    }
-
-    function formatBanglaDate(d) {
-      const months = ["জানুয়ারি", "ফেব্রুয়ারি", "মার্চ", "এপ্রিল", "মে", "জুন", "জুলাই", "আগস্ট", "সেপ্টেম্বর", "অক্টোবর", "নভেম্বর", "ডিসেম্বর"];
-      return `${toBanglaDigits(d.getDate())} ${months[d.getMonth()]} ${toBanglaDigits(d.getFullYear())}`;
-    }
-
-    function initLiveClock() {
-      function tick() {
-        const now = new Date();
-        const options = { 
-          timeZone: 'Asia/Dhaka', 
-          weekday: 'long', 
-          year: 'numeric', 
-          month: 'long', 
-          day: 'numeric',
-          hour: '2-digit', 
-          minute: '2-digit', 
-          second: '2-digit' 
-        };
-        document.getElementById('currentLiveDateTime').textContent = new Intl.DateTimeFormat('bn-BD', options).format(now);
-      }
-      tick();
-      setInterval(tick, 1000);
-    }
-
-    /* ==========================================================
-       ROSTER ROTATION ALGORITHM
-       ========================================================== */
-    function getActiveRosterMembers() {
-      return appState.members.filter(m => m.active && m.inRoster);
-    }
-
-    function getUpcomingFridays(count = 14) {
-      const weekends = [];
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-
-      const day = today.getDay(); // 0 Sun, 5 Fri, 6 Sat
-      let diff = 5 - day;
-      if (diff > 0) diff -= 7;
-
-      let cursor = new Date(today);
-      cursor.setDate(today.getDate() + diff);
-
-      if (day !== 5 && day !== 6) {
-        cursor.setDate(cursor.getDate() + 7);
-      }
-
-      for (let i = 0; i < count; i++) {
-        const fri = new Date(cursor);
-        fri.setDate(cursor.getDate() + (i * 7));
-        const sat = new Date(fri);
-        sat.setDate(fri.getDate() + 1);
-        weekends.push({ friday: fri, saturday: sat });
-      }
-      return weekends;
-    }
-
-    function getRosterForWeekend(friDate) {
-      const rosterList = getActiveRosterMembers();
-      if (rosterList.length === 0) return null;
-
-      const anchor = new Date(appState.rosterAnchorDate);
-      const diffMs = friDate.getTime() - anchor.getTime();
-      const diffWeeks = Math.round(diffMs / (7 * 24 * 60 * 60 * 1000));
-      
-      let index = diffWeeks % rosterList.length;
-      if (index < 0) index = (index + rosterList.length) % rosterList.length;
-
-      const scheduledMember = rosterList[index];
-      const dateKey = friDate.toISOString().split('T')[0];
-      const override = appState.dutyOverrides[dateKey];
-      const completion = appState.completedLog[dateKey] || null;
-
-      return {
-        dateKey,
-        scheduledMember,
-        isReplaced: !!override,
-        isCompleted: !!completion,
-        completionData: completion,
-        activeMember: (override && override.substituteId) ? getMemberById(override.substituteId) : scheduledMember,
-        overrideData: override || null
-      };
-    }
-
-    function getMemberById(id) {
-      return appState.members.find(m => m.id === id) || null;
-    }
-
-    /* ==========================================================
-       RENDER VIEWS
-       ========================================================== */
-    function renderAll() {
-      renderDashboard();
-      renderRoster();
-      renderCalendar();
-      renderExcelSheet();
-      renderMembers();
-      renderSeniorOfficers();
-      updateAuthUI();
-    }
-
-    function renderDashboard() {
-      const activeMembers = getActiveRosterMembers();
-      document.getElementById('headerActiveMemberCount').textContent = `সদস্য: ${toBanglaDigits(activeMembers.length)} জন`;
-      document.getElementById('statActiveMembers').textContent = toBanglaDigits(activeMembers.length);
-      document.getElementById('statSeniorOfficers').textContent = toBanglaDigits(appState.seniors.length);
-
-      const completedCount = Object.keys(appState.completedLog).length;
-      document.getElementById('statCompletedDuties').textContent = toBanglaDigits(completedCount);
-      document.getElementById('statReplacedDuties').textContent = toBanglaDigits(Object.keys(appState.dutyOverrides).length);
-
-      const curBody = document.getElementById('currentDutyCardBody');
-      const nextBody = document.getElementById('nextDutyCardBody');
-      const quickContainer = document.getElementById('quickRosterList');
-
-      if (activeMembers.length === 0) {
-        curBody.innerHTML = `
-          <div class="text-center py-6 text-slate-400">
-            <i class="fa-solid fa-users text-3xl mb-2 text-slate-300"></i>
-            <p class="text-sm font-semibold">কোনো সদস্য এখনো যুক্ত করা হয়নি।</p>
-            <p class="text-xs text-slate-500 mt-1">লগইন করে আপনার ৭ জন সদস্য ও ছবি যুক্ত করুন।</p>
-          </div>
-        `;
-        nextBody.innerHTML = `<p class="text-xs text-slate-400 py-6 text-center">সদস্য যুক্ত করার পর রোস্টার চালু হবে।</p>`;
-        quickContainer.innerHTML = `<p class="text-xs text-slate-400 py-4 text-center">রোস্টার দেখতে সদস্য যুক্ত করুন।</p>`;
-        return;
-      }
-
-      const weekends = getUpcomingFridays(5);
-
-      // Card 1: Current Weekend
-      const cur = getRosterForWeekend(weekends[0].friday);
-      const curFriStr = formatBanglaDate(weekends[0].friday);
-      const curSatStr = formatBanglaDate(weekends[0].saturday);
-
-      if (cur && cur.activeMember) {
-        const mem = cur.activeMember;
-        const isRep = cur.isReplaced;
-        const photoSrc = mem.photo || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231b3f7a'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E";
-
-        curBody.innerHTML = `
-          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-            <div class="flex items-center gap-3">
-              <img src="${photoSrc}" class="w-14 h-14 rounded-full object-cover border-2 ${isRep ? 'border-amber-500' : 'border-police-royal'} bg-white shrink-0 shadow-sm">
-              <div>
-                <h4 class="text-base font-bold text-police-navy">${mem.rank} ${mem.rankNo ? `(${mem.rankNo})` : ''} ${mem.name}</h4>
-                <p class="text-xs text-slate-500 font-mono">BP: ${toBanglaDigits(mem.bp)} • মোবা: ${mem.phone}</p>
-                <p class="text-xs font-semibold text-police-royal mt-1">
-                  <i class="fa-regular fa-calendar-check mr-1"></i>শুক্রবার (${curFriStr}) ও শনিবার (${curSatStr})
-                </p>
-              </div>
-            </div>
-
-            <div class="flex sm:flex-col gap-2 w-full sm:w-auto mt-2 sm:mt-0">
-              <button onclick="triggerWhatsApp('${mem.id}', '${curFriStr}', '${curSatStr}', ${isRep})" class="flex-1 px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 shadow">
-                <i class="fa-brands fa-whatsapp"></i> WhatsApp
-              </button>
-              <a href="tel:${mem.phone}" class="flex-1 px-3 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 shadow">
-                <i class="fa-solid fa-phone"></i> কল দিন
-              </a>
-              <button onclick="openReplacementModal('${cur.dateKey}', '${cur.scheduledMember.id}', '${curFriStr} ও ${curSatStr}')" class="admin-only hidden flex-1 px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-bold flex items-center justify-center gap-1 shadow">
-                <i class="fa-solid fa-user-pen"></i> ডিউটি বদল
-              </button>
-            </div>
-          </div>
-          ${isRep ? `
-            <div class="mt-3 p-2.5 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-900 flex items-center justify-between">
-              <div class="flex items-center gap-2">
-                <i class="fa-solid fa-triangle-exclamation text-amber-600 text-sm"></i>
-                <span>মূল সদস্য: <del>${cur.scheduledMember.name}</del> (${cur.overrideData.reason})</span>
-              </div>
-              <button onclick="openReplacementModal('${cur.dateKey}', '${cur.scheduledMember.id}', '${curFriStr} ও ${curSatStr}')" class="admin-only hidden text-red-600 font-bold hover:underline ml-2">পূর্বাবস্থায় আনুন</button>
-            </div>
-          ` : ''}
-        `;
-      }
-
-      // Card 2: Next Weekend
-      const nextR = getRosterForWeekend(weekends[1].friday);
-      const nextFriStr = formatBanglaDate(weekends[1].friday);
-      const nextSatStr = formatBanglaDate(weekends[1].saturday);
-
-      if (nextR && nextR.activeMember) {
-        const nextMem = nextR.activeMember;
-        const nextPhoto = nextMem.photo || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2364748b'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E";
-
-        nextBody.innerHTML = `
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2.5">
-              <img src="${nextPhoto}" class="w-11 h-11 rounded-full object-cover border border-slate-300 bg-white shrink-0">
-              <div>
-                <h4 class="text-sm font-bold text-slate-800">${nextMem.rank} ${nextMem.rankNo || ''} ${nextMem.name}</h4>
-                <p class="text-xs text-slate-500 font-mono">BP: ${toBanglaDigits(nextMem.bp)}</p>
-                <p class="text-xs text-slate-600 mt-0.5">
-                  <i class="fa-regular fa-calendar mr-1"></i>${nextFriStr} ও ${nextSatStr}
-                </p>
-              </div>
-            </div>
-            <div class="flex gap-1.5">
-              <button onclick="triggerWhatsApp('${nextMem.id}', '${nextFriStr}', '${nextSatStr}', false)" class="p-2.5 bg-emerald-100 hover:bg-emerald-200 text-emerald-800 rounded-lg text-xs" title="WhatsApp">
-                <i class="fa-brands fa-whatsapp text-base"></i>
-              </button>
-              <a href="tel:${nextMem.phone}" class="p-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-lg text-xs" title="কল">
-                <i class="fa-solid fa-phone text-base"></i>
-              </a>
-            </div>
-          </div>
-        `;
-      }
-
-      // 4-Week Preview
-      quickContainer.innerHTML = weekends.slice(0, 4).map((w, idx) => {
-        const ros = getRosterForWeekend(w.friday);
-        if (!ros || !ros.activeMember) return '';
-        const fStr = formatBanglaDate(w.friday);
-        const sStr = formatBanglaDate(w.saturday);
-        const mem = ros.activeMember;
-        const photo = mem.photo || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2364748b'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E";
-
-        return `
-          <div class="py-2.5 flex items-center justify-between text-xs">
-            <div class="flex items-center gap-3">
-              <span class="w-6 h-6 rounded-full bg-slate-100 text-slate-700 flex items-center justify-center font-bold text-[11px]">${toBanglaDigits(idx + 1)}</span>
-              <img src="${photo}" class="w-8 h-8 rounded-full object-cover border border-slate-200 shrink-0">
-              <div>
-                <span class="font-bold text-slate-800">${mem.rank} ${mem.name}</span>
-                ${ros.isReplaced ? '<span class="ml-1.5 text-[10px] px-1.5 py-0.2 bg-amber-100 text-amber-800 rounded font-bold">বিকল্প ডিউটি</span>' : ''}
-                <p class="text-[11px] text-slate-500">${fStr} এবং ${sStr}</p>
-              </div>
-            </div>
-            <div class="flex items-center gap-2">
-              <span class="font-mono text-slate-600 text-[11px] hidden sm:inline">BP: ${toBanglaDigits(mem.bp)}</span>
-              <button onclick="triggerWhatsApp('${mem.id}', '${fStr}', '${sStr}', ${ros.isReplaced})" class="text-emerald-600 hover:text-emerald-700 p-1">
-                <i class="fa-brands fa-whatsapp text-lg"></i>
-              </button>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function renderRoster() {
-      const container = document.getElementById('rosterListContainer');
-      const activeMembers = getActiveRosterMembers();
-
-      if (activeMembers.length === 0) {
-        container.innerHTML = `
-          <div class="bg-white p-8 rounded-xl border border-slate-200 text-center text-slate-400">
-            <i class="fa-solid fa-calendar-xmark text-4xl mb-3 text-slate-300"></i>
-            <h3 class="text-base font-bold text-slate-700">কোনো সদস্য এখনো যোগ করা হয়নি</h3>
-            <p class="text-xs text-slate-500 mt-1">প্রথমে সদস্য ব্যবস্থাপনা ট্যাবে গিয়ে সদস্য যুক্ত করুন।</p>
-          </div>
-        `;
-        return;
-      }
-
-      const weekends = getUpcomingFridays(10);
-      container.innerHTML = weekends.map((w, idx) => {
-        const ros = getRosterForWeekend(w.friday);
-        if (!ros || !ros.activeMember) return '';
-        const fStr = formatBanglaDate(w.friday);
-        const sStr = formatBanglaDate(w.saturday);
-        const mem = ros.activeMember;
-        const orig = ros.scheduledMember;
-        const photo = mem.photo || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231b3f7a'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E";
-
-        return `
-          <div class="bg-white p-4 rounded-xl border ${ros.isReplaced ? 'border-amber-300 bg-amber-50/20' : 'border-slate-200'} shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-3">
-            <div class="flex items-start gap-3">
-              <img src="${photo}" class="w-12 h-12 rounded-full object-cover border-2 ${ros.isReplaced?'border-amber-400':'border-police-royal'} shrink-0 mt-0.5 shadow-sm">
-              <div>
-                <div class="flex flex-wrap items-center gap-2">
-                  <h3 class="text-sm font-bold text-police-navy">${mem.rank} ${mem.rankNo ? `(${mem.rankNo})` : ''} ${mem.name}</h3>
-                  ${ros.isReplaced ? `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300">বিকল্প দায়িত্ব</span>` : `<span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-blue-50 text-police-royal border border-blue-200">মূল রোস্টার</span>`}
-                  ${ros.isCompleted ? `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">ডিউটি সম্পন্ন ✓</span>` : ''}
-                </div>
-                <p class="text-xs text-slate-600 mt-1">
-                  <i class="fa-regular fa-calendar-days text-police-gold mr-1"></i>শুক্রবার (${fStr}) ও শনিবার (${sStr})
-                </p>
-                <p class="text-xs text-slate-500 font-mono mt-0.5">BP: ${toBanglaDigits(mem.bp)} • মোবা: ${mem.phone}</p>
-                ${ros.isReplaced ? `
-                  <p class="text-xs text-amber-800 mt-1 font-medium">
-                    * মূল সদস্য: <del>${orig.rank} ${orig.name}</del> (কারণ: ${ros.overrideData.reason})
-                  </p>
-                ` : ''}
-              </div>
-            </div>
-
-            <div class="flex items-center flex-wrap gap-2 pt-2 md:pt-0 border-t md:border-t-0 border-slate-100">
-              <button onclick="triggerWhatsApp('${mem.id}', '${fStr}', '${sStr}', ${ros.isReplaced})" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold flex items-center gap-1 shadow-sm">
-                <i class="fa-brands fa-whatsapp"></i> নোটিশ
-              </button>
-              <a href="tel:${mem.phone}" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold flex items-center gap-1 border border-slate-300">
-                <i class="fa-solid fa-phone"></i> কল
-              </a>
-              <button onclick="openReplacementModal('${ros.dateKey}', '${orig.id}', '${fStr} ও ${sStr}')" class="admin-only hidden px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-bold flex items-center gap-1 shadow-sm">
-                <i class="fa-solid fa-user-pen"></i> বিকল্প
-              </button>
-              <button onclick="toggleDutyCompleted('${ros.dateKey}', '${mem.id}', '${fStr} ও ${sStr}')" class="admin-only hidden px-2.5 py-1.5 ${ros.isCompleted?'bg-emerald-700 hover:bg-emerald-800':'bg-police-navy hover:bg-police-dark'} text-white rounded-lg text-xs font-bold">
-                <i class="fa-solid ${ros.isCompleted?'fa-check-double':'fa-check'}"></i> ${ros.isCompleted?'সম্পন্ন মার্কড':'সম্পন্ন করুন'}
-              </button>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    /* ==========================================================
-       EXCEL-STYLE DUTY COMPLETION MASTER SHEET
-       ========================================================== */
-    function renderExcelSheet() {
-      const tbody = document.getElementById('excelTableBody');
-      const weekends = getUpcomingFridays(14);
-      let completedCount = 0;
-
-      if (getActiveRosterMembers().length === 0) {
-        tbody.innerHTML = `<tr><td colspan="9" class="p-6 text-center text-slate-400">কোনো সদস্যের তথ্য নেই।</td></tr>`;
-        return;
-      }
-
-      tbody.innerHTML = weekends.map((w, idx) => {
-        const ros = getRosterForWeekend(w.friday);
-        if (!ros || !ros.activeMember) return '';
-        const fStr = formatBanglaDate(w.friday);
-        const sStr = formatBanglaDate(w.saturday);
-        const mem = ros.activeMember;
-        const orig = ros.scheduledMember;
-        const photo = mem.photo || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2364748b'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E";
-
-        if (ros.isCompleted) completedCount++;
-
-        return `
-          <tr class="hover:bg-slate-50 transition ${ros.isCompleted ? 'bg-emerald-50/30' : ''}">
-            <td class="p-2.5 text-center font-mono font-bold text-slate-500">${toBanglaDigits(idx + 1)}</td>
-            <td class="p-2.5 font-medium text-slate-800 whitespace-nowrap">
-              <div>শুক্র: ${fStr}</div>
-              <div class="text-[11px] text-slate-500">শনি: ${sStr}</div>
-            </td>
-            <td class="p-2.5">
-              <div class="flex items-center gap-2">
-                <img src="${photo}" class="w-8 h-8 rounded-full object-cover border border-slate-300 shrink-0">
-                <div>
-                  <div class="font-bold text-slate-800">${mem.rank} ${mem.name}</div>
-                  ${mem.rankNo ? `<div class="text-[10px] text-slate-500 font-mono">${mem.rankNo}</div>` : ''}
-                </div>
-              </div>
-            </td>
-            <td class="p-2.5 font-mono font-bold text-slate-700">${toBanglaDigits(mem.bp)}</td>
-            <td class="p-2.5 font-mono text-slate-600">${mem.phone}</td>
-            <td class="p-2.5 text-center">
-              ${ros.isCompleted ? `
-                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
-                  <i class="fa-solid fa-check"></i> সম্পন্ন
-                </span>
-              ` : `
-                <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-500 border border-slate-200">
-                  অপেক্ষমান
-                </span>
-              `}
-            </td>
-            <td class="p-2.5 font-mono text-[11px] text-slate-600">
-              ${ros.isCompleted ? ros.completionData.completedAt : '—'}
-            </td>
-            <td class="p-2.5 text-xs text-slate-600">
-              ${ros.isReplaced ? `<span class="text-amber-800 font-bold block">বিকল্প (মূল: ${orig.name})</span><span class="text-[11px] text-slate-500">${ros.overrideData.reason}</span>` : 'নিয়মিত রোস্টার'}
-            </td>
-            <td class="p-2.5 text-center no-print admin-only hidden whitespace-nowrap">
-              <button onclick="toggleDutyCompleted('${ros.dateKey}', '${mem.id}', '${fStr} ও ${sStr}')" class="px-2.5 py-1 text-[11px] font-bold rounded ${ros.isCompleted ? 'bg-amber-100 text-amber-800 hover:bg-amber-200' : 'bg-emerald-600 text-white hover:bg-emerald-700'} transition">
-                ${ros.isCompleted ? 'আন-মার্ক' : 'সম্পন্ন মার্ক'}
-              </button>
-            </td>
-          </tr>
-        `;
-      }).join('');
-
-      document.getElementById('excelTotalCompletedCount').textContent = `সম্পন্ন: ${toBanglaDigits(completedCount)} টি ডিউটি`;
-    }
-
-    function toggleDutyCompleted(dateKey, memberId, dateBangla) {
-      if (appState.completedLog[dateKey]) {
-        if (confirm('আপনি কি এই ডিউটির সম্পন্ন স্ট্যাটাস প্রত্যাহার করতে চান?')) {
-          delete appState.completedLog[dateKey];
-          saveState();
-          renderAll();
-        }
-      } else {
-        const now = new Date();
-        const timeStr = `${toBanglaDigits(now.getDate())}/${toBanglaDigits(now.getMonth()+1)} ${toBanglaDigits(now.getHours())}:${toBanglaDigits(now.getMinutes())}`;
-        appState.completedLog[dateKey] = {
-          completedAt: timeStr,
-          completedBy: currentUser ? currentUser.email : 'Admin'
-        };
-
-        appState.dutyHistory.push({
-          id: 'hist-' + Date.now(),
-          dateKey: dateKey,
-          dateBangla: dateBangla,
-          memberId: memberId,
-          status: 'Completed',
-          notes: 'ডিউটি সফলভাবে সম্পন্ন হয়েছে।',
-          timestamp: new Date().toISOString()
-        });
-
-        saveState();
-        renderAll();
-        alert('ডিউটি সম্পন্ন হিসেবে এক্সেল শীটে রেকর্ড করা হয়েছে!');
-      }
-    }
-
-    /* ==========================================================
-       CALENDAR VIEW
-       ========================================================== */
-    function changeCalendarMonth(delta) {
-      calendarViewDate.setMonth(calendarViewDate.getMonth() + delta);
-      renderCalendar();
-    }
-
-    function renderCalendar() {
-      const grid = document.getElementById('calendarGrid');
-      const title = document.getElementById('calendarCurrentMonthTitle');
-      
-      const year = calendarViewDate.getFullYear();
-      const month = calendarViewDate.getMonth();
-      const monthsBangla = ["জানুয়ারি", "ফেব্রুয়ারি", "মার্চ", "এপ্রিল", "মে", "জুন", "জুলাই", "আগস্ট", "সেপ্টেম্বর", "অক্টোবর", "নভেম্বর", "ডিসেম্বর"];
-      title.textContent = `${monthsBangla[month]} ${toBanglaDigits(year)}`;
-
-      grid.innerHTML = '';
-
-      const firstDayIndex = new Date(year, month, 1).getDay();
-      const totalDays = new Date(year, month + 1, 0).getDate();
-
-      for (let i = 0; i < firstDayIndex; i++) {
-        grid.innerHTML += `<div class="p-2 bg-slate-50 border border-slate-100 rounded-lg min-h-[95px] opacity-40"></div>`;
-      }
-
-      for (let day = 1; day <= totalDays; day++) {
-        const currentDate = new Date(year, month, day);
-        const dayOfWeek = currentDate.getDay(); // 5 = Fri, 6 = Sat
-        const isDutyDay = (dayOfWeek === 5 || dayOfWeek === 6);
-
-        let friDate = new Date(currentDate);
-        if (dayOfWeek === 6) friDate.setDate(currentDate.getDate() - 1);
-
-        let dutyInfo = isDutyDay ? getRosterForWeekend(friDate) : null;
-
-        let cellHtml = `
-          <div class="p-2 border rounded-xl min-h-[105px] flex flex-col justify-between transition ${isDutyDay ? 'bg-blue-50/70 border-police-royal/40 shadow-xs' : 'bg-white border-slate-200'}">
-            <div class="flex items-center justify-between">
-              <span class="font-bold text-xs ${isDutyDay ? 'text-police-royal bg-white px-1.5 py-0.5 rounded shadow-xs' : 'text-slate-700'}">
-                ${toBanglaDigits(day)}
-              </span>
-              ${isDutyDay ? `<span class="text-[9px] font-bold px-1 rounded ${dayOfWeek===5?'bg-police-navy text-police-gold':'bg-slate-700 text-white'}">${dayOfWeek===5?'শুক্র':'শনি'}</span>` : ''}
-            </div>
-        `;
-
-        if (isDutyDay && dutyInfo && dutyInfo.activeMember) {
-          const mem = dutyInfo.activeMember;
-          const isRep = dutyInfo.isReplaced;
-          const orig = dutyInfo.scheduledMember;
-
-          cellHtml += `
-            <div class="mt-1.5 p-1 rounded bg-white border ${isRep ? 'border-amber-300' : 'border-blue-200'} text-[11px] leading-tight">
-              ${isRep ? `<span class="text-[9px] font-bold text-amber-700 block">বিকল্প:</span>` : ''}
-              <p class="font-bold text-police-navy truncate">${mem.rank} ${mem.name}</p>
-              ${isRep ? `<p class="text-[9px] text-slate-400 line-through truncate">মূল: ${orig.name}</p>` : ''}
-            </div>
-            <button onclick="openReplacementModal('${dutyInfo.dateKey}', '${orig.id}', '${formatBanglaDate(friDate)}')" class="admin-only hidden mt-1 text-[10px] text-police-royal hover:underline font-bold text-left">
-              ডিউটি বদল
-            </button>
-          `;
-        } else if (isDutyDay) {
-          cellHtml += `<p class="text-[10px] text-slate-400 mt-2">সদস্য নেই</p>`;
-        } else {
-          cellHtml += `<div class="flex-1"></div>`;
-        }
-
-        cellHtml += `</div>`;
-        grid.innerHTML += cellHtml;
-      }
-    }
-
-    /* ==========================================================
-       MEMBERS VIEW
-       ========================================================== */
-    function renderMembers() {
-      const container = document.getElementById('memberGrid');
-      
-      if (appState.members.length === 0) {
-        container.innerHTML = `
-          <div class="col-span-full bg-white p-8 rounded-xl border-2 border-dashed border-slate-300 text-center">
-            <i class="fa-solid fa-user-plus text-4xl text-police-gold mb-3"></i>
-            <h3 class="text-base font-bold text-police-navy">আপনার শাখার কোনো সদস্য এখনো যুক্ত করা হয়নি</h3>
-            <p class="text-xs text-slate-500 mt-1 mb-4">অ্যাডমিন হিসেবে লগইন করে আপনার ৭ জন সদস্য ও ছবি যুক্ত করুন।</p>
-            <button onclick="openMemberModal()" class="admin-only hidden px-4 py-2 bg-police-royal text-white rounded-lg text-xs font-bold shadow">
-              প্রথম সদস্য যোগ করুন
-            </button>
-          </div>
-        `;
-        return;
-      }
-
-      container.innerHTML = appState.members.map((mem, index) => {
-        const photo = mem.photo || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231b3f7a'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E";
-
-        return `
-          <div class="bg-white rounded-xl border ${mem.active ? 'border-slate-200' : 'border-red-200 bg-red-50/20'} p-4 shadow-sm relative flex flex-col justify-between">
-            <div>
-              <div class="flex items-center justify-between mb-2">
-                <div class="flex items-center gap-1.5">
-                  <span class="text-[10px] font-bold px-2 py-0.5 rounded ${mem.inRoster ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-600'}">
-                    ${mem.inRoster ? 'রোস্টারে সক্রিয়' : 'রোস্টার বহির্ভূত'}
-                  </span>
-                  <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-50 text-police-royal">
-                    ক্রম: #${toBanglaDigits(index + 1)}
-                  </span>
-                </div>
-                
-                <div class="admin-only hidden flex items-center gap-1">
-                  <button onclick="moveMemberOrder(${index}, -1)" ${index === 0 ? 'disabled class="opacity-30 p-1"' : 'class="text-slate-600 hover:text-police-royal p-1"'} title="উপরে নিন">
-                    <i class="fa-solid fa-arrow-up text-xs"></i>
-                  </button>
-                  <button onclick="moveMemberOrder(${index}, 1)" ${index === appState.members.length - 1 ? 'disabled class="opacity-30 p-1"' : 'class="text-slate-600 hover:text-police-royal p-1"'} title="নিচে নিন">
-                    <i class="fa-solid fa-arrow-down text-xs"></i>
-                  </button>
-                  <button onclick="openMemberModal('${mem.id}')" class="text-police-royal hover:text-police-dark p-1 ml-1" title="তথ্য এডিট করুন">
-                    <i class="fa-solid fa-pen-to-square text-xs"></i>
-                  </button>
-                  <button onclick="toggleMemberActive('${mem.id}')" class="text-slate-400 hover:text-red-600 p-1" title="${mem.active ? 'নিষ্ক্রিয় করুন' : 'সক্রিয় করুন'}">
-                    <i class="fa-solid fa-power-off text-xs"></i>
-                  </button>
-                  <button onclick="deleteMemberPermanently('${mem.id}')" class="text-red-400 hover:text-red-700 p-1" title="মুছে ফেলুন">
-                    <i class="fa-solid fa-trash-can text-xs"></i>
-                  </button>
-                </div>
-              </div>
-
-              <div class="flex items-center gap-3">
-                <img src="${photo}" class="w-13 h-13 rounded-full object-cover border-2 border-police-gold shrink-0 shadow-sm">
-                <div>
-                  <h4 class="font-bold text-slate-800 text-sm">${mem.rank} ${mem.rankNo ? `(${mem.rankNo})` : ''}</h4>
-                  <p class="text-sm text-police-royal font-bold">${mem.name}</p>
-                  <p class="text-xs text-slate-500 font-mono">BP: ${toBanglaDigits(mem.bp)}</p>
-                </div>
-              </div>
-            </div>
-
-            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
-              <span class="text-xs font-mono text-slate-600"><i class="fa-solid fa-phone text-slate-400 mr-1"></i>${mem.phone}</span>
-              <div class="flex gap-1.5">
-                <button onclick="triggerQuickWhatsApp('${mem.phone}', '${mem.name}')" class="p-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 rounded-lg text-xs" title="WhatsApp">
-                  <i class="fa-brands fa-whatsapp text-sm"></i>
-                </button>
-                <a href="tel:${mem.phone}" class="p-2 bg-blue-50 hover:bg-blue-100 text-police-royal rounded-lg text-xs" title="কল">
-                  <i class="fa-solid fa-phone text-sm"></i>
-                </a>
-              </div>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function renderSeniorOfficers() {
-      const container = document.getElementById('seniorOfficersList');
-      if (appState.seniors.length === 0) {
-        container.innerHTML = `<p class="col-span-full text-xs text-slate-400 py-3">কোনো কর্মকর্তা যুক্ত করা হয়নি।</p>`;
-        return;
-      }
-      container.innerHTML = appState.seniors.map(off => `
-        <div class="bg-white p-3 rounded-lg border border-slate-200 flex items-center justify-between shadow-sm">
-          <div class="flex items-center gap-3">
-            <div class="w-9 h-9 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center font-bold text-sm shrink-0">
-              <i class="fa-solid fa-user-shield"></i>
-            </div>
-            <div>
-              <p class="text-xs font-bold text-slate-800">${off.name}</p>
-              <p class="text-[11px] text-purple-700 font-medium">${off.role}</p>
-              <p class="text-[10px] text-slate-500 font-mono">BP: ${toBanglaDigits(off.bp)}</p>
-            </div>
-          </div>
-          <div class="admin-only hidden flex items-center gap-1">
-            <button onclick="openSeniorOfficerModal('${off.id}')" class="text-purple-700 hover:text-purple-900 p-1" title="এডিট">
-              <i class="fa-solid fa-pen-to-square text-xs"></i>
-            </button>
-            <button onclick="deleteSeniorOfficer('${off.id}')" class="text-red-400 hover:text-red-700 p-1" title="মুছে ফেলুন">
-              <i class="fa-solid fa-trash-can text-xs"></i>
-            </button>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    /* ==========================================================
-       DUTY REPLACEMENT & ABSENCE WORKFLOW
-       ========================================================== */
-    function openReplacementModal(dateKey, originalMemberId, dateDisplay) {
-      currentReplaceTarget = { dateKey, originalMemberId };
-      const origMem = getMemberById(originalMemberId);
-      const existingOverride = appState.dutyOverrides[dateKey];
-
-      document.getElementById('repDutyDates').value = dateDisplay;
-      document.getElementById('repOriginalMemberName').value = origMem ? `${origMem.rank} ${origMem.name} (BP: ${origMem.bp})` : 'অজানা';
-      document.getElementById('repReason').value = existingOverride ? existingOverride.reason : '';
-
-      const select = document.getElementById('repSubstituteMemberSelect');
-      const candidates = appState.members.filter(m => m.active && m.id !== originalMemberId);
-      select.innerHTML = candidates.map(c => `
-        <option value="${c.id}" ${existingOverride && existingOverride.substituteId === c.id ? 'selected' : ''}>${c.rank} ${c.rankNo ? `(${c.rankNo})` : ''} ${c.name} - BP: ${c.bp}</option>
-      `).join('');
-
-      const revertBtn = document.getElementById('btnRevertReplacement');
-      if (existingOverride) {
-        revertBtn.classList.remove('hidden');
-      } else {
-        revertBtn.classList.add('hidden');
-      }
-
-      document.getElementById('modalReplacement').classList.remove('hidden');
-    }
-
-    function closeReplacementModal() {
-      document.getElementById('modalReplacement').classList.add('hidden');
-      currentReplaceTarget = null;
-    }
-
-    function confirmDutyReplacement() {
-      if (!currentReplaceTarget) return;
-      const statusType = document.getElementById('repStatusType').value;
-      const subId = document.getElementById('repSubstituteMemberSelect').value;
-      const reason = document.getElementById('repReason').value.trim();
-
-      if (!reason) {
-        alert('অনুগ্রহ করে পরিবর্তনের কারণ বা ছুটির বিবরণ লিখুন।');
-        return;
-      }
-
-      appState.dutyOverrides[currentReplaceTarget.dateKey] = {
-        status: statusType,
-        substituteId: (statusType === 'Replaced') ? subId : null,
-        originalId: currentReplaceTarget.originalMemberId,
-        reason: reason,
-        updatedAt: new Date().toISOString()
-      };
-
-      saveState();
-      closeReplacementModal();
-      renderAll();
-      alert('বিকল্প সদস্য সফলভাবে রোস্টারে নির্ধারণ করা হয়েছে!');
-    }
-
-    function revertReplacement() {
-      if (!currentReplaceTarget) return;
-      if (confirm('আপনি কি এই বিকল্প ডিউটি বাতিল করে মূল সদস্যকে ফিরিয়ে আনতে চান?')) {
-        delete appState.dutyOverrides[currentReplaceTarget.dateKey];
-        saveState();
-        closeReplacementModal();
-        renderAll();
-        alert('ডিউটি পূর্বাবস্থায় ফিরিয়ে আনা হয়েছে।');
-      }
-    }
-
-    /* ==========================================================
-       MEMBER SAVE & EDIT LOGIC
-       ========================================================== */
-    function openMemberModal(memberId = null) {
-      const form = document.getElementById('memberForm');
-      form.reset();
-      document.getElementById('memFormPhotoBase64').value = '';
-      document.getElementById('memPhotoPreview').src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2394a3b8'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E";
-
-      if (memberId) {
-        const mem = getMemberById(memberId);
-        if (!mem) return;
-        document.getElementById('memberModalTitle').textContent = 'সদস্যের তথ্য ও ছবি সম্পাদনা';
-        document.getElementById('memFormId').value = mem.id;
-        document.getElementById('memFormRank').value = mem.rank;
-        document.getElementById('memFormRankNo').value = mem.rankNo || '';
-        document.getElementById('memFormName').value = mem.name;
-        document.getElementById('memFormBP').value = mem.bp;
-        document.getElementById('memFormPhone').value = mem.phone;
-        document.getElementById('memFormInRoster').checked = !!mem.inRoster;
-        document.getElementById('memFormIsActive').checked = !!mem.active;
-        if (mem.photo) {
-          document.getElementById('memPhotoPreview').src = mem.photo;
-          document.getElementById('memFormPhotoBase64').value = mem.photo;
-        }
-      } else {
-        document.getElementById('memberModalTitle').textContent = 'নতুন সদস্য যোগ করুন';
-        document.getElementById('memFormId').value = '';
-        document.getElementById('memFormInRoster').checked = true;
-        document.getElementById('memFormIsActive').checked = true;
-      }
-
-      document.getElementById('modalMember').classList.remove('hidden');
-    }
-
-    function closeMemberModal() {
-      document.getElementById('modalMember').classList.add('hidden');
-    }
-
-    function handleSaveMember(e) {
-      e.preventDefault();
-      const id = document.getElementById('memFormId').value;
-      const rank = document.getElementById('memFormRank').value;
-      const rankNo = document.getElementById('memFormRankNo').value.trim();
-      const name = document.getElementById('memFormName').value.trim();
-      const bp = document.getElementById('memFormBP').value.trim();
-      const phone = document.getElementById('memFormPhone').value.trim();
-      const photo = document.getElementById('memFormPhotoBase64').value;
-      const inRoster = document.getElementById('memFormInRoster').checked;
-      const active = document.getElementById('memFormIsActive').checked;
-
-      if (id) {
-        const idx = appState.members.findIndex(m => m.id === id);
-        if (idx !== -1) {
-          appState.members[idx] = { ...appState.members[idx], rank, rankNo, name, bp, phone, photo: photo || appState.members[idx].photo, inRoster, active };
-        }
-      } else {
-        appState.members.push({
-          id: 'mem-' + Date.now(),
-          rank,
-          rankNo,
-          name,
-          bp,
-          phone,
-          photo,
-          inRoster,
-          active
-        });
-      }
-
-      saveState();
-      closeMemberModal();
-      renderAll();
-      alert('সদস্যের তথ্য ও ছবি সফলভাবে সংরক্ষিত হয়েছে!');
-    }
-
-    function moveMemberOrder(index, direction) {
-      const newIndex = index + direction;
-      if (newIndex < 0 || newIndex >= appState.members.length) return;
-      const temp = appState.members[index];
-      appState.members[index] = appState.members[newIndex];
-      appState.members[newIndex] = temp;
-      saveState();
-      renderAll();
-    }
-
-    function toggleMemberActive(id) {
-      const mem = getMemberById(id);
-      if (!mem) return;
-      if (confirm(`আপনি কি ${mem.name}-কে ${mem.active ? 'নিষ্ক্রিয়' : 'পুনরায় সক্রিয়'} করতে চান?`)) {
-        mem.active = !mem.active;
-        saveState();
-        renderAll();
-      }
-    }
-
-    function deleteMemberPermanently(id) {
-      const mem = getMemberById(id);
-      if (!mem) return;
-      if (confirm(`আপনি কি "${mem.name}"-কে তালিকা থেকে মুছে ফেলতে চান?`)) {
-        appState.members = appState.members.filter(m => m.id !== id);
-        saveState();
-        renderAll();
-      }
-    }
-
-    /* ==========================================================
-       SENIOR OFFICERS LOGIC
-       ========================================================== */
-    function openSeniorOfficerModal(id = null) {
-      const form = document.getElementById('seniorOfficerForm');
-      form.reset();
-
-      if (id) {
-        const off = appState.seniors.find(s => s.id === id);
-        if (!off) return;
+  <div id="modalWhatsAppConfirm" class="fixed inset-0 bg-black/60 z-50 hidden flex item
