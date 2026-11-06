@@ -15,7 +15,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-  <!-- Firebase SDK (For Free Real-time Cloud Sync) -->
+  <!-- Firebase SDK (For Optional Free Real-time Cloud Sync) -->
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
@@ -49,11 +49,11 @@
 
   <style>
     body { font-family: 'Hind Siliguri', sans-serif; -webkit-tap-highlight-color: transparent; }
-    .badge-glow { box-shadow: 0 0 15px rgba(205, 168, 81, 0.35); }
+    .badge-glow { box-shadow: 0 0 15px rgba(205, 168, 81, 0.4); }
+    .admin-active-border { border: 2px dashed #cda851 !important; }
     @media print {
       .no-print { display: none !important; }
       body { background: white !important; color: black !important; }
-      .print-border { border: 1px solid #94a3b8 !important; }
     }
   </style>
 </head>
@@ -61,9 +61,9 @@
 
   <!-- ==================== HEADER ==================== -->
   <header class="bg-gradient-to-r from-police-dark via-police-navy to-police-royal text-white shadow-xl sticky top-0 z-40 border-b-2 border-police-gold">
-    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+    <div class="max-w-7xl mx-auto px-4 py-2.5 flex items-center justify-between">
       
-      <!-- Logo & Identity -->
+      <!-- Brand & Title -->
       <div class="flex items-center space-x-3 rtl:space-x-reverse">
         <div class="w-11 h-11 md:w-12 md:h-12 rounded-full border-2 border-police-gold bg-police-dark flex items-center justify-center badge-glow shrink-0">
           <i class="fa-solid fa-shield-halved text-police-gold text-xl md:text-2xl"></i>
@@ -78,36 +78,37 @@
         </div>
       </div>
 
-      <!-- Auth & Role Indicator -->
+      <!-- Auth & Mode Selector -->
       <div class="flex items-center space-x-2">
-        <div id="roleBadge" class="hidden sm:inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-police-dark/80 text-amber-300 border border-police-gold/40">
-          <i class="fa-solid fa-eye mr-1"></i> <span id="roleText">ভিউয়ার মোড</span>
+        <div id="adminIndicatorBadge" class="hidden items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-400">
+          <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+          <span>সুপার অ্যাডমিন অন</span>
         </div>
 
-        <button id="adminAuthBtn" onclick="toggleAdminLoginModal()" class="px-3 py-1.5 bg-police-gold/20 hover:bg-police-gold/30 border border-police-gold text-amber-300 hover:text-white rounded-lg text-xs md:text-sm font-semibold flex items-center gap-1.5 transition">
+        <button id="adminAuthBtn" onclick="toggleAdminLoginModal()" class="px-3.5 py-1.5 bg-police-gold/20 hover:bg-police-gold/30 border border-police-gold text-amber-300 hover:text-white rounded-lg text-xs md:text-sm font-bold flex items-center gap-1.5 transition shadow">
           <i class="fa-solid fa-lock" id="adminLockIcon"></i>
-          <span id="adminBtnText">অ্যাডমিন লগইন</span>
+          <span id="adminBtnText">অ্যাডমিন প্রবেশ</span>
         </button>
       </div>
     </div>
 
-    <!-- Live Time & Rotating Info Bar -->
+    <!-- Live Time & Ticker -->
     <div class="bg-police-dark text-xs py-1.5 px-4 text-slate-300 flex flex-wrap justify-between items-center gap-2 border-t border-police-border">
       <div class="flex items-center gap-2">
         <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-police-gold text-police-dark">বাংলাদেশ সময়</span>
         <span id="currentLiveDateTime" class="font-mono text-amber-200">লোড হচ্ছে...</span>
       </div>
       <div class="flex items-center gap-3 text-[11px]">
-        <span><i class="fa-solid fa-rotate text-emerald-400 mr-1"></i>রোটেশন সাইকেল: শুক্র ও শনিবার</span>
+        <span><i class="fa-solid fa-arrows-rotate text-emerald-400 mr-1"></i>শুক্র ও শনিবার ডিউটি রোটেশন</span>
         <span class="text-slate-500">|</span>
-        <span id="headerActiveMemberCount">সদস্য সংখ্যা: ৭ জন</span>
+        <span id="headerActiveMemberCount">সদস্য: ৭ জন</span>
       </div>
     </div>
   </header>
 
-  <!-- ==================== NAVIGATION TABS ==================== -->
-  <nav class="bg-white border-b border-slate-200 sticky top-[75px] md:top-[83px] z-30 shadow-sm no-print">
-    <div class="max-w-7xl mx-auto px-2 flex overflow-x-auto space-x-1 py-1.5">
+  <!-- ==================== NAVIGATION ==================== -->
+  <nav class="bg-white border-b border-slate-200 sticky top-[75px] md:top-[81px] z-30 shadow-sm no-print">
+    <div class="max-w-7xl mx-auto px-2 flex overflow-x-auto space-x-1 py-1.5 scrollbar-none">
       <button onclick="switchTab('dashboard')" id="tab-dashboard" class="nav-tab px-4 py-2 rounded-lg text-xs md:text-sm font-semibold text-police-royal bg-blue-50 border-b-2 border-police-royal flex items-center gap-2 whitespace-nowrap">
         <i class="fa-solid fa-chart-pie"></i> ড্যাশবোর্ড
       </button>
@@ -115,7 +116,7 @@
         <i class="fa-solid fa-calendar-days"></i> সাপ্তাহিক রোস্টার
       </button>
       <button onclick="switchTab('members')" id="tab-members" class="nav-tab px-4 py-2 rounded-lg text-xs md:text-sm font-medium text-slate-600 hover:text-police-royal flex items-center gap-2 whitespace-nowrap">
-        <i class="fa-solid fa-users-gear"></i> সদস্য ব্যবস্থাপনা
+        <i class="fa-solid fa-users-gear"></i> সদস্য ব্যবস্থাপনা ও ক্রম
       </button>
       <button onclick="switchTab('history')" id="tab-history" class="nav-tab px-4 py-2 rounded-lg text-xs md:text-sm font-medium text-slate-600 hover:text-police-royal flex items-center gap-2 whitespace-nowrap">
         <i class="fa-solid fa-clock-rotate-left"></i> রিপোর্ট ও ইতিহাস
@@ -126,13 +127,13 @@
     </div>
   </nav>
 
-  <!-- ==================== MAIN CONTENT AREA ==================== -->
+  <!-- ==================== MAIN CONTENT ==================== -->
   <main class="max-w-7xl mx-auto px-3 sm:px-6 py-5 flex-1 w-full space-y-5">
 
     <!-- 1. DASHBOARD VIEW -->
     <section id="view-dashboard" class="space-y-4">
       
-      <!-- Notice Board -->
+      <!-- Notice Box -->
       <div class="bg-gradient-to-r from-police-navy to-police-royal text-white p-4 rounded-2xl shadow-md border-l-4 border-police-gold flex items-start justify-between">
         <div class="flex items-start gap-3">
           <div class="p-2.5 bg-white/10 rounded-xl text-police-gold shrink-0 mt-0.5">
@@ -141,15 +142,15 @@
           <div>
             <div class="flex items-center gap-2">
               <h3 class="font-bold text-sm md:text-base text-amber-200">কেন্দ্রীয় ডেসপাচ শাখার জরুরি নোটিশ</h3>
-              <span class="text-[10px] bg-red-500/80 text-white px-2 py-0.5 rounded-full font-bold uppercase">জরুরি</span>
+              <span class="text-[10px] bg-red-500 text-white px-2 py-0.5 rounded-full font-bold uppercase">অফিসিয়াল</span>
             </div>
             <p class="text-xs md:text-sm text-slate-200 mt-1.5 leading-relaxed" id="dashNoticeText">
-              নির্ধারিত শুক্রবার ও শনিবার সকাল ০৯:০০ ঘটিকার পূর্বে অফিসে উপস্থিত হয়ে কেন্দ্রীয় ডেসপাচ শাখার গুরুত্বপূর্ণ ডাক ও চিঠিপত্র বিতরণ ও গ্রহণের দায়িত্ব যথাযথভাবে পালন করার অনুরোধ করা হলো।
+              নির্ধারিত শুক্রবার ও শনিবার সকাল ০৯:০০ ঘটিকার পূর্বে অফিসে উপস্থিত হয়ে কেন্দ্রীয় ডেসপাচ শাখার গুরুত্বপূর্ণ ডাক ও চিঠিপত্র বিতরণ ও গ্রহণের দায়িত্ব যথাযথভাবে পালন করার জন্য অনুরোধ করা হলো।
             </p>
           </div>
         </div>
-        <button onclick="editNoticeModal()" class="admin-only hidden px-2.5 py-1 bg-white/10 hover:bg-white/20 rounded text-xs text-amber-200 shrink-0 ml-2">
-          <i class="fa-solid fa-pen mr-1"></i> এডিট
+        <button onclick="openNoticeModal()" class="admin-only hidden px-3 py-1.5 bg-police-gold/20 hover:bg-police-gold text-amber-300 hover:text-police-dark rounded-lg text-xs font-bold border border-police-gold shrink-0 ml-2 transition">
+          <i class="fa-solid fa-pen-to-square mr-1"></i> নোটিশ এডিট
         </button>
       </div>
 
@@ -157,7 +158,7 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         
         <!-- CARD: Current Weekend Duty -->
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 relative overflow-hidden">
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 relative overflow-hidden" id="cardCurrentDutyBox">
           <div class="absolute top-0 right-0 bg-police-royal text-white text-[11px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
             বর্তমান উইকেন্ড ডিউটি
           </div>
@@ -165,7 +166,7 @@
             <i class="fa-solid fa-star text-police-gold"></i> শুক্রবার ও শনিবারের দায়িত্বপ্রাপ্ত
           </div>
           <div id="currentDutyCardBody" class="mt-2">
-            <!-- Dynamically Loaded -->
+            <!-- Dynamic Content -->
           </div>
         </div>
 
@@ -178,17 +179,17 @@
             <i class="fa-solid fa-forward text-slate-400"></i> পরবর্তী শুক্র ও শনিবারের দায়িত্ব
           </div>
           <div id="nextDutyCardBody" class="mt-2">
-            <!-- Dynamically Loaded -->
+            <!-- Dynamic Content -->
           </div>
         </div>
 
       </div>
 
-      <!-- Quick Stats Counters -->
+      <!-- Counters -->
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
           <div>
-            <p class="text-xs text-slate-500 font-semibold">সক্রিয় সদস্য</p>
+            <p class="text-xs text-slate-500 font-semibold">সক্রিয় রোস্টার সদস্য</p>
             <p class="text-2xl font-bold text-police-navy mt-1" id="statActiveMembers">৭</p>
           </div>
           <div class="w-10 h-10 rounded-xl bg-blue-50 text-police-royal flex items-center justify-center text-lg">
@@ -215,8 +216,8 @@
         </div>
         <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
           <div>
-            <p class="text-xs text-slate-500 font-semibold">ঊর্ধ্বতন পর্যবেক্ষক</p>
-            <p class="text-2xl font-bold text-purple-700 mt-1">৩ জন</p>
+            <p class="text-xs text-slate-500 font-semibold">সিনিয়র অফিসার</p>
+            <p class="text-2xl font-bold text-purple-700 mt-1" id="statSeniorOfficers">৩</p>
           </div>
           <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-lg">
             <i class="fa-solid fa-user-tie"></i>
@@ -244,7 +245,7 @@
       <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-wrap justify-between items-center gap-3">
         <div>
           <h2 class="text-base font-bold text-police-navy">ধারাবাহিক সাপ্তাহিক রোস্টার তালিকা</h2>
-          <p class="text-xs text-slate-500">৭ জন সদস্যের মধ্যে চক্রাকারে শুক্র ও শনিবার স্বয়ংক্রিয়ভাবে ডিউটি নির্ধারিত হচ্ছে।</p>
+          <p class="text-xs text-slate-500">প্রতি শুক্র ও শনিবার স্বয়ংক্রিয় চক্রাকারে ৭ জনের মধ্যে ডিউটি বণ্টিত হয়।</p>
         </div>
         <div class="flex items-center gap-2">
           <button onclick="window.print()" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold flex items-center gap-1.5 border border-slate-300">
@@ -259,12 +260,12 @@
       </div>
     </section>
 
-    <!-- 3. MEMBER MANAGEMENT VIEW -->
+    <!-- 3. MEMBER MANAGEMENT & SEQUENCE VIEW -->
     <section id="view-members" class="hidden space-y-4">
       <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-wrap justify-between items-center gap-3">
         <div>
-          <h2 class="text-base font-bold text-police-navy">ডেসপাচ শাখার সদস্যবৃন্দ</h2>
-          <p class="text-xs text-slate-500">সদস্যদের নাম, পদবি, BP নম্বর ও যোগাযোগের বিবরণ।</p>
+          <h2 class="text-base font-bold text-police-navy">ডেসপাচ শাখার সদস্যবৃন্দ ও রোস্টার পরিক্রমার ক্রম</h2>
+          <p class="text-xs text-slate-500">অ্যাডমিন হিসেবে আপনি সদস্যদের ক্রম [উপরে/নিচে] সাজিয়ে রোস্টারের সিরিয়াল নির্ধারণ করতে পারবেন।</p>
         </div>
         <button onclick="openMemberModal()" class="admin-only hidden px-4 py-2 bg-police-royal hover:bg-police-navy text-white rounded-lg text-xs font-bold flex items-center gap-1.5 shadow">
           <i class="fa-solid fa-user-plus"></i> নতুন সদস্য যোগ করুন
@@ -278,12 +279,19 @@
 
       <!-- Senior Officers (Viewers) Section -->
       <div class="mt-8 bg-slate-50 p-4 rounded-xl border border-slate-300">
-        <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2 mb-2">
-          <i class="fa-solid fa-shield text-police-gold"></i> সংশ্লিষ্ট ঊর্ধ্বতন কর্মকর্তাবৃন্দ (সিনিয়র ভিউয়ার)
-        </h3>
-        <p class="text-xs text-slate-500 mb-3">তাঁরা রোস্টারের বাইরে থেকে সফটওয়্যারের ডিউটি ও রিপোর্ট তদারকি করবেন।</p>
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3" id="seniorOfficersList">
-          <!-- Rendered via JS -->
+        <div class="flex items-center justify-between mb-2">
+          <div>
+            <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+              <i class="fa-solid fa-shield text-police-gold"></i> সংশ্লিষ্ট ঊর্ধ্বতন কর্মকর্তাবৃন্দ (সিনিয়র ভিউয়ার)
+            </h3>
+            <p class="text-xs text-slate-500">তাঁরা রোস্টারের সদস্য নন; ডিউটি ও রিপোর্ট তদারকি করবেন।</p>
+          </div>
+          <button onclick="openSeniorOfficerModal()" class="admin-only hidden px-3 py-1.5 bg-purple-700 hover:bg-purple-800 text-white rounded-lg text-xs font-bold">
+            <i class="fa-solid fa-plus mr-1"></i> অফিসার যোগ করুন
+          </button>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-3" id="seniorOfficersList">
+          <!-- Rendered via JS with Edit/Delete Buttons in Admin Mode -->
         </div>
       </div>
     </section>
@@ -305,10 +313,10 @@
         </div>
       </div>
 
-      <!-- Search & Filters -->
+      <!-- Filters -->
       <div class="bg-white p-3 rounded-xl border border-slate-200 flex flex-wrap gap-2.5 items-center no-print">
         <div class="flex-1 min-w-[220px]">
-          <input type="text" id="historySearchInput" onkeyup="filterHistoryTable()" placeholder="সদস্যের নাম, পদবি, BP নম্বর বা তারিখ লিখে খুঁজুন..." class="w-full text-xs p-2.5 border border-slate-300 rounded-lg focus:outline-police-royal">
+          <input type="text" id="historySearchInput" onkeyup="filterHistoryTable()" placeholder="সদস্যের নাম, पदবি, BP নম্বর বা তারিখ লিখে খুঁজুন..." class="w-full text-xs p-2.5 border border-slate-300 rounded-lg focus:outline-police-royal">
         </div>
         <div>
           <select id="historyStatusFilter" onchange="filterHistoryTable()" class="text-xs p-2.5 border border-slate-300 rounded-lg bg-white">
@@ -351,9 +359,9 @@
         <h2 class="text-base font-bold text-police-navy mb-1 flex items-center gap-2">
           <i class="fa-solid fa-key text-police-gold"></i> অ্যাডমিন সিকিউরিটি পিন পরিবর্তন
         </h2>
-        <p class="text-xs text-slate-500 mb-3">আপনার বর্তমান অ্যাডমিন পিন কোড পরিবর্তন করুন (ডিফল্ট: 1234)।</p>
+        <p class="text-xs text-slate-500 mb-3">আপনার বর্তমান অ্যাডমিন পিন কোড পরিবর্তন করুন (বর্তমান পিন: <span id="currentPinDisplay" class="font-bold text-police-navy">1234</span>)।</p>
         <div class="flex flex-wrap items-center gap-2 max-w-sm">
-          <input type="password" id="newAdminPin" maxlength="6" placeholder="নতুন পিন (৪-৬ ডিজিট)" class="text-xs p-2.5 border border-slate-300 rounded-lg flex-1">
+          <input type="password" id="newAdminPin" maxlength="6" placeholder="নতুন পিন (৪-৬ ডিজিট)" class="text-xs p-2.5 border border-slate-300 rounded-lg flex-1 font-mono">
           <button onclick="changeAdminPin()" class="px-4 py-2 bg-police-royal hover:bg-police-navy text-white rounded-lg text-xs font-bold">আপডেট করুন</button>
         </div>
       </div>
@@ -364,12 +372,12 @@
           <i class="fa-solid fa-cloud text-blue-600"></i> Firebase ক্লাউড ডেটাবেজ সংযোগ (ফ্রি রিয়েল-টাইম সিঙ্ক)
         </h2>
         <p class="text-xs text-slate-500 mb-4">
-          সকল সদস্য ও ঊর্ধ্বতন অফিসার একই তথ্য তাত্ক্ষণিকভাবে দেখার জন্য বিনামূল্যে ফায়ারবেস Realtime Database কানেক্ট করতে পারেন।
+          সকল সদস্য ও ঊর্ধ্বতন অফিসার একই লিংক থেকে রিয়েল টাইমে আপডেট দেখতে বিনামূল্যে ফায়ারবেস ডেটাবেজ যুক্ত করতে পারেন।
         </p>
         <div class="space-y-3 max-w-lg">
           <div>
             <label class="block text-xs font-semibold text-slate-700 mb-1">Firebase Database URL:</label>
-            <input type="text" id="firebaseDbUrl" placeholder="https://your-roster-default-rtdb.firebaseio.com" class="w-full text-xs p-2.5 border border-slate-300 rounded-lg font-mono">
+            <input type="text" id="firebaseDbUrl" placeholder="https://your-app-default-rtdb.firebaseio.com" class="w-full text-xs p-2.5 border border-slate-300 rounded-lg font-mono">
           </div>
           <div>
             <label class="block text-xs font-semibold text-slate-700 mb-1">Firebase API Key:</label>
@@ -381,12 +389,12 @@
         </div>
       </div>
 
-      <!-- Message Template Customization -->
+      <!-- Message Templates -->
       <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
         <h2 class="text-base font-bold text-police-navy mb-1 flex items-center gap-2">
           <i class="fa-brands fa-whatsapp text-emerald-600"></i> ডিউটি নোটিশ ও WhatsApp মেসেজ টেমপ্লেট
         </h2>
-        <p class="text-xs text-slate-500 mb-4">স্বয়ংক্রিয় নোটিশে ব্যবহৃত ভেরিয়েবল: {RANK}, {RANK_NO}, {NAME}, {DATES}</p>
+        <p class="text-xs text-slate-500 mb-4">বার্তায় ব্যবহৃত ভেরিয়েবল: {RANK}, {RANK_NO}, {NAME}, {DATES}</p>
         
         <div class="space-y-3">
           <div>
@@ -406,9 +414,9 @@
       <!-- Local Backup & Restore -->
       <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
         <h2 class="text-base font-bold text-police-navy mb-1 flex items-center gap-2">
-          <i class="fa-solid fa-file-shield text-slate-700"></i> ডেটা ব্যাকআপ ও রিস্টোর
+          <i class="fa-solid fa-file-shield text-slate-700"></i> সম্পূর্ণ সিস্টেম ব্যাকআপ ও রিস্টোর
         </h2>
-        <p class="text-xs text-slate-500 mb-3">রোস্টারের সমস্ত তথ্য, সদস্য তালিকা ও পূর্বের রেকর্ড সুরক্ষিত রাখতে ব্যাকআপ ফাইল ডাউনলোড করুন।</p>
+        <p class="text-xs text-slate-500 mb-3">রোস্টারের সমস্ত সদস্য, অফিসার, হিস্ট্রি ও সেটিংস ব্যাকআপ ফাইল হিসেবে ডাউনলোড করুন।</p>
         <div class="flex flex-wrap gap-2">
           <button onclick="backupDataJSON()" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-xs font-bold">
             <i class="fa-solid fa-download mr-1"></i> ডাউনলোড ব্যাকআপ (JSON)
@@ -426,14 +434,33 @@
 
   <!-- ==================== MODALS ==================== -->
 
-  <!-- 1. WHATSAPP CONFIRMATION MODAL (Strictly Required) -->
+  <!-- 1. NOTICE EDIT MODAL -->
+  <div id="modalNoticeEdit" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-5 shadow-2xl border-t-4 border-police-gold">
+      <div class="flex justify-between items-center pb-2 border-b border-slate-100">
+        <h3 class="font-bold text-sm text-police-navy flex items-center gap-1.5">
+          <i class="fa-solid fa-bullhorn text-police-gold"></i> কেন্দ্রীয় নোটিশ আপডেট
+        </h3>
+        <button onclick="closeNoticeModal()" class="text-slate-400 hover:text-slate-600 text-lg">&times;</button>
+      </div>
+      <div class="mt-3">
+        <textarea id="noticeInputArea" rows="4" class="w-full text-xs p-2.5 border border-slate-300 rounded-lg focus:outline-police-royal"></textarea>
+      </div>
+      <div class="mt-4 flex gap-2">
+        <button onclick="closeNoticeModal()" class="flex-1 py-2 bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg">বাতিল</button>
+        <button onclick="saveNoticeText()" class="flex-1 py-2 bg-police-royal hover:bg-police-navy text-white text-xs font-bold rounded-lg shadow">আপডেট করুন</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. WHATSAPP CONFIRMATION MODAL -->
   <div id="modalWhatsAppConfirm" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl border-t-4 border-emerald-600">
       <div class="text-center">
         <div class="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl">
           <i class="fa-brands fa-whatsapp"></i>
         </div>
-        <h3 class="text-base font-bold text-slate-800">হোয়াটসঅ্যাপ নোটিশ নিশ্চিতকরণ</h3>
+        <h3 class="text-base font-bold text-slate-800">হোয়াটসঅ্যাপ বার্তা নিশ্চিতকরণ</h3>
         <p class="text-xs text-slate-600 mt-2 leading-relaxed" id="waConfirmPromptText">
           আপনি কি উক্ত সদস্যকে আগামী শুক্রবার ও শনিবারের রোস্টার ডিউটি জানাতে চান?
         </p>
@@ -449,7 +476,7 @@
     </div>
   </div>
 
-  <!-- 2. DUTY REPLACEMENT MODAL -->
+  <!-- 3. DUTY REPLACEMENT / OVERRIDE MODAL -->
   <div id="modalReplacement" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl max-w-md w-full p-5 shadow-2xl border-t-4 border-police-royal">
       <div class="flex justify-between items-center pb-2 border-b border-slate-100">
@@ -476,7 +503,7 @@
         </div>
         <div>
           <label class="block font-semibold text-slate-600 mb-1">ডিউটি পরিবর্তনের কারণ / মন্তব্য *</label>
-          <textarea id="repReason" rows="3" placeholder="যেমন: অসুস্থতাজনিত ছুটি / অনুমোদিত নৈমিত্তিক ছুটি..." class="w-full p-2 border border-slate-300 rounded"></textarea>
+          <textarea id="repReason" rows="3" placeholder="যেমন: অসুস্থতাজনিত ছুটি / জরুরি ছুটি..." class="w-full p-2 border border-slate-300 rounded"></textarea>
         </div>
       </div>
 
@@ -487,7 +514,7 @@
     </div>
   </div>
 
-  <!-- 3. ADD / EDIT MEMBER MODAL -->
+  <!-- 4. ADD / EDIT MEMBER MODAL -->
   <div id="modalMember" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl max-w-md w-full p-5 shadow-2xl border-t-4 border-police-gold">
       <div class="flex justify-between items-center pb-2 border-b border-slate-100">
@@ -534,11 +561,11 @@
         <div class="pt-2 border-t border-slate-100 flex items-center justify-between">
           <label class="flex items-center gap-2 cursor-pointer font-medium text-slate-700">
             <input type="checkbox" id="memFormInRoster" checked class="w-4 h-4 text-police-royal rounded">
-            <span>রোস্টারে অন্তর্ভুক্ত থাকবে</span>
+            <span>রোস্টারে ডিউটি পাবেন</span>
           </label>
           <label class="flex items-center gap-2 cursor-pointer font-medium text-slate-700">
             <input type="checkbox" id="memFormIsActive" checked class="w-4 h-4 text-emerald-600 rounded">
-            <span>সক্রিয় শাখা সদস্য</span>
+            <span>সক্রিয় সদস্য</span>
           </label>
         </div>
 
@@ -550,14 +577,45 @@
     </div>
   </div>
 
-  <!-- 4. ADMIN LOGIN MODAL -->
+  <!-- 5. ADD / EDIT SENIOR OFFICER MODAL -->
+  <div id="modalSeniorOfficer" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl border-t-4 border-purple-700">
+      <div class="flex justify-between items-center pb-2 border-b border-slate-100">
+        <h3 class="font-bold text-sm text-purple-900" id="seniorModalTitle">ঊর্ধ্বতন কর্মকর্তা যোগ/সম্পাদনা</h3>
+        <button onclick="closeSeniorOfficerModal()" class="text-slate-400 hover:text-slate-600 text-lg">&times;</button>
+      </div>
+
+      <form id="seniorOfficerForm" onsubmit="handleSaveSeniorOfficer(event)" class="space-y-3 mt-3 text-xs">
+        <input type="hidden" id="seniorFormId">
+        <div>
+          <label class="block font-semibold text-slate-600 mb-1">দায়িত্ব / ভূমিকা *</label>
+          <input type="text" id="seniorFormRole" required placeholder="যেমন: শাখা প্রধান / ইন্সপেক্টর" class="w-full p-2 border border-slate-300 rounded">
+        </div>
+        <div>
+          <label class="block font-semibold text-slate-600 mb-1">অফিসারের নাম *</label>
+          <input type="text" id="seniorFormName" required placeholder="পূর্ণ নাম লিখুন" class="w-full p-2 border border-slate-300 rounded">
+        </div>
+        <div>
+          <label class="block font-semibold text-slate-600 mb-1">BP নম্বর *</label>
+          <input type="text" id="seniorFormBP" required placeholder="যেমন: ৭৫০১২৩৪৫৬৭" class="w-full p-2 border border-slate-300 rounded font-mono">
+        </div>
+
+        <div class="mt-4 flex gap-2 pt-2">
+          <button type="button" onclick="closeSeniorOfficerModal()" class="flex-1 py-2 bg-slate-200 text-slate-700 rounded-lg font-semibold">বাতিল</button>
+          <button type="submit" class="flex-1 py-2 bg-purple-700 hover:bg-purple-800 text-white rounded-lg font-bold">সংরক্ষণ করুন</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 6. ADMIN LOGIN MODAL -->
   <div id="modalAdminLogin" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl max-w-xs w-full p-5 shadow-2xl border-t-4 border-police-navy text-center">
       <div class="w-12 h-12 rounded-full bg-police-dark text-police-gold flex items-center justify-center mx-auto mb-2 text-xl">
         <i class="fa-solid fa-user-shield"></i>
       </div>
       <h3 class="text-sm font-bold text-police-navy">অ্যাডমিন প্রবেশাধিকার</h3>
-      <p class="text-xs text-slate-500 mt-1">রোস্টার ও সদস্য তথ্য পরিবর্তনের জন্য পিন কোড দিন।</p>
+      <p class="text-xs text-slate-500 mt-1">সমস্ত তথ্য এডিট করার জন্য পিন দিন।</p>
 
       <div class="mt-4">
         <input type="password" id="adminPinInput" maxlength="6" placeholder="ডিফল্ট পিন: 1234" class="w-full text-center text-lg tracking-widest font-mono p-2.5 border border-slate-300 rounded-lg focus:outline-police-royal">
@@ -565,7 +623,7 @@
 
       <div class="mt-4 flex gap-2">
         <button onclick="toggleAdminLoginModal()" class="flex-1 py-2 bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg">বাতিল</button>
-        <button onclick="verifyAdminPin()" class="flex-1 py-2 bg-police-royal hover:bg-police-navy text-white text-xs font-bold rounded-lg shadow">প্রবেশ করুন</button>
+        <button onclick="verifyAdminPin()" class="flex-1 py-2 bg-police-royal hover:bg-police-navy text-white text-xs font-bold rounded-lg shadow">লগইন</button>
       </div>
     </div>
   </div>
@@ -574,14 +632,14 @@
   <footer class="bg-police-dark text-slate-400 text-xs py-3 text-center border-t border-police-border mt-auto no-print">
     <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-1">
       <span>কেন্দ্রীয় ডেসপাচ শাখা – স্মার্ট রোস্টার ডিউটি ব্যবস্থাপনা • পুলিশ হেডকোয়ার্টার্স</span>
-      <span>নিরাপদ ও কপিরাইট সংরক্ষিত © ২০২৬</span>
+      <span>নিরাপদ ও সংরক্ষিত © ২০২৬</span>
     </div>
   </footer>
 
-  <!-- ==================== JAVASCRIPT ENGINE ==================== -->
+  <!-- ==================== JAVASCRIPT LOGIC ==================== -->
   <script>
     /* ==========================================================
-       DATA MODEL & DEFAULT REPOSITORY
+       INITIAL DATA & STATE MANAGEMENT
        ========================================================== */
     const DEFAULT_MEMBERS = [
       { id: 'mem-1', rank: 'কনস্টেবল', rankNo: 'সি/১০১', name: 'মো: রফিকুল ইসলাম', bp: '৮৯০১২৩৪৫০১', phone: '01711000001', inRoster: true, active: true },
@@ -593,27 +651,28 @@
       { id: 'mem-7', rank: 'কনস্টেবল', rankNo: 'সি/১০৭', name: 'মো: জাহিদুল ইসলাম', bp: '৮৯০১২৩৪৫০৭', phone: '01711000007', inRoster: true, active: true }
     ];
 
-    const SENIOR_OFFICERS = [
-      { role: 'শাখা প্রধান / পুলিশ পরিদর্শক', name: 'মোহাম্মদ আব্দুল করিম', bp: '৭৫০১২৩৪৫৬৭' },
-      { role: 'তদারকি কর্মকর্তা / এএসআই', name: 'এস এম আসাদুজ্জামান', bp: '৮২০৯৮৭৬৫৪৩' },
-      { role: 'ডিউটি মনিটরিং অফিসার', name: 'মো: জিয়াউর রহমান', bp: '৮১০৫৬৭৮৯০১' }
+    const DEFAULT_SENIORS = [
+      { id: 'sen-1', role: 'শাখা প্রধান / পুলিশ পরিদর্শক', name: 'মোহাম্মদ আব্দুল করিম', bp: '৭৫০১২৩৪৫৬৭' },
+      { id: 'sen-2', role: 'তদারকি কর্মকর্তা / এএসআই', name: 'এস এম আসাদুজ্জামান', bp: '৮২০৯৮৭৬৫৪৩' },
+      { id: 'sen-3', role: 'ডিউটি মনিটরিং অফিসার', name: 'মো: জিয়াউর রহমান', bp: '৮১০৫৬৭৮৯০১' }
     ];
 
     const DEFAULT_TEMPLATES = {
       regular: `জনাব {RANK} {RANK_NO} {NAME},\n\nআপনাকে আগামী {DATES} পুলিশ হেডকোয়ার্টার্সের কেন্দ্রীয় ডেসপাচ শাখার সাপ্তাহিক রোস্টার ডিউটি পালনের জন্য নির্ধারণ করা হয়েছে।\n\nআপনাকে সকাল ০৯:০০ ঘটিকার পূর্বে অফিসে উপস্থিত হয়ে যথাযথভাবে দায়িত্ব পালন করার জন্য অনুরোধ করা হলো।\n\nধন্যবাদান্তে,\nকেন্দ্রীয় ডেসপাচ শাখা\nপুলিশ হেডকোয়ার্টার্স।`,
-      replace: `জনাব {RANK} {RANK_NO} {NAME},\n\nনির্ধারিত রোস্টার সদস্যের অনুপস্থিতির কারণে আগামী {DATES} আপনাকে তাঁর পরিবর্তে কেন্দ্রীয় ডেসপাচ শাখার রোস্টার ডিউটি পালনের জন্য অনুরোধ করা হলো।\n\nআপনাকে সকাল ০৯:০০ ঘটিকার পূর্বে অফিসে উপস্থিত হয়ে যথাযথভাবে দায়িত্ব পালনের অনুরোধ করা হলো।\n\nধন্যবাদান্তে,\nকেন্দ্রীয় ডেসপাচ শাখা\nপুলিশ হেডকোয়ার্টার্স।`
+      replace: `জনাব {RANK} {RANK_NO} {NAME},\n\nনির্ধারিত রোস্টার সদস্যের অনুপস্থিতির কারণে আগামী {DATES} আপনাকে তাঁর পরিবর্তে কেন্দ্রীয় ডেসপাচ শাখার রোস্টার ডিউটি পালনের জন্য অনুরোধ করা হলো।\n\nআপনাকে সকাল ০৯:০০ ঘটিকার পূর্বে অফিসে উপস্থিত হয়ে যথাযথ দায়িত্ব পালনের অনুরোধ করা হলো।\n\nধন্যবাদান্তে,\nকেন্দ্রীয় ডেসপাচ শাখা\nপুলিশ হেডকোয়ার্টার্স।`
     };
 
     let appState = {
       isAdmin: false,
       adminPin: '1234',
-      noticeText: 'নির্ধারিত শুক্রবার ও শনিবার সকাল ০৯:০০ ঘটিকার পূর্বে অফিসে উপস্থিত হয়ে কেন্দ্রীয় ডেসপাচ শাখার গুরুত্বপূর্ণ ডাক ও চিঠিপত্র বিতরণ ও গ্রহণের দায়িত্ব যথাযথভাবে পালন করার অনুরোধ করা হলো।',
+      noticeText: 'নির্ধারিত শুক্রবার ও শনিবার সকাল ০৯:০০ ঘটিকার পূর্বে অফিসে উপস্থিত হয়ে কেন্দ্রীয় ডেসপাচ শাখার গুরুত্বপূর্ণ ডাক ও চিঠিপত্র বিতরণ ও গ্রহণের দায়িত্ব যথাযথভাবে পালন করার জন্য অনুরোধ করা হলো।',
       members: [],
+      seniors: [],
       dutyOverrides: {}, 
       dutyHistory: [],   
       templates: DEFAULT_TEMPLATES,
       firebaseConfig: { apiKey: "", databaseURL: "" },
-      rosterAnchorDate: '2026-11-06' // Fri, Nov 6, 2026
+      rosterAnchorDate: '2026-11-06'
     };
 
     let pendingWhatsAppUrl = null;
@@ -625,25 +684,31 @@
     window.addEventListener('DOMContentLoaded', () => {
       loadState();
       initLiveClock();
-      renderSeniorOfficers();
       renderAll();
       initFirebaseIfConfigured();
     });
 
     function loadState() {
-      const saved = localStorage.getItem('CD_SMART_ROSTER_DB');
+      const saved = localStorage.getItem('CD_SMART_ROSTER_V2');
       if (saved) {
         try {
           const parsed = JSON.parse(saved);
           appState = { ...appState, ...parsed };
         } catch(e) { console.error(e); }
       }
-      if (!appState.members || appState.members.length === 0) {
-        appState.members = [...DEFAULT_MEMBERS];
+      
+      // Load saved admin state so user doesn't lose access on refresh
+      const savedAdmin = localStorage.getItem('CD_ADMIN_SESSION');
+      if (savedAdmin === 'true') {
+        appState.isAdmin = true;
       }
+
+      if (!appState.members || appState.members.length === 0) appState.members = [...DEFAULT_MEMBERS];
+      if (!appState.seniors || appState.seniors.length === 0) appState.seniors = [...DEFAULT_SENIORS];
       if (!appState.templates) appState.templates = DEFAULT_TEMPLATES;
 
       document.getElementById('dashNoticeText').innerText = appState.noticeText;
+      document.getElementById('currentPinDisplay').innerText = appState.adminPin;
       document.getElementById('templateRegularMsg').value = appState.templates.regular;
       document.getElementById('templateReplaceMsg').value = appState.templates.replace;
       if (appState.firebaseConfig) {
@@ -653,7 +718,7 @@
     }
 
     function saveState() {
-      localStorage.setItem('CD_SMART_ROSTER_DB', JSON.stringify(appState));
+      localStorage.setItem('CD_SMART_ROSTER_V2', JSON.stringify(appState));
       syncToFirebase();
     }
 
@@ -661,6 +726,7 @@
        HELPERS & LIVE CLOCK
        ========================================================== */
     function toBanglaDigits(n) {
+      if (n === null || n === undefined) return '';
       const bn = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
       return n.toString().replace(/\d/g, d => bn[d]);
     }
@@ -690,7 +756,7 @@
     }
 
     /* ==========================================================
-       ROSTER ROTATION MATHEMATICAL ENGINE
+       ROSTER ROTATION ALGORITHM
        ========================================================== */
     function getActiveRosterMembers() {
       return appState.members.filter(m => m.active && m.inRoster);
@@ -757,30 +823,16 @@
       renderDashboard();
       renderRoster();
       renderMembers();
+      renderSeniorOfficers();
       renderHistoryTable();
       updateAdminUI();
     }
 
-    function renderSeniorOfficers() {
-      const container = document.getElementById('seniorOfficersList');
-      container.innerHTML = SENIOR_OFFICERS.map(off => `
-        <div class="bg-white p-3 rounded-lg border border-slate-200 flex items-center gap-3 shadow-sm">
-          <div class="w-9 h-9 rounded-full bg-police-royal/10 text-police-royal flex items-center justify-center font-bold text-sm shrink-0">
-            <i class="fa-solid fa-user-shield"></i>
-          </div>
-          <div>
-            <p class="text-xs font-bold text-slate-800">${off.name}</p>
-            <p class="text-[11px] text-police-royal font-medium">${off.role}</p>
-            <p class="text-[10px] text-slate-500 font-mono">BP: ${toBanglaDigits(off.bp)}</p>
-          </div>
-        </div>
-      `).join('');
-    }
-
     function renderDashboard() {
       const activeMembers = getActiveRosterMembers();
-      document.getElementById('headerActiveMemberCount').textContent = `সদস্য সংখ্যা: ${toBanglaDigits(activeMembers.length)} জন`;
+      document.getElementById('headerActiveMemberCount').textContent = `সদস্য: ${toBanglaDigits(activeMembers.length)} জন`;
       document.getElementById('statActiveMembers').textContent = toBanglaDigits(activeMembers.length);
+      document.getElementById('statSeniorOfficers').textContent = toBanglaDigits(appState.seniors.length);
 
       const completed = appState.dutyHistory.filter(h => h.status === 'Completed').length;
       document.getElementById('statCompletedDuties').textContent = toBanglaDigits(completed);
@@ -820,6 +872,9 @@
               <a href="tel:${mem.phone}" class="flex-1 px-3 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 shadow">
                 <i class="fa-solid fa-phone"></i> কল দিন
               </a>
+              <button onclick="openReplacementModal('${cur.dateKey}', '${cur.scheduledMember.id}', '${curFriStr} ও ${curSatStr}')" class="admin-only hidden flex-1 px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-bold flex items-center justify-center gap-1 shadow">
+                <i class="fa-solid fa-user-pen"></i> ডিউটি বদল
+              </button>
             </div>
           </div>
           ${isRep ? `
@@ -948,15 +1003,31 @@
         <div class="bg-white rounded-xl border ${mem.active ? 'border-slate-200' : 'border-red-200 bg-red-50/20'} p-4 shadow-sm relative flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between mb-2">
-              <span class="text-[10px] font-bold px-2 py-0.5 rounded ${mem.inRoster ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-600'}">
-                ${mem.inRoster ? 'রোস্টারে সক্রিয়' : 'রোস্টার বহির্ভূত'}
-              </span>
-              <div class="flex items-center gap-1 admin-only hidden">
-                <button onclick="openMemberModal('${mem.id}')" class="text-police-royal hover:text-police-dark p-1" title="তথ্য এডিট করুন">
-                  <i class="fa-solid fa-pen-to-square text-xs"></i> এডিট
+              <div class="flex items-center gap-1.5">
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded ${mem.inRoster ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-600'}">
+                  ${mem.inRoster ? 'রোস্টারে সক্রিয়' : 'রোস্টার বহির্ভূত'}
+                </span>
+                <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-50 text-police-royal">
+                  ক্রম: #${toBanglaDigits(index + 1)}
+                </span>
+              </div>
+              
+              <!-- Reorder Buttons (Move Up/Down in Cycle) -->
+              <div class="admin-only hidden flex items-center gap-1">
+                <button onclick="moveMemberOrder(${index}, -1)" ${index === 0 ? 'disabled class="opacity-30 p-1"' : 'class="text-slate-600 hover:text-police-royal p-1"'} title="উপরে নিন">
+                  <i class="fa-solid fa-arrow-up text-xs"></i>
+                </button>
+                <button onclick="moveMemberOrder(${index}, 1)" ${index === appState.members.length - 1 ? 'disabled class="opacity-30 p-1"' : 'class="text-slate-600 hover:text-police-royal p-1"'} title="নিচে নিন">
+                  <i class="fa-solid fa-arrow-down text-xs"></i>
+                </button>
+                <button onclick="openMemberModal('${mem.id}')" class="text-police-royal hover:text-police-dark p-1 ml-1" title="তথ্য এডিট করুন">
+                  <i class="fa-solid fa-pen-to-square text-xs"></i>
                 </button>
                 <button onclick="toggleMemberActive('${mem.id}')" class="text-slate-400 hover:text-red-600 p-1" title="${mem.active ? 'নিষ্ক্রিয় করুন' : 'সক্রিয় করুন'}">
                   <i class="fa-solid fa-power-off text-xs"></i>
+                </button>
+                <button onclick="deleteMemberPermanently('${mem.id}')" class="text-red-400 hover:text-red-700 p-1" title="মুছে ফেলুন">
+                  <i class="fa-solid fa-trash-can text-xs"></i>
                 </button>
               </div>
             </div>
@@ -988,6 +1059,32 @@
       `).join('');
     }
 
+    function renderSeniorOfficers() {
+      const container = document.getElementById('seniorOfficersList');
+      container.innerHTML = appState.seniors.map(off => `
+        <div class="bg-white p-3 rounded-lg border border-slate-200 flex items-center justify-between shadow-sm">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center font-bold text-sm shrink-0">
+              <i class="fa-solid fa-user-shield"></i>
+            </div>
+            <div>
+              <p class="text-xs font-bold text-slate-800">${off.name}</p>
+              <p class="text-[11px] text-purple-700 font-medium">${off.role}</p>
+              <p class="text-[10px] text-slate-500 font-mono">BP: ${toBanglaDigits(off.bp)}</p>
+            </div>
+          </div>
+          <div class="admin-only hidden flex items-center gap-1">
+            <button onclick="openSeniorOfficerModal('${off.id}')" class="text-purple-700 hover:text-purple-900 p-1" title="এডিট">
+              <i class="fa-solid fa-pen-to-square text-xs"></i>
+            </button>
+            <button onclick="deleteSeniorOfficer('${off.id}')" class="text-red-400 hover:text-red-700 p-1" title="মুছে ফেলুন">
+              <i class="fa-solid fa-trash-can text-xs"></i>
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
     function renderHistoryTable() {
       const tbody = document.getElementById('historyTableBody');
       const list = [...appState.dutyHistory].reverse();
@@ -1004,6 +1101,7 @@
         let badgeColor = 'bg-slate-100 text-slate-800';
         if (item.status === 'Completed') badgeColor = 'bg-emerald-100 text-emerald-800';
         if (item.status === 'Replaced') badgeColor = 'bg-amber-100 text-amber-800';
+        if (item.status === 'Absent') badgeColor = 'bg-red-100 text-red-800';
 
         return `
           <tr class="hover:bg-slate-50 border-b border-slate-200">
@@ -1026,7 +1124,10 @@
             </td>
             <td class="p-3 text-slate-600">${item.notes || '—'}</td>
             <td class="p-3 text-center no-print admin-only hidden">
-              <button onclick="deleteHistoryItem('${item.id}')" class="text-red-500 hover:text-red-700 p-1">
+              <button onclick="editHistoryItem('${item.id}')" class="text-police-royal hover:text-police-dark p-1 mr-1" title="স্ট্যাটাস এডিট">
+                <i class="fa-solid fa-pen-to-square"></i>
+              </button>
+              <button onclick="deleteHistoryItem('${item.id}')" class="text-red-500 hover:text-red-700 p-1" title="মুছে ফেলুন">
                 <i class="fa-solid fa-trash-can"></i>
               </button>
             </td>
@@ -1036,7 +1137,134 @@
     }
 
     /* ==========================================================
-       WHATSAPP TRIGGER (MANDATORY CONFIRMATION MODAL)
+       MEMBER REORDER & ADMIN ACTIONS
+       ========================================================= */
+    function moveMemberOrder(index, direction) {
+      const newIndex = index + direction;
+      if (newIndex < 0 || newIndex >= appState.members.length) return;
+      
+      const temp = appState.members[index];
+      appState.members[index] = appState.members[newIndex];
+      appState.members[newIndex] = temp;
+      
+      saveState();
+      renderAll();
+    }
+
+    function deleteMemberPermanently(id) {
+      const mem = getMemberById(id);
+      if (!mem) return;
+      if (confirm(`আপনি কি সদস্য "${mem.name}"-কে তালিকা থেকে সম্পূর্ণভাবে মুছে ফেলতে চান? (তার ডিউটির ইতিহাস সংরক্ষিত থাকবে)`)) {
+        appState.members = appState.members.filter(m => m.id !== id);
+        saveState();
+        renderAll();
+      }
+    }
+
+    /* ==========================================================
+       SENIOR OFFICER ADMIN ACTIONS
+       ========================================================== */
+    function openSeniorOfficerModal(id = null) {
+      const form = document.getElementById('seniorOfficerForm');
+      form.reset();
+
+      if (id) {
+        const off = appState.seniors.find(s => s.id === id);
+        if (!off) return;
+        document.getElementById('seniorModalTitle').textContent = 'অফিসারের তথ্য সম্পাদনা';
+        document.getElementById('seniorFormId').value = off.id;
+        document.getElementById('seniorFormRole').value = off.role;
+        document.getElementById('seniorFormName').value = off.name;
+        document.getElementById('seniorFormBP').value = off.bp;
+      } else {
+        document.getElementById('seniorModalTitle').textContent = 'নতুন কর্মকর্তা যোগ করুন';
+        document.getElementById('seniorFormId').value = '';
+      }
+
+      document.getElementById('modalSeniorOfficer').classList.remove('hidden');
+    }
+
+    function closeSeniorOfficerModal() {
+      document.getElementById('modalSeniorOfficer').classList.add('hidden');
+    }
+
+    function handleSaveSeniorOfficer(e) {
+      e.preventDefault();
+      const id = document.getElementById('seniorFormId').value;
+      const role = document.getElementById('seniorFormRole').value.trim();
+      const name = document.getElementById('seniorFormName').value.trim();
+      const bp = document.getElementById('seniorFormBP').value.trim();
+
+      if (id) {
+        const idx = appState.seniors.findIndex(s => s.id === id);
+        if (idx !== -1) appState.seniors[idx] = { id, role, name, bp };
+      } else {
+        appState.seniors.push({
+          id: 'sen-' + Date.now(),
+          role,
+          name,
+          bp
+        });
+      }
+
+      saveState();
+      closeSeniorOfficerModal();
+      renderSeniorOfficers();
+      alert('কর্মকর্তার তথ্য সফলভাবে সংরক্ষিত হয়েছে!');
+    }
+
+    function deleteSeniorOfficer(id) {
+      if (confirm('আপনি কি এই কর্মকর্তাকে তালিকা থেকে বাদ দিতে চান?')) {
+        appState.seniors = appState.seniors.filter(s => s.id !== id);
+        saveState();
+        renderSeniorOfficers();
+      }
+    }
+
+    /* ==========================================================
+       NOTICE EDIT
+       ========================================================== */
+    function openNoticeModal() {
+      document.getElementById('noticeInputArea').value = appState.noticeText;
+      document.getElementById('modalNoticeEdit').classList.remove('hidden');
+    }
+
+    function closeNoticeModal() {
+      document.getElementById('modalNoticeEdit').classList.add('hidden');
+    }
+
+    function saveNoticeText() {
+      const text = document.getElementById('noticeInputArea').value.trim();
+      if (!text) {
+        alert('নোটিশ খালি রাখা যাবে না।');
+        return;
+      }
+      appState.noticeText = text;
+      document.getElementById('dashNoticeText').innerText = text;
+      saveState();
+      closeNoticeModal();
+      alert('নোটিশ সফলভাবে আপডেট হয়েছে!');
+    }
+
+    /* ==========================================================
+       HISTORY EDIT
+       ========================================================== */
+    function editHistoryItem(id) {
+      const item = appState.dutyHistory.find(h => h.id === id);
+      if (!item) return;
+
+      const newStatus = prompt('নতুন স্ট্যাটাস লিখুন (Completed / Replaced / Absent):', item.status);
+      if (newStatus) {
+        const newNotes = prompt('মন্তব্য আপডেট করুন:', item.notes || '');
+        item.status = newStatus.trim();
+        item.notes = newNotes !== null ? newNotes.trim() : item.notes;
+        saveState();
+        renderHistoryTable();
+      }
+    }
+
+    /* ==========================================================
+       WHATSAPP & CALL
        ========================================================== */
     function triggerWhatsApp(memberId, friDateStr, satDateStr, isReplaced = false) {
       const member = getMemberById(memberId);
@@ -1056,7 +1284,6 @@
 
       pendingWhatsAppUrl = `https://wa.me/${phoneNum}?text=${encodeURIComponent(message)}`;
 
-      // Confirmation Modal Display
       const modal = document.getElementById('modalWhatsAppConfirm');
       document.getElementById('waConfirmPromptText').innerHTML = `
         আপনি কি <strong>${member.rank} ${member.name}</strong>-কে আগামী <strong>${dateText}</strong>-এর রোস্টার ডিউটি জানাতে চান?
@@ -1083,7 +1310,7 @@
     }
 
     /* ==========================================================
-       REPLACEMENT / OVERRIDE WORKFLOW
+       REPLACEMENT & ATTENDANCE
        ========================================================== */
     function openReplacementModal(dateKey, originalMemberId, dateDisplay) {
       currentReplaceTarget = { dateKey, originalMemberId };
@@ -1113,7 +1340,7 @@
       const reason = document.getElementById('repReason').value.trim();
 
       if (!reason) {
-        alert('অনুগ্রহ করে ডিউটি পরিবর্তনের সুনির্দিষ্ট কারণ লিখুন।');
+        alert('অনুগ্রহ করে ডিউটি পরিবর্তনের কারণ উল্লেখ করুন।');
         return;
       }
 
@@ -1162,7 +1389,7 @@
     }
 
     /* ==========================================================
-       ADMIN EDIT & MEMBER ACTIONS
+       MEMBER SAVE/EDIT
        ========================================================== */
     function openMemberModal(memberId = null) {
       const form = document.getElementById('memberForm');
@@ -1232,7 +1459,7 @@
     function toggleMemberActive(id) {
       const mem = getMemberById(id);
       if (!mem) return;
-      if (confirm(`আপনি কি ${mem.name}-কে ${mem.active ? 'নিষ্ক্রিয়' : 'পুনরায় সক্রিয়'} করতে চান? পুরোনো কোনো ডিউটি ইতিহাস মুছে যাবে না।`)) {
+      if (confirm(`আপনি কি ${mem.name}-কে ${mem.active ? 'নিষ্ক্রিয়' : 'পুনরায় সক্রিয়'} করতে চান?`)) {
         mem.active = !mem.active;
         saveState();
         renderAll();
@@ -1240,13 +1467,15 @@
     }
 
     /* ==========================================================
-       ADMIN AUTH & PIN LOGIC
+       ADMIN AUTH & PERSISTENCE
        ========================================================== */
     function toggleAdminLoginModal() {
       if (appState.isAdmin) {
-        if (confirm('আপনি কি অ্যাডমিন মোড থেকে বের হতে চান?')) {
+        if (confirm('আপনি কি অ্যাডমিন মোড থেকে লগআউট করতে চান?')) {
           appState.isAdmin = false;
+          localStorage.removeItem('CD_ADMIN_SESSION');
           updateAdminUI();
+          alert('লগআউট সম্পন্ন হয়েছে। সফটওয়্যার এখন ভিউয়ার মোডে রয়েছে।');
         }
       } else {
         document.getElementById('adminPinInput').value = '';
@@ -1258,9 +1487,10 @@
       const pin = document.getElementById('adminPinInput').value;
       if (pin === appState.adminPin) {
         appState.isAdmin = true;
+        localStorage.setItem('CD_ADMIN_SESSION', 'true');
         document.getElementById('modalAdminLogin').classList.add('hidden');
         updateAdminUI();
-        alert('অ্যাডমিন মোড সক্রিয় হয়েছে! এখন সকল এডিট বাটন কাজ করবে।');
+        alert('সুপার অ্যাডমিন আনলক হয়েছে! এখন সব এডিট বাটন সক্রিয়।');
       } else {
         alert('ভুল পিন কোড! পুনরায় চেষ্টা করুন (ডিফল্ট: 1234)।');
       }
@@ -1270,18 +1500,20 @@
       const adminEls = document.querySelectorAll('.admin-only');
       const lockIcon = document.getElementById('adminLockIcon');
       const btnText = document.getElementById('adminBtnText');
-      const roleText = document.getElementById('roleText');
+      const adminIndicator = document.getElementById('adminIndicatorBadge');
 
       if (appState.isAdmin) {
         adminEls.forEach(el => el.classList.remove('hidden'));
-        lockIcon.className = 'fa-solid fa-lock-open text-emerald-400';
+        lockIcon.className = 'fa-solid fa-lock-open text-amber-400';
         btnText.textContent = 'লগআউট';
-        roleText.textContent = 'অ্যাডমিন মোড';
+        adminIndicator.classList.remove('hidden');
+        adminIndicator.classList.add('inline-flex');
       } else {
         adminEls.forEach(el => el.classList.add('hidden'));
         lockIcon.className = 'fa-solid fa-lock';
-        btnText.textContent = 'অ্যাডমিন লগইন';
-        roleText.textContent = 'ভিউয়ার মোড';
+        btnText.textContent = 'অ্যাডমিন প্রবেশ';
+        adminIndicator.classList.add('hidden');
+        adminIndicator.classList.remove('inline-flex');
       }
     }
 
@@ -1293,22 +1525,13 @@
       }
       appState.adminPin = newPin;
       saveState();
+      document.getElementById('currentPinDisplay').innerText = newPin;
       document.getElementById('newAdminPin').value = '';
       alert('অ্যাডমিন পিন সফলভাবে পরিবর্তন হয়েছে!');
     }
 
-    function editNoticeModal() {
-      const current = appState.noticeText;
-      const updated = prompt('ডেসপাচ শাখার জরুরি নোটিশ আপডেট করুন:', current);
-      if (updated !== null && updated.trim() !== '') {
-        appState.noticeText = updated.trim();
-        document.getElementById('dashNoticeText').innerText = appState.noticeText;
-        saveState();
-      }
-    }
-
     /* ==========================================================
-       EXCEL EXPORT (CSV) & FILTERS
+       EXCEL EXPORT & FILTERS
        ========================================================== */
     function exportToCSV() {
       if (appState.dutyHistory.length === 0) {
@@ -1387,14 +1610,15 @@
             const data = snapshot.val();
             if (data) {
               appState.members = data.members || appState.members;
+              appState.seniors = data.seniors || appState.seniors;
               appState.dutyOverrides = data.dutyOverrides || appState.dutyOverrides;
               appState.dutyHistory = data.dutyHistory || appState.dutyHistory;
               appState.noticeText = data.noticeText || appState.noticeText;
-              localStorage.setItem('CD_SMART_ROSTER_DB', JSON.stringify(appState));
+              localStorage.setItem('CD_SMART_ROSTER_V2', JSON.stringify(appState));
               renderAll();
             }
           });
-        } catch(e) { console.warn('Firebase sync initialized in offline fallback mode.'); }
+        } catch(e) { console.warn('Firebase initialized in fallback mode.'); }
       }
     }
 
@@ -1402,6 +1626,7 @@
       if (fbDb) {
         fbDb.ref('central_dispatch_roster').set({
           members: appState.members,
+          seniors: appState.seniors,
           dutyOverrides: appState.dutyOverrides,
           dutyHistory: appState.dutyHistory,
           noticeText: appState.noticeText,
