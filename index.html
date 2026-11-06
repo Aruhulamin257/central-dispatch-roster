@@ -14,7 +14,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-  <!-- Firebase SDKs (Compat Version) -->
+  <!-- Firebase Compat SDKs (No import errors) -->
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
@@ -63,7 +63,7 @@
   <header class="bg-gradient-to-r from-police-dark via-police-navy to-police-royal text-white shadow-xl sticky top-0 z-40 border-b-2 border-police-gold">
     <div class="max-w-7xl mx-auto px-4 py-2.5 flex items-center justify-between">
       
-      <!-- Logo & Branch Identity -->
+      <!-- Brand & Police HQ Crest -->
       <div class="flex items-center space-x-3 rtl:space-x-reverse">
         <div class="w-12 h-12 rounded-full border-2 border-police-gold bg-[#081326] p-0.5 flex items-center justify-center badge-glow shrink-0 overflow-hidden shadow">
           <svg viewBox="0 0 100 100" class="w-full h-full">
@@ -90,7 +90,7 @@
       <div class="flex items-center space-x-2">
         <div id="cloudStatusBadge" class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-950/80 text-emerald-300 border border-emerald-500/40">
           <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span id="cloudStatusText">ক্লাউড প্রস্তুত</span>
+          <span id="cloudStatusText">সিস্টেম প্রস্তুত</span>
         </div>
 
         <button id="adminAuthBtn" onclick="openLoginModal()" class="px-3.5 py-1.5 bg-police-gold/20 hover:bg-police-gold/30 border border-police-gold text-amber-300 hover:text-white rounded-lg text-xs md:text-sm font-bold flex items-center gap-1.5 transition shadow">
@@ -103,8 +103,8 @@
     <!-- Live Time & Ticker -->
     <div class="bg-police-dark text-xs py-1.5 px-4 text-slate-300 flex flex-wrap justify-between items-center gap-2 border-t border-police-border">
       <div class="flex items-center gap-2">
-        <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-police-gold text-police-dark">বর্তমান সময়</span>
-        <span id="currentLiveDateTime" class="font-mono text-amber-200">সময় গণনা শুরু হচ্ছে...</span>
+        <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-police-gold text-police-dark">বাংলাদেশ সময়</span>
+        <span id="currentLiveDateTime" class="font-mono text-amber-200">সময় লোড হচ্ছে...</span>
       </div>
       <div class="flex items-center gap-3 text-[11px]">
         <span><i class="fa-solid fa-arrows-rotate text-emerald-400 mr-1"></i>ডিউটি বার: শুক্রবার ও শনিবার</span>
@@ -192,7 +192,7 @@
 
       </div>
 
-      <!-- Counters -->
+      <!-- Quick Summary Counters -->
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
           <div>
@@ -301,7 +301,7 @@
       </div>
     </section>
 
-    <!-- 4. EXCEL SHEET VIEW (কে কে ডিউটি সম্পন্ন করেছে) -->
+    <!-- 4. EXCEL SHEET VIEW -->
     <section id="view-excelSheet" class="hidden space-y-4">
       <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-wrap justify-between items-center gap-3">
         <div>
@@ -312,7 +312,7 @@
         </div>
         <div class="flex items-center gap-2">
           <button onclick="exportToCSV()" class="px-3.5 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 shadow">
-            <i class="fa-solid fa-download"></i> Excel (.csv) ফাইল ডাউনলোড
+            <i class="fa-solid fa-download"></i> Excel (.csv) ডাউনলোড
           </button>
           <button onclick="window.print()" class="px-3.5 py-1.5 bg-slate-700 hover:bg-slate-800 text-white rounded-lg text-xs font-bold flex items-center gap-1.5">
             <i class="fa-solid fa-print"></i> প্রিন্ট
@@ -445,13 +445,13 @@
       <h3 class="text-base font-bold text-police-navy">অ্যাডমিন প্রবেশাধিকার</h3>
       <p class="text-xs text-slate-500 mt-1">ফায়ারবেস ইমেইল-পাসওয়ার্ড অথবা জরুরি মাস্টার পিন ব্যবহার করুন।</p>
 
-      <!-- Tab Buttons for Login Options -->
+      <!-- Tabs -->
       <div class="flex border-b border-slate-200 mt-4 mb-3 text-xs font-semibold">
-        <button type="button" onclick="switchLoginMethod('email')" id="btnLoginTabEmail" class="flex-1 py-1.5 border-b-2 border-police-royal text-police-royal">ইমেইল পাসওয়ার্ড</button>
+        <button type="button" onclick="switchLoginMethod('email')" id="btnLoginTabEmail" class="flex-1 py-1.5 border-b-2 border-police-royal text-police-royal">ইমেইল লগইন</button>
         <button type="button" onclick="switchLoginMethod('pin')" id="btnLoginTabPin" class="flex-1 py-1.5 border-b-2 border-transparent text-slate-500">মাস্টার পিন</button>
       </div>
 
-      <!-- Option A: Email Login -->
+      <!-- Form A: Email -->
       <form id="formEmailLogin" onsubmit="handleFirebaseEmailLogin(event)" class="space-y-2.5 text-left text-xs">
         <div>
           <label class="block font-semibold text-slate-700 mb-0.5">অ্যাডমিন ইমেইল:</label>
@@ -468,7 +468,7 @@
         </div>
       </form>
 
-      <!-- Option B: Master PIN Login (Emergency/Offline) -->
+      <!-- Form B: Master PIN -->
       <form id="formPinLogin" onsubmit="handleMasterPinLogin(event)" class="space-y-3 text-left text-xs hidden">
         <div>
           <label class="block font-semibold text-slate-700 mb-1">জরুরি মাস্টার পিন দিন (ডিফল্ট: 1234):</label>
@@ -476,7 +476,7 @@
         </div>
         <div class="flex gap-2 pt-2">
           <button type="button" onclick="closeLoginModal()" class="flex-1 py-2 bg-slate-200 text-slate-700 rounded-lg font-semibold">বাতিল</button>
-          <button type="submit" class="flex-1 py-2 bg-police-royal hover:bg-police-navy text-white font-bold rounded-lg shadow">পিন দিয়ে আনলক</button>
+          <button type="submit" class="flex-1 py-2 bg-police-royal hover:bg-police-navy text-white font-bold rounded-lg shadow">আনলক করুন</button>
         </div>
       </form>
 
@@ -495,7 +495,6 @@
         <input type="hidden" id="memFormId">
         <input type="hidden" id="memFormPhotoBase64">
 
-        <!-- Photo Upload & Preview -->
         <div class="flex items-center gap-3 p-2.5 bg-slate-50 border border-slate-200 rounded-xl">
           <img id="memPhotoPreview" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2394a3b8'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E" class="w-14 h-14 rounded-full object-cover border-2 border-police-gold bg-white shrink-0">
           <div class="flex-1">
@@ -653,4 +652,1085 @@
   </div>
 
   <!-- 6. WHATSAPP CONFIRMATION MODAL -->
-  <div id="modalWhatsAppConfirm" class="fixed inset-0 bg-black/60 z-50 hidden flex item
+  <div id="modalWhatsAppConfirm" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl border-t-4 border-emerald-600">
+      <div class="text-center">
+        <div class="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl">
+          <i class="fa-brands fa-whatsapp"></i>
+        </div>
+        <h3 class="text-base font-bold text-slate-800">হোয়াটসঅ্যাপ বার্তা নিশ্চিতকরণ</h3>
+        <p class="text-xs text-slate-600 mt-2 leading-relaxed" id="waConfirmPromptText">
+          আপনি কি উক্ত সদস্যকে আগামী শুক্রবার ও শনিবারের রোস্টার ডিউটি জানাতে চান?
+        </p>
+      </div>
+      <div class="mt-5 flex gap-2">
+        <button onclick="closeWhatsAppModal()" class="flex-1 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold rounded-lg transition">
+          না (বাতিল)
+        </button>
+        <button id="waModalConfirmBtn" class="flex-1 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-lg shadow-md transition">
+          হ্যাঁ (মেসেজ পাঠান)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="bg-police-dark text-slate-400 text-xs py-3 text-center border-t border-police-border mt-auto no-print">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-1">
+      <span>কেন্দ্রীয় ডেসপাচ শাখা – স্মার্ট রোস্টার ডিউটি ব্যবস্থাপনা • পুলিশ হেডকোয়ার্টার্স</span>
+      <span>নিরাপদ ও সংরক্ষিত © ২০২৬</span>
+    </div>
+  </footer>
+
+  <!-- ==================== ROBUST JAVASCRIPT LOGIC ==================== -->
+  <script>
+    // 1. YOUR FIREBASE CONFIGURATION
+    var firebaseConfig = {
+      apiKey: "AIzaSyCqezTn_5OSrKGUD_PQwiv5WepxkM-iS3U",
+      authDomain: "central-dispatch-roster.firebaseapp.com",
+      projectId: "central-dispatch-roster",
+      storageBucket: "central-dispatch-roster.firebasestorage.app",
+      messagingSenderId: "633314161205",
+      appId: "1:633314161205:web:c47bc1ca7ba17ed302377c"
+    };
+
+    var firestoreDb = null;
+    var auth = null;
+    var currentUser = null;
+    var isMasterPinAdmin = false;
+
+    // 2. DEFAULT STATE
+    var DEFAULT_TEMPLATES = {
+      regular: "জনাব {RANK} {RANK_NO} {NAME},\n\nআপনাকে আগামী {DATES} পুলিশ হেডকোয়ার্টার্সের কেন্দ্রীয় ডেসপাচ শাখার সাপ্তাহিক রোস্টার ডিউটি পালনের জন্য নির্ধারণ করা হয়েছে।\n\nআপনাকে সকাল ০৯:০০ ঘটিকার পূর্বে অফিসে উপস্থিত হয়ে যথাযথভাবে দায়িত্ব পালন করার জন্য অনুরোধ করা হলো।\n\nধন্যবাদান্তে,\nকেন্দ্রীয় ডেসপাচ শাখা\nপুলিশ হেডকোয়ার্টার্স।",
+      replace: "জনাব {RANK} {RANK_NO} {NAME},\n\nনির্ধারিত রোস্টার সদস্যের অনুপস্থিতির কারণে আগামী {DATES} আপনাকে তাঁর পরিবর্তে কেন্দ্রীয় ডেসপাচ শাখার রোস্টার ডিউটি পালনের জন্য অনুরোধ করা হলো।\n\nআপনাকে সকাল ০৯:০০ ঘটিকার পূর্বে অফিসে উপস্থিত হয়ে যথাযথ দায়িত্ব পালনের অনুরোধ করা হলো।\n\nধন্যবাদান্তে,\nকেন্দ্রীয় ডেসপাচ শাখা\nপুলিশ হেডকোয়ার্টার্স।"
+    };
+
+    var appState = {
+      members: [],       
+      seniors: [],       
+      dutyOverrides: {}, 
+      dutyHistory: [],   
+      completedLog: {},  
+      noticeText: 'নির্ধারিত শুক্রবার ও শনিবার সকাল ০৯:০০ ঘটিকার পূর্বে অফিসে উপস্থিত হয়ে কেন্দ্রীয় ডেসপাচ শাখার গুরুত্বপূর্ণ ডাক ও চিঠিপত্র বিতরণ ও গ্রহণের দায়িত্ব যথাযথভাবে পালন করার জন্য অনুরোধ করা হলো।',
+      templates: DEFAULT_TEMPLATES,
+      rosterAnchorDate: '2026-11-06'
+    };
+
+    var calendarViewDate = new Date();
+    var pendingWhatsAppUrl = null;
+    var currentReplaceTarget = null;
+    var isRemoteUpdate = false;
+
+    // 3. IMMEDIATE EXECUTION (NO CRASH)
+    function startClock() {
+      function tick() {
+        var now = new Date();
+        var options = { 
+          timeZone: 'Asia/Dhaka', 
+          weekday: 'long', 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric',
+          hour: '2-digit', 
+          minute: '2-digit', 
+          second: '2-digit' 
+        };
+        var el = document.getElementById('currentLiveDateTime');
+        if (el) el.textContent = new Intl.DateTimeFormat('bn-BD', options).format(now);
+      }
+      tick();
+      setInterval(tick, 1000);
+    }
+
+    // Run clock immediately
+    startClock();
+
+    function loadLocalState() {
+      try {
+        var saved = localStorage.getItem('CD_ROSTER_FAILSAFE_STATE');
+        if (saved) {
+          var parsed = JSON.parse(saved);
+          appState = Object.assign({}, appState, parsed);
+        }
+        if (localStorage.getItem('CD_MASTER_PIN_AUTH') === 'true') {
+          isMasterPinAdmin = true;
+        }
+      } catch(e) { console.warn('Storage read warning', e); }
+
+      if (!appState.members) appState.members = [];
+      if (!appState.seniors) appState.seniors = [];
+      if (!appState.dutyOverrides) appState.dutyOverrides = {};
+      if (!appState.completedLog) appState.completedLog = {};
+
+      var noticeEl = document.getElementById('dashNoticeText');
+      if (noticeEl) noticeEl.innerText = appState.noticeText;
+      var tReg = document.getElementById('templateRegularMsg');
+      if (tReg) tReg.value = appState.templates.regular;
+      var tRep = document.getElementById('templateReplaceMsg');
+      if (tRep) tRep.value = appState.templates.replace;
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem('CD_ROSTER_FAILSAFE_STATE', JSON.stringify(appState));
+      } catch(e){}
+      syncToFirestoreSafe();
+    }
+
+    // 4. SAFE FIREBASE SETUP (DOES NOT BLOCK UI)
+    function initFirebaseSafe() {
+      try {
+        if (typeof firebase !== 'undefined') {
+          if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+          }
+          firestoreDb = firebase.firestore();
+          auth = firebase.auth();
+
+          auth.onAuthStateChanged(function(user) {
+            currentUser = user;
+            updateAuthUI();
+          });
+
+          firestoreDb.collection("roster_data").doc("central_dispatch").onSnapshot(function(doc) {
+            if (doc.exists) {
+              var data = doc.data();
+              isRemoteUpdate = true;
+              if (data.members) appState.members = data.members;
+              if (data.seniors) appState.seniors = data.seniors;
+              if (data.dutyOverrides) appState.dutyOverrides = data.dutyOverrides;
+              if (data.dutyHistory) appState.dutyHistory = data.dutyHistory;
+              if (data.completedLog) appState.completedLog = data.completedLog;
+              if (data.noticeText) {
+                appState.noticeText = data.noticeText;
+                var el = document.getElementById('dashNoticeText');
+                if (el) el.innerText = data.noticeText;
+              }
+              if (data.templates) appState.templates = data.templates;
+
+              localStorage.setItem('CD_ROSTER_FAILSAFE_STATE', JSON.stringify(appState));
+              renderAll();
+              isRemoteUpdate = false;
+            }
+          }, function(err) {
+            console.warn("Firestore listener offline", err);
+            var badgeText = document.getElementById('cloudStatusText');
+            if (badgeText) badgeText.textContent = 'অফলাইন মোড';
+          });
+
+          var badge = document.getElementById('cloudStatusBadge');
+          if (badge) {
+            badge.classList.remove('hidden');
+            badge.classList.add('inline-flex');
+          }
+        }
+      } catch(e) {
+        console.warn("Firebase safe warning", e);
+      }
+    }
+
+    function syncToFirestoreSafe() {
+      if (firestoreDb && !isRemoteUpdate) {
+        try {
+          firestoreDb.collection("roster_data").doc("central_dispatch").set({
+            members: appState.members,
+            seniors: appState.seniors,
+            dutyOverrides: appState.dutyOverrides,
+            dutyHistory: appState.dutyHistory,
+            completedLog: appState.completedLog,
+            noticeText: appState.noticeText,
+            templates: appState.templates,
+            lastUpdated: new Date().toISOString()
+          }).catch(function(e){ console.warn('Sync catch', e); });
+        } catch(e){}
+      }
+    }
+
+    // 5. AUTH LOGIC
+    function checkIsAdmin() {
+      return !!currentUser || isMasterPinAdmin;
+    }
+
+    function updateAuthUI() {
+      var adminEls = document.querySelectorAll('.admin-only');
+      var lockIcon = document.getElementById('adminLockIcon');
+      var btnText = document.getElementById('adminBtnText');
+      var settingsEmail = document.getElementById('settingsAdminEmail');
+
+      if (checkIsAdmin()) {
+        adminEls.forEach(function(el) { el.classList.remove('hidden'); });
+        if (lockIcon) lockIcon.className = 'fa-solid fa-lock-open text-emerald-400';
+        if (btnText) btnText.textContent = 'লগআউট';
+        if (settingsEmail) settingsEmail.textContent = currentUser ? (currentUser.email + ' (সক্রিয় অ্যাডমিন)') : 'মাস্টার পিন অ্যাডমিন (সক্রিয়)';
+      } else {
+        adminEls.forEach(function(el) { el.classList.add('hidden'); });
+        if (lockIcon) lockIcon.className = 'fa-solid fa-user-lock';
+        if (btnText) btnText.textContent = 'অ্যাডমিন লগইন';
+        if (settingsEmail) settingsEmail.textContent = 'লগইন নেই (ভিউয়ার মোড)';
+      }
+    }
+
+    function openLoginModal() {
+      if (checkIsAdmin()) {
+        if (confirm('আপনি কি অ্যাডমিন মোড থেকে বের হতে চান?')) {
+          if (auth && currentUser) auth.signOut();
+          isMasterPinAdmin = false;
+          localStorage.removeItem('CD_MASTER_PIN_AUTH');
+          updateAuthUI();
+          alert('লগআউট সম্পন্ন হয়েছে।');
+        }
+      } else {
+        var errBox = document.getElementById('authErrorMessage');
+        if (errBox) errBox.classList.add('hidden');
+        document.getElementById('authEmailInput').value = '';
+        document.getElementById('authPasswordInput').value = '';
+        document.getElementById('authPinInput').value = '';
+        switchLoginMethod('email');
+        document.getElementById('modalFirebaseLogin').classList.remove('hidden');
+      }
+    }
+
+    function closeLoginModal() {
+      document.getElementById('modalFirebaseLogin').classList.add('hidden');
+    }
+
+    function switchLoginMethod(method) {
+      var formEmail = document.getElementById('formEmailLogin');
+      var formPin = document.getElementById('formPinLogin');
+      var tabEmail = document.getElementById('btnLoginTabEmail');
+      var tabPin = document.getElementById('btnLoginTabPin');
+
+      if (method === 'email') {
+        formEmail.classList.remove('hidden');
+        formPin.classList.add('hidden');
+        tabEmail.className = 'flex-1 py-1.5 border-b-2 border-police-royal text-police-royal font-bold';
+        tabPin.className = 'flex-1 py-1.5 border-b-2 border-transparent text-slate-500 font-semibold';
+      } else {
+        formEmail.classList.add('hidden');
+        formPin.classList.remove('hidden');
+        tabPin.className = 'flex-1 py-1.5 border-b-2 border-police-royal text-police-royal font-bold';
+        tabEmail.className = 'flex-1 py-1.5 border-b-2 border-transparent text-slate-500 font-semibold';
+      }
+    }
+
+    function handleFirebaseEmailLogin(e) {
+      e.preventDefault();
+      var email = document.getElementById('authEmailInput').value.trim();
+      var pass = document.getElementById('authPasswordInput').value.trim();
+      var errBox = document.getElementById('authErrorMessage');
+      var submitBtn = document.getElementById('emailLoginBtn');
+
+      if (!auth) {
+        errBox.textContent = 'ফায়ারবেস এখনও রেডি নয়। দয়া করে "মাস্টার পিন" ট্যাবে গিয়ে 1234 দিয়ে লগইন করুন।';
+        errBox.classList.remove('hidden');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.innerText = 'যাচাই হচ্ছে...';
+      errBox.classList.add('hidden');
+
+      auth.signInWithEmailAndPassword(email, pass)
+        .then(function() {
+          closeLoginModal();
+          updateAuthUI();
+          alert('সফলভাবে ইমেইল লগইন সম্পন্ন হয়েছে!');
+        })
+        .catch(function(error) {
+          errBox.textContent = 'লগইন ব্যর্থ হয়েছে: ভুল ইমেইল বা পাসওয়ার্ড। অথবা মাস্টার পিন ব্যবহার করুন।';
+          errBox.classList.remove('hidden');
+        })
+        .finally(function() {
+          submitBtn.disabled = false;
+          submitBtn.innerText = 'লগইন';
+        });
+    }
+
+    function handleMasterPinLogin(e) {
+      e.preventDefault();
+      var pin = document.getElementById('authPinInput').value.trim();
+      if (pin === '1234') {
+        isMasterPinAdmin = true;
+        localStorage.setItem('CD_MASTER_PIN_AUTH', 'true');
+        closeLoginModal();
+        updateAuthUI();
+        alert('মাস্টার পিন দ্বারা অ্যাডমিন মোড সফলভাবে আনলক হয়েছে!');
+      } else {
+        alert('ভুল মাস্টার পিন! সঠিক পিন: 1234');
+      }
+    }
+
+    // 6. ROSTER MATH & ROTATION
+    function toBanglaDigits(n) {
+      if (n === null || n === undefined) return '';
+      var bn = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+      return n.toString().replace(/\d/g, function(d) { return bn[d]; });
+    }
+
+    function formatBanglaDate(d) {
+      var months = ["জানুয়ারি", "ফেব্রুয়ারি", "মার্চ", "এপ্রিল", "মে", "জুন", "জুলাই", "আগস্ট", "সেপ্টেম্বর", "অক্টোবর", "নভেম্বর", "ডিসেম্বর"];
+      return toBanglaDigits(d.getDate()) + ' ' + months[d.getMonth()] + ' ' + toBanglaDigits(d.getFullYear());
+    }
+
+    function getActiveRosterMembers() {
+      return (appState.members || []).filter(function(m) { return m.active && m.inRoster; });
+    }
+
+    function getUpcomingFridays(count) {
+      count = count || 14;
+      var weekends = [];
+      var today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      var day = today.getDay(); // 0 Sun, 5 Fri, 6 Sat
+      var diff = 5 - day;
+      if (diff > 0) diff -= 7;
+
+      var cursor = new Date(today);
+      cursor.setDate(today.getDate() + diff);
+
+      if (day !== 5 && day !== 6) {
+        cursor.setDate(cursor.getDate() + 7);
+      }
+
+      for (var i = 0; i < count; i++) {
+        var fri = new Date(cursor);
+        fri.setDate(cursor.getDate() + (i * 7));
+        var sat = new Date(fri);
+        sat.setDate(fri.getDate() + 1);
+        weekends.push({ friday: fri, saturday: sat });
+      }
+      return weekends;
+    }
+
+    function getRosterForWeekend(friDate) {
+      var rosterList = getActiveRosterMembers();
+      if (rosterList.length === 0) return null;
+
+      var anchor = new Date(appState.rosterAnchorDate);
+      var diffMs = friDate.getTime() - anchor.getTime();
+      var diffWeeks = Math.round(diffMs / (7 * 24 * 60 * 60 * 1000));
+      
+      var index = diffWeeks % rosterList.length;
+      if (index < 0) index = (index + rosterList.length) % rosterList.length;
+
+      var scheduledMember = rosterList[index];
+      var dateKey = friDate.toISOString().split('T')[0];
+      var override = (appState.dutyOverrides || {})[dateKey] || null;
+      var completion = (appState.completedLog || {})[dateKey] || null;
+
+      return {
+        dateKey: dateKey,
+        scheduledMember: scheduledMember,
+        isReplaced: !!override,
+        isCompleted: !!completion,
+        completionData: completion,
+        activeMember: (override && override.substituteId) ? getMemberById(override.substituteId) : scheduledMember,
+        overrideData: override
+      };
+    }
+
+    function getMemberById(id) {
+      return (appState.members || []).find(function(m) { return m.id === id; }) || null;
+    }
+
+    // 7. RENDER FUNCTIONS
+    function renderAll() {
+      renderDashboard();
+      renderRoster();
+      renderCalendar();
+      renderExcelSheet();
+      renderMembers();
+      renderSeniorOfficers();
+      updateAuthUI();
+    }
+
+    function renderDashboard() {
+      var activeMembers = getActiveRosterMembers();
+      document.getElementById('headerActiveMemberCount').textContent = 'সদস্য: ' + toBanglaDigits(activeMembers.length) + ' জন';
+      document.getElementById('statActiveMembers').textContent = toBanglaDigits(activeMembers.length);
+      document.getElementById('statSeniorOfficers').textContent = toBanglaDigits((appState.seniors || []).length);
+
+      var completedCount = Object.keys(appState.completedLog || {}).length;
+      document.getElementById('statCompletedDuties').textContent = toBanglaDigits(completedCount);
+      document.getElementById('statReplacedDuties').textContent = toBanglaDigits(Object.keys(appState.dutyOverrides || {}).length);
+
+      var curBody = document.getElementById('currentDutyCardBody');
+      var nextBody = document.getElementById('nextDutyCardBody');
+      var quickContainer = document.getElementById('quickRosterList');
+
+      if (activeMembers.length === 0) {
+        curBody.innerHTML = '<div class="text-center py-6 text-slate-400">' +
+          '<i class="fa-solid fa-users text-3xl mb-2 text-slate-300"></i>' +
+          '<p class="text-sm font-semibold text-slate-600">কোনো সদস্য এখনো যুক্ত করা হয়নি।</p>' +
+          '<p class="text-xs text-slate-500 mt-1">অ্যাডমিন হিসেবে লগইন করে আপনার ৭ জন সদস্য ও ছবি যুক্ত করুন।</p>' +
+          '</div>';
+        nextBody.innerHTML = '<p class="text-xs text-slate-400 py-6 text-center">সদস্য যুক্ত করার পর রোস্টার চালু হবে।</p>';
+        quickContainer.innerHTML = '<p class="text-xs text-slate-400 py-4 text-center">রোস্টার দেখতে সদস্য যুক্ত করুন।</p>';
+        return;
+      }
+
+      var weekends = getUpcomingFridays(5);
+
+      // Card 1
+      var cur = getRosterForWeekend(weekends[0].friday);
+      var curFriStr = formatBanglaDate(weekends[0].friday);
+      var curSatStr = formatBanglaDate(weekends[0].saturday);
+
+      if (cur && cur.activeMember) {
+        var mem = cur.activeMember;
+        var isRep = cur.isReplaced;
+        var photoSrc = mem.photo || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231b3f7a'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E";
+
+        curBody.innerHTML = '<div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">' +
+          '<div class="flex items-center gap-3">' +
+          '<img src="' + photoSrc + '" class="w-14 h-14 rounded-full object-cover border-2 ' + (isRep ? 'border-amber-500' : 'border-police-royal') + ' bg-white shrink-0 shadow-sm">' +
+          '<div>' +
+          '<h4 class="text-base font-bold text-police-navy">' + mem.rank + ' ' + (mem.rankNo ? '(' + mem.rankNo + ') ' : '') + mem.name + '</h4>' +
+          '<p class="text-xs text-slate-500 font-mono">BP: ' + toBanglaDigits(mem.bp) + ' • মোবা: ' + mem.phone + '</p>' +
+          '<p class="text-xs font-semibold text-police-royal mt-1"><i class="fa-regular fa-calendar-check mr-1"></i>শুক্রবার (' + curFriStr + ') ও শনিবার (' + curSatStr + ')</p>' +
+          '</div></div>' +
+          '<div class="flex sm:flex-col gap-2 w-full sm:w-auto mt-2 sm:mt-0">' +
+          '<button onclick="triggerWhatsApp(\'' + mem.id + '\', \'' + curFriStr + '\', \'' + curSatStr + '\', ' + isRep + ')" class="flex-1 px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 shadow"><i class="fa-brands fa-whatsapp"></i> WhatsApp</button>' +
+          '<a href="tel:' + mem.phone + '" class="flex-1 px-3 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 shadow"><i class="fa-solid fa-phone"></i> কল দিন</a>' +
+          '<button onclick="openReplacementModal(\'' + cur.dateKey + '\', \'' + cur.scheduledMember.id + '\', \'' + curFriStr + ' ও ' + curSatStr + '\')" class="admin-only hidden flex-1 px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-bold flex items-center justify-center gap-1 shadow"><i class="fa-solid fa-user-pen"></i> ডিউটি বদল</button>' +
+          '</div></div>' +
+          (isRep ? '<div class="mt-3 p-2.5 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-900 flex items-center justify-between"><div class="flex items-center gap-2"><i class="fa-solid fa-triangle-exclamation text-amber-600 text-sm"></i><span>মূল সদস্য: <del>' + cur.scheduledMember.name + '</del> (' + cur.overrideData.reason + ')</span></div><button onclick="openReplacementModal(\'' + cur.dateKey + '\', \'' + cur.scheduledMember.id + '\', \'' + curFriStr + ' ও ' + curSatStr + '\')" class="admin-only hidden text-red-600 font-bold hover:underline ml-2">পূর্বাবস্থায় আনুন</button></div>' : '');
+      }
+
+      // Card 2
+      var nextR = getRosterForWeekend(weekends[1].friday);
+      var nextFriStr = formatBanglaDate(weekends[1].friday);
+      var nextSatStr = formatBanglaDate(weekends[1].saturday);
+
+      if (nextR && nextR.activeMember) {
+        var nextMem = nextR.activeMember;
+        var nextPhoto = nextMem.photo || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2364748b'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E";
+
+        nextBody.innerHTML = '<div class="flex items-center justify-between">' +
+          '<div class="flex items-center gap-2.5">' +
+          '<img src="' + nextPhoto + '" class="w-11 h-11 rounded-full object-cover border border-slate-300 bg-white shrink-0">' +
+          '<div>' +
+          '<h4 class="text-sm font-bold text-slate-800">' + nextMem.rank + ' ' + (nextMem.rankNo || '') + ' ' + nextMem.name + '</h4>' +
+          '<p class="text-xs text-slate-500 font-mono">BP: ' + toBanglaDigits(nextMem.bp) + '</p>' +
+          '<p class="text-xs text-slate-600 mt-0.5"><i class="fa-regular fa-calendar mr-1"></i>' + nextFriStr + ' ও ' + nextSatStr + '</p>' +
+          '</div></div>' +
+          '<div class="flex gap-1.5">' +
+          '<button onclick="triggerWhatsApp(\'' + nextMem.id + '\', \'' + nextFriStr + '\', \'' + nextSatStr + '\', false)" class="p-2.5 bg-emerald-100 hover:bg-emerald-200 text-emerald-800 rounded-lg text-xs" title="WhatsApp"><i class="fa-brands fa-whatsapp text-base"></i></button>' +
+          '<a href="tel:' + nextMem.phone + '" class="p-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-lg text-xs" title="কল"><i class="fa-solid fa-phone text-base"></i></a>' +
+          '</div></div>';
+      }
+
+      // Quick 4 Weeks
+      quickContainer.innerHTML = weekends.slice(0, 4).map(function(w, idx) {
+        var ros = getRosterForWeekend(w.friday);
+        if (!ros || !ros.activeMember) return '';
+        var fStr = formatBanglaDate(w.friday);
+        var sStr = formatBanglaDate(w.saturday);
+        var mem = ros.activeMember;
+        var photo = mem.photo || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2364748b'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E";
+
+        return '<div class="py-2.5 flex items-center justify-between text-xs">' +
+          '<div class="flex items-center gap-3">' +
+          '<span class="w-6 h-6 rounded-full bg-slate-100 text-slate-700 flex items-center justify-center font-bold text-[11px]">' + toBanglaDigits(idx + 1) + '</span>' +
+          '<img src="' + photo + '" class="w-8 h-8 rounded-full object-cover border border-slate-200 shrink-0">' +
+          '<div>' +
+          '<span class="font-bold text-slate-800">' + mem.rank + ' ' + mem.name + '</span>' +
+          (ros.isReplaced ? '<span class="ml-1.5 text-[10px] px-1.5 py-0.2 bg-amber-100 text-amber-800 rounded font-bold">বিকল্প ডিউটি</span>' : '') +
+          '<p class="text-[11px] text-slate-500">' + fStr + ' এবং ' + sStr + '</p>' +
+          '</div></div>' +
+          '<div class="flex items-center gap-2">' +
+          '<span class="font-mono text-slate-600 text-[11px] hidden sm:inline">BP: ' + toBanglaDigits(mem.bp) + '</span>' +
+          '<button onclick="triggerWhatsApp(\'' + mem.id + '\', \'' + fStr + '\', \'' + sStr + '\', ' + ros.isReplaced + ')" class="text-emerald-600 hover:text-emerald-700 p-1"><i class="fa-brands fa-whatsapp text-lg"></i></button>' +
+          '</div></div>';
+      }).join('');
+    }
+
+    function renderRoster() {
+      var container = document.getElementById('rosterListContainer');
+      var activeMembers = getActiveRosterMembers();
+
+      if (activeMembers.length === 0) {
+        container.innerHTML = '<div class="bg-white p-8 rounded-xl border border-slate-200 text-center text-slate-400">' +
+          '<i class="fa-solid fa-calendar-xmark text-4xl mb-3 text-slate-300"></i>' +
+          '<h3 class="text-base font-bold text-slate-700">কোনো সদস্য এখনো যোগ করা হয়নি</h3>' +
+          '<p class="text-xs text-slate-500 mt-1">প্রথমে সদস্য ব্যবস্থাপনা ট্যাবে গিয়ে সদস্য যুক্ত করুন।</p>' +
+          '</div>';
+        return;
+      }
+
+      var weekends = getUpcomingFridays(10);
+      container.innerHTML = weekends.map(function(w, idx) {
+        var ros = getRosterForWeekend(w.friday);
+        if (!ros || !ros.activeMember) return '';
+        var fStr = formatBanglaDate(w.friday);
+        var sStr = formatBanglaDate(w.saturday);
+        var mem = ros.activeMember;
+        var orig = ros.scheduledMember;
+        var photo = mem.photo || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231b3f7a'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E";
+
+        return '<div class="bg-white p-4 rounded-xl border ' + (ros.isReplaced ? 'border-amber-300 bg-amber-50/20' : 'border-slate-200') + ' shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-3">' +
+          '<div class="flex items-start gap-3">' +
+          '<img src="' + photo + '" class="w-12 h-12 rounded-full object-cover border-2 ' + (ros.isReplaced?'border-amber-400':'border-police-royal') + ' shrink-0 mt-0.5 shadow-sm">' +
+          '<div>' +
+          '<div class="flex flex-wrap items-center gap-2">' +
+          '<h3 class="text-sm font-bold text-police-navy">' + mem.rank + ' ' + (mem.rankNo ? '(' + mem.rankNo + ') ' : '') + mem.name + '</h3>' +
+          (ros.isReplaced ? '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300">বিকল্প দায়িত্ব</span>' : '<span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-blue-50 text-police-royal border border-blue-200">মূল রোস্টার</span>') +
+          (ros.isCompleted ? '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">ডিউটি সম্পন্ন ✓</span>' : '') +
+          '</div>' +
+          '<p class="text-xs text-slate-600 mt-1"><i class="fa-regular fa-calendar-days text-police-gold mr-1"></i>শুক্রবার (' + fStr + ') ও শনিবার (' + sStr + ')</p>' +
+          '<p class="text-xs text-slate-500 font-mono mt-0.5">BP: ' + toBanglaDigits(mem.bp) + ' • মোবা: ' + mem.phone + '</p>' +
+          (ros.isReplaced ? '<p class="text-xs text-amber-800 mt-1 font-medium">* মূল সদস্য: <del>' + orig.rank + ' ' + orig.name + '</del> (কারণ: ' + ros.overrideData.reason + ')</p>' : '') +
+          '</div></div>' +
+          '<div class="flex items-center flex-wrap gap-2 pt-2 md:pt-0 border-t md:border-t-0 border-slate-100">' +
+          '<button onclick="triggerWhatsApp(\'' + mem.id + '\', \'' + fStr + '\', \'' + sStr + '\', ' + ros.isReplaced + ')" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold flex items-center gap-1 shadow-sm"><i class="fa-brands fa-whatsapp"></i> নোটিশ</button>' +
+          '<a href="tel:' + mem.phone + '" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold flex items-center gap-1 border border-slate-300"><i class="fa-solid fa-phone"></i> কল</a>' +
+          '<button onclick="openReplacementModal(\'' + ros.dateKey + '\', \'' + orig.id + '\', \'' + fStr + ' ও ' + sStr + '\')" class="admin-only hidden px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-bold flex items-center gap-1 shadow-sm"><i class="fa-solid fa-user-pen"></i> বিকল্প</button>' +
+          '<button onclick="toggleDutyCompleted(\'' + ros.dateKey + '\', \'' + mem.id + '\', \'' + fStr + ' ও ' + sStr + '\')" class="admin-only hidden px-2.5 py-1.5 ' + (ros.isCompleted?'bg-emerald-700 hover:bg-emerald-800':'bg-police-navy hover:bg-police-dark') + ' text-white rounded-lg text-xs font-bold"><i class="fa-solid ' + (ros.isCompleted?'fa-check-double':'fa-check') + '"></i> ' + (ros.isCompleted?'সম্পন্ন মার্কড':'সম্পন্ন করুন') + '</button>' +
+          '</div></div>';
+      }).join('');
+    }
+
+    function renderExcelSheet() {
+      var tbody = document.getElementById('excelTableBody');
+      var weekends = getUpcomingFridays(14);
+      var completedCount = 0;
+
+      if (getActiveRosterMembers().length === 0) {
+        tbody.innerHTML = '<tr><td colspan="9" class="p-6 text-center text-slate-400">কোনো সদস্যের তথ্য নেই।</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = weekends.map(function(w, idx) {
+        var ros = getRosterForWeekend(w.friday);
+        if (!ros || !ros.activeMember) return '';
+        var fStr = formatBanglaDate(w.friday);
+        var sStr = formatBanglaDate(w.saturday);
+        var mem = ros.activeMember;
+        var orig = ros.scheduledMember;
+        var photo = mem.photo || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2364748b'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E";
+
+        if (ros.isCompleted) completedCount++;
+
+        return '<tr class="hover:bg-slate-50 transition ' + (ros.isCompleted ? 'bg-emerald-50/30' : '') + '">' +
+          '<td class="p-2.5 text-center font-mono font-bold text-slate-500">' + toBanglaDigits(idx + 1) + '</td>' +
+          '<td class="p-2.5 font-medium text-slate-800 whitespace-nowrap"><div>শুক্র: ' + fStr + '</div><div class="text-[11px] text-slate-500">শনি: ' + sStr + '</div></td>' +
+          '<td class="p-2.5"><div class="flex items-center gap-2"><img src="' + photo + '" class="w-8 h-8 rounded-full object-cover border border-slate-300 shrink-0"><div><div class="font-bold text-slate-800">' + mem.rank + ' ' + mem.name + '</div>' + (mem.rankNo ? '<div class="text-[10px] text-slate-500 font-mono">' + mem.rankNo + '</div>' : '') + '</div></div></td>' +
+          '<td class="p-2.5 font-mono font-bold text-slate-700">' + toBanglaDigits(mem.bp) + '</td>' +
+          '<td class="p-2.5 font-mono text-slate-600">' + mem.phone + '</td>' +
+          '<td class="p-2.5 text-center">' + (ros.isCompleted ? '<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300"><i class="fa-solid fa-check"></i> সম্পন্ন</span>' : '<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-500 border border-slate-200">অপেক্ষমান</span>') + '</td>' +
+          '<td class="p-2.5 font-mono text-[11px] text-slate-600">' + (ros.isCompleted ? ros.completionData.completedAt : '—') + '</td>' +
+          '<td class="p-2.5 text-xs text-slate-600">' + (ros.isReplaced ? '<span class="text-amber-800 font-bold block">বিকল্প (মূল: ' + orig.name + ')</span><span class="text-[11px] text-slate-500">' + ros.overrideData.reason + '</span>' : 'নিয়মিত রোস্টার') + '</td>' +
+          '<td class="p-2.5 text-center no-print admin-only hidden whitespace-nowrap"><button onclick="toggleDutyCompleted(\'' + ros.dateKey + '\', \'' + mem.id + '\', \'' + fStr + ' ও ' + sStr + '\')" class="px-2.5 py-1 text-[11px] font-bold rounded ' + (ros.isCompleted ? 'bg-amber-100 text-amber-800 hover:bg-amber-200' : 'bg-emerald-600 text-white hover:bg-emerald-700') + ' transition">' + (ros.isCompleted ? 'আন-মার্ক' : 'সম্পন্ন মার্ক') + '</button></td>' +
+          '</tr>';
+      }).join('');
+
+      document.getElementById('excelTotalCompletedCount').textContent = 'সম্পন্ন: ' + toBanglaDigits(completedCount) + ' টি ডিউটি';
+    }
+
+    function toggleDutyCompleted(dateKey, memberId, dateBangla) {
+      if (appState.completedLog && appState.completedLog[dateKey]) {
+        if (confirm('আপনি কি এই ডিউটির সম্পন্ন স্ট্যাটাস প্রত্যাহার করতে চান?')) {
+          delete appState.completedLog[dateKey];
+          saveState();
+          renderAll();
+        }
+      } else {
+        var now = new Date();
+        var timeStr = toBanglaDigits(now.getDate()) + '/' + toBanglaDigits(now.getMonth()+1) + ' ' + toBanglaDigits(now.getHours()) + ':' + toBanglaDigits(now.getMinutes());
+        if (!appState.completedLog) appState.completedLog = {};
+        appState.completedLog[dateKey] = {
+          completedAt: timeStr,
+          completedBy: currentUser ? currentUser.email : 'Master PIN Admin'
+        };
+
+        if (!appState.dutyHistory) appState.dutyHistory = [];
+        appState.dutyHistory.push({
+          id: 'hist-' + Date.now(),
+          dateKey: dateKey,
+          dateBangla: dateBangla,
+          memberId: memberId,
+          status: 'Completed',
+          notes: 'ডিউটি সফলভাবে সম্পন্ন হয়েছে।',
+          timestamp: new Date().toISOString()
+        });
+
+        saveState();
+        renderAll();
+        alert('ডিউটি সম্পন্ন হিসেবে এক্সেল শীটে রেকর্ড করা হয়েছে!');
+      }
+    }
+
+    // 8. CALENDAR VIEW
+    function changeCalendarMonth(delta) {
+      calendarViewDate.setMonth(calendarViewDate.getMonth() + delta);
+      renderCalendar();
+    }
+
+    function renderCalendar() {
+      var grid = document.getElementById('calendarGrid');
+      var title = document.getElementById('calendarCurrentMonthTitle');
+      
+      var year = calendarViewDate.getFullYear();
+      var month = calendarViewDate.getMonth();
+      var monthsBangla = ["জানুয়ারি", "ফেব্রুয়ারি", "মার্চ", "এপ্রিল", "মে", "জুন", "জুলাই", "আগস্ট", "সেপ্টেম্বর", "অক্টোবর", "নভেম্বর", "ডিসেম্বর"];
+      if (title) title.textContent = monthsBangla[month] + ' ' + toBanglaDigits(year);
+
+      if (!grid) return;
+      grid.innerHTML = '';
+
+      var firstDayIndex = new Date(year, month, 1).getDay();
+      var totalDays = new Date(year, month + 1, 0).getDate();
+
+      for (var i = 0; i < firstDayIndex; i++) {
+        grid.innerHTML += '<div class="p-2 bg-slate-50 border border-slate-100 rounded-lg min-h-[95px] opacity-40"></div>';
+      }
+
+      for (var day = 1; day <= totalDays; day++) {
+        var currentDate = new Date(year, month, day);
+        var dayOfWeek = currentDate.getDay(); // 5 = Fri, 6 = Sat
+        var isDutyDay = (dayOfWeek === 5 || dayOfWeek === 6);
+
+        var friDate = new Date(currentDate);
+        if (dayOfWeek === 6) friDate.setDate(currentDate.getDate() - 1);
+
+        var dutyInfo = isDutyDay ? getRosterForWeekend(friDate) : null;
+
+        var cellHtml = '<div class="p-2 border rounded-xl min-h-[105px] flex flex-col justify-between transition ' + (isDutyDay ? 'bg-blue-50/70 border-police-royal/40 shadow-xs' : 'bg-white border-slate-200') + '">' +
+          '<div class="flex items-center justify-between">' +
+          '<span class="font-bold text-xs ' + (isDutyDay ? 'text-police-royal bg-white px-1.5 py-0.5 rounded shadow-xs' : 'text-slate-700') + '">' + toBanglaDigits(day) + '</span>' +
+          (isDutyDay ? '<span class="text-[9px] font-bold px-1 rounded ' + (dayOfWeek===5?'bg-police-navy text-police-gold':'bg-slate-700 text-white') + '">' + (dayOfWeek===5?'শুক্র':'শনি') + '</span>' : '') +
+          '</div>';
+
+        if (isDutyDay && dutyInfo && dutyInfo.activeMember) {
+          var mem = dutyInfo.activeMember;
+          var isRep = dutyInfo.isReplaced;
+          var orig = dutyInfo.scheduledMember;
+
+          cellHtml += '<div class="mt-1.5 p-1 rounded bg-white border ' + (isRep ? 'border-amber-300' : 'border-blue-200') + ' text-[11px] leading-tight">' +
+            (isRep ? '<span class="text-[9px] font-bold text-amber-700 block">বিকল্প:</span>' : '') +
+            '<p class="font-bold text-police-navy truncate">' + mem.rank + ' ' + mem.name + '</p>' +
+            (isRep ? '<p class="text-[9px] text-slate-400 line-through truncate">মূল: ' + orig.name + '</p>' : '') +
+            '</div>' +
+            '<button onclick="openReplacementModal(\'' + dutyInfo.dateKey + '\', \'' + orig.id + '\', \'' + formatBanglaDate(friDate) + '\')" class="admin-only hidden mt-1 text-[10px] text-police-royal hover:underline font-bold text-left">ডিউটি বদল</button>';
+        } else if (isDutyDay) {
+          cellHtml += '<p class="text-[10px] text-slate-400 mt-2">সদস্য নেই</p>';
+        } else {
+          cellHtml += '<div class="flex-1"></div>';
+        }
+
+        cellHtml += '</div>';
+        grid.innerHTML += cellHtml;
+      }
+    }
+
+    // 9. MEMBERS VIEW
+    function renderMembers() {
+      var container = document.getElementById('memberGrid');
+      var list = appState.members || [];
+      
+      if (list.length === 0) {
+        container.innerHTML = '<div class="col-span-full bg-white p-8 rounded-xl border-2 border-dashed border-slate-300 text-center">' +
+          '<i class="fa-solid fa-user-plus text-4xl text-police-gold mb-3"></i>' +
+          '<h3 class="text-base font-bold text-police-navy">আপনার শাখার কোনো সদস্য এখনো যুক্ত করা হয়নি</h3>' +
+          '<p class="text-xs text-slate-500 mt-1 mb-4">অ্যাডমিন হিসেবে লগইন করে আপনার ৭ জন সদস্য ও ছবি যুক্ত করুন।</p>' +
+          '<button onclick="openMemberModal()" class="admin-only hidden px-4 py-2 bg-police-royal text-white rounded-lg text-xs font-bold shadow">প্রথম সদস্য যোগ করুন</button>' +
+          '</div>';
+        return;
+      }
+
+      container.innerHTML = list.map(function(mem, index) {
+        var photo = mem.photo || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231b3f7a'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E";
+
+        return '<div class="bg-white rounded-xl border ' + (mem.active ? 'border-slate-200' : 'border-red-200 bg-red-50/20') + ' p-4 shadow-sm relative flex flex-col justify-between">' +
+          '<div>' +
+          '<div class="flex items-center justify-between mb-2">' +
+          '<div class="flex items-center gap-1.5">' +
+          '<span class="text-[10px] font-bold px-2 py-0.5 rounded ' + (mem.inRoster ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-600') + '">' + (mem.inRoster ? 'রোস্টারে সক্রিয়' : 'রোস্টার বহির্ভূত') + '</span>' +
+          '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-50 text-police-royal">ক্রম: #' + toBanglaDigits(index + 1) + '</span>' +
+          '</div>' +
+          '<div class="admin-only hidden flex items-center gap-1">' +
+          '<button onclick="moveMemberOrder(' + index + ', -1)" ' + (index === 0 ? 'disabled class="opacity-30 p-1"' : 'class="text-slate-600 hover:text-police-royal p-1"') + ' title="উপরে নিন"><i class="fa-solid fa-arrow-up text-xs"></i></button>' +
+          '<button onclick="moveMemberOrder(' + index + ', 1)" ' + (index === list.length - 1 ? 'disabled class="opacity-30 p-1"' : 'class="text-slate-600 hover:text-police-royal p-1"') + ' title="নিচে নিন"><i class="fa-solid fa-arrow-down text-xs"></i></button>' +
+          '<button onclick="openMemberModal(\'' + mem.id + '\')" class="text-police-royal hover:text-police-dark p-1 ml-1" title="তথ্য এডিট করুন"><i class="fa-solid fa-pen-to-square text-xs"></i></button>' +
+          '<button onclick="toggleMemberActive(\'' + mem.id + '\')" class="text-slate-400 hover:text-red-600 p-1" title="' + (mem.active ? 'নিষ্ক্রিয় করুন' : 'সক্রিয় করুন') + '"><i class="fa-solid fa-power-off text-xs"></i></button>' +
+          '<button onclick="deleteMemberPermanently(\'' + mem.id + '\')" class="text-red-400 hover:text-red-700 p-1" title="মুছে ফেলুন"><i class="fa-solid fa-trash-can text-xs"></i></button>' +
+          '</div></div>' +
+          '<div class="flex items-center gap-3">' +
+          '<img src="' + photo + '" class="w-13 h-13 rounded-full object-cover border-2 border-police-gold shrink-0 shadow-sm">' +
+          '<div>' +
+          '<h4 class="font-bold text-slate-800 text-sm">' + mem.rank + ' ' + (mem.rankNo ? '(' + mem.rankNo + ') ' : '') + '</h4>' +
+          '<p class="text-sm text-police-royal font-bold">' + mem.name + '</p>' +
+          '<p class="text-xs text-slate-500 font-mono">BP: ' + toBanglaDigits(mem.bp) + '</p>' +
+          '</div></div></div>' +
+          '<div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">' +
+          '<span class="text-xs font-mono text-slate-600"><i class="fa-solid fa-phone text-slate-400 mr-1"></i>' + mem.phone + '</span>' +
+          '<div class="flex gap-1.5">' +
+          '<button onclick="triggerQuickWhatsApp(\'' + mem.phone + '\', \'' + mem.name + '\')" class="p-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 rounded-lg text-xs" title="WhatsApp"><i class="fa-brands fa-whatsapp text-sm"></i></button>' +
+          '<a href="tel:' + mem.phone + '" class="p-2 bg-blue-50 hover:bg-blue-100 text-police-royal rounded-lg text-xs" title="কল"><i class="fa-solid fa-phone text-sm"></i></a>' +
+          '</div></div></div>';
+      }).join('');
+    }
+
+    function renderSeniorOfficers() {
+      var container = document.getElementById('seniorOfficersList');
+      var list = appState.seniors || [];
+      if (list.length === 0) {
+        container.innerHTML = '<p class="col-span-full text-xs text-slate-400 py-3">কোনো কর্মকর্তা যুক্ত করা হয়নি।</p>';
+        return;
+      }
+      container.innerHTML = list.map(function(off) {
+        return '<div class="bg-white p-3 rounded-lg border border-slate-200 flex items-center justify-between shadow-sm">' +
+          '<div class="flex items-center gap-3">' +
+          '<div class="w-9 h-9 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center font-bold text-sm shrink-0"><i class="fa-solid fa-user-shield"></i></div>' +
+          '<div><p class="text-xs font-bold text-slate-800">' + off.name + '</p><p class="text-[11px] text-purple-700 font-medium">' + off.role + '</p><p class="text-[10px] text-slate-500 font-mono">BP: ' + toBanglaDigits(off.bp) + '</p></div>' +
+          '</div>' +
+          '<div class="admin-only hidden flex items-center gap-1">' +
+          '<button onclick="openSeniorOfficerModal(\'' + off.id + '\')" class="text-purple-700 hover:text-purple-900 p-1" title="এডিট"><i class="fa-solid fa-pen-to-square text-xs"></i></button>' +
+          '<button onclick="deleteSeniorOfficer(\'' + off.id + '\')" class="text-red-400 hover:text-red-700 p-1" title="মুছে ফেলুন"><i class="fa-solid fa-trash-can text-xs"></i></button>' +
+          '</div></div>';
+      }).join('');
+    }
+
+    // 10. REPLACEMENT MODAL WORKFLOW
+    function openReplacementModal(dateKey, originalMemberId, dateDisplay) {
+      currentReplaceTarget = { dateKey: dateKey, originalMemberId: originalMemberId };
+      var origMem = getMemberById(originalMemberId);
+      var existingOverride = (appState.dutyOverrides || {})[dateKey];
+
+      document.getElementById('repDutyDates').value = dateDisplay;
+      document.getElementById('repOriginalMemberName').value = origMem ? (origMem.rank + ' ' + origMem.name + ' (BP: ' + origMem.bp + ')') : 'অজানা';
+      document.getElementById('repReason').value = existingOverride ? existingOverride.reason : '';
+
+      var select = document.getElementById('repSubstituteMemberSelect');
+      var candidates = (appState.members || []).filter(function(m) { return m.active && m.id !== originalMemberId; });
+      select.innerHTML = candidates.map(function(c) {
+        return '<option value="' + c.id + '" ' + (existingOverride && existingOverride.substituteId === c.id ? 'selected' : '') + '>' + c.rank + ' ' + (c.rankNo ? '(' + c.rankNo + ') ' : '') + c.name + ' - BP: ' + c.bp + '</option>';
+      }).join('');
+
+      var revertBtn = document.getElementById('btnRevertReplacement');
+      if (existingOverride) {
+        revertBtn.classList.remove('hidden');
+      } else {
+        revertBtn.classList.add('hidden');
+      }
+
+      document.getElementById('modalReplacement').classList.remove('hidden');
+    }
+
+    function closeReplacementModal() {
+      document.getElementById('modalReplacement').classList.add('hidden');
+      currentReplaceTarget = null;
+    }
+
+    function confirmDutyReplacement() {
+      if (!currentReplaceTarget) return;
+      var statusType = document.getElementById('repStatusType').value;
+      var subId = document.getElementById('repSubstituteMemberSelect').value;
+      var reason = document.getElementById('repReason').value.trim();
+
+      if (!reason) {
+        alert('অনুগ্রহ করে পরিবর্তনের কারণ বা ছুটির বিবরণ লিখুন।');
+        return;
+      }
+
+      if (!appState.dutyOverrides) appState.dutyOverrides = {};
+      appState.dutyOverrides[currentReplaceTarget.dateKey] = {
+        status: statusType,
+        substituteId: (statusType === 'Replaced') ? subId : null,
+        originalId: currentReplaceTarget.originalMemberId,
+        reason: reason,
+        updatedAt: new Date().toISOString()
+      };
+
+      saveState();
+      closeReplacementModal();
+      renderAll();
+      alert('বিকল্প সদস্য সফলভাবে রোস্টারে নির্ধারণ করা হয়েছে!');
+    }
+
+    function revertReplacement() {
+      if (!currentReplaceTarget) return;
+      if (confirm('আপনি কি এই বিকল্প ডিউটি বাতিল করে মূল সদস্যকে ফিরিয়ে আনতে চান?')) {
+        delete appState.dutyOverrides[currentReplaceTarget.dateKey];
+        saveState();
+        closeReplacementModal();
+        renderAll();
+        alert('ডিউটি পূর্বাবস্থায় ফিরিয়ে আনা হয়েছে।');
+      }
+    }
+
+    // 11. MEMBER FORM & PHOTO UPLOAD
+    function openMemberModal(memberId) {
+      var form = document.getElementById('memberForm');
+      form.reset();
+      document.getElementById('memFormPhotoBase64').value = '';
+      document.getElementById('memPhotoPreview').src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2394a3b8'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E";
+
+      if (memberId) {
+        var mem = getMemberById(memberId);
+        if (!mem) return;
+        document.getElementById('memberModalTitle').textContent = 'সদস্যের তথ্য ও ছবি সম্পাদনা';
+        document.getElementById('memFormId').value = mem.id;
+        document.getElementById('memFormRank').value = mem.rank;
+        document.getElementById('memFormRankNo').value = mem.rankNo || '';
+        document.getElementById('memFormName').value = mem.name;
+        document.getElementById('memFormBP').value = mem.bp;
+        document.getElementById('memFormPhone').value = mem.phone;
+        document.getElementById('memFormInRoster').checked = !!mem.inRoster;
+        document.getElementById('memFormIsActive').checked = !!mem.active;
+        if (mem.photo) {
+          document.getElementById('memPhotoPreview').src = mem.photo;
+          document.getElementById('memFormPhotoBase64').value = mem.photo;
+        }
+      } else {
+        document.getElementById('memberModalTitle').textContent = 'নতুন সদস্য যোগ করুন';
+        document.getElementById('memFormId').value = '';
+        document.getElementById('memFormInRoster').checked = true;
+        document.getElementById('memFormIsActive').checked = true;
+      }
+
+      document.getElementById('modalMember').classList.remove('hidden');
+    }
+
+    function closeMemberModal() {
+      document.getElementById('modalMember').classList.add('hidden');
+    }
+
+    function handlePhotoSelection(event) {
+      var file = event.target.files[0];
+      if (!file) return;
+
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        var img = new Image();
+        img.onload = function() {
+          var canvas = document.createElement('canvas');
+          var MAX_SIZE = 160;
+          var width = img.width;
+          var height = img.height;
+
+          if (width > height) {
+            if (width > MAX_SIZE) {
+              height *= MAX_SIZE / width;
+              width = MAX_SIZE;
+            }
+          } else {
+            if (height > MAX_SIZE) {
+              width *= MAX_SIZE / height;
+              height = MAX_SIZE;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          var ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          
+          var base64Data = canvas.toDataURL('image/jpeg', 0.82);
+          document.getElementById('memPhotoPreview').src = base64Data;
+          document.getElementById('memFormPhotoBase64').value = base64Data;
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function handleSaveMember(e) {
+      e.preventDefault();
+      var id = document.getElementById('memFormId').value;
+      var rank = document.getElementById('memFormRank').value;
+      var rankNo = document.getElementById('memFormRankNo').value.trim();
+      var name = document.getElementById('memFormName').value.trim();
+      var bp = document.getElementById('memFormBP').value.trim();
+      var phone = document.getElementById('memFormPhone').value.trim();
+      var photo = document.getElementById('memFormPhotoBase64').value;
+      var inRoster = document.getElementById('memFormInRoster').checked;
+      var active = document.getElementById('memFormIsActive').checked;
+
+      if (!appState.members) appState.members = [];
+
+      if (id) {
+        var idx = appState.members.findIndex(function(m){ return m.id === id; });
+        if (idx !== -1) {
+          appState.members[idx] = Object.assign({}, appState.members[idx], {
+            rank: rank, rankNo: rankNo, name: name, bp: bp, phone: phone,
+            photo: photo || appState.members[idx].photo,
+            inRoster: inRoster, active: active
+          });
+        }
+      } else {
+        appState.members.push({
+          id: 'mem-' + Date.now(),
+          rank: rank,
+          rankNo: rankNo,
+          name: name,
+          bp: bp,
+          phone: phone,
+          photo: photo,
+          inRoster: inRoster,
+          active: active
+        });
+      }
+
+      saveState();
+      closeMemberModal();
+      renderAll();
+      alert('সদস্যের তথ্য ও ছবি সফলভাবে সংরক্ষিত হয়েছে!');
+    }
+
+    function moveMemberOrder(index, direction) {
+      var list = appState.members || [];
+      var newIndex = index + direction;
+      if (newIndex < 0 || newIndex >= list.length) return;
+      var temp = list[index];
+      list[index] = list[newIndex];
+      list[newIndex] = temp;
+      saveState();
+      renderAll();
+    }
+
+    function toggleMemberActive(id) {
+      var mem = getMemberById(id);
+      if (!mem) return;
+      if (confirm('আপনি কি ' + mem.name + '-কে ' + (mem.active ? 'নিষ্ক্রিয়' : 'পুনরায় সক্রিয়') + ' করতে চান?')) {
+        mem.active = !mem.active;
+        saveState();
+        renderAll();
+      }
+    }
+
+    function deleteMemberPermanently(id) {
+      var mem = getMemberById(id);
+      if (!mem) return;
+      if (confirm('আপনি কি "' + mem.name + '"-কে তালিকা থেকে মুছে ফেলতে চান?')) {
+        appState.members = (appState.members || []).filter(function(m){ return m.id !== id; });
+        saveState();
+        renderAll();
+      }
+    }
+
+    // 12. SENIOR OFFICERS
+    function openSeniorOfficerModal(id) {
+      var form = document.getElementById('seniorOfficerForm');
+      form.reset();
+
+      if (id) {
+        var off = (appState.seniors || []).find(function(s){ return s.id === id; });
+        if (!off) return;
+        document.getElementById('seniorModalTitle').textContent = 'অফিসারের তথ্য সম্পাদনা';
+        document.getElementById('seniorFormId').value = off.id;
+        document.getElementById('seniorFormRole').value = off.role;
+        document.getElementById('seniorFormName').value = off.name;
+        document.getElementById('seniorFormBP').value = off.bp;
+      } else {
+        document.getElementById('seniorModalTitle').textContent = 'নতুন কর্মকর্তা যোগ করুন';
+        document.getElementById('seniorFormId').value = '';
+      }
+
+      document.getElementById('modalSeniorOfficer').classList.remove('hidden');
+    }
+
+    function closeSeniorOfficerModal() {
+      document.getElementById('modalSeniorOfficer').classList.add('hidden');
+    }
+
+    function handleSaveSeniorOfficer(e) {
+      e.preventDefault();
+      var id = document.getElementById('seniorFormId').value;
+      var role = document.getElementById('seniorFormRole').value.trim();
+      var name = document.getElementById('seniorFormName').value.trim();
+      var bp = document.getElementById('seniorFormBP').value.trim();
+
+      if (!appState.seniors) appState.seniors = [];
+
+      if (id) {
+        var idx = appState.seniors.findIndex(function(s){ return s.id === id; });
+        if (idx !== -1) appState.seniors[idx] = { id: id, role: role, name: name, bp: bp };
+      } else {
+        appState.seniors.push({
+          id: 'sen-' + Date.now(),
+          role: role,
+          name: name,
+          bp: bp
+        });
+      }
+
+      saveState();
+      closeSeniorOfficerModal();
+      renderSeniorOfficers();
+      alert('কর্মকর্তার তথ্য সংরক্ষিত হয়েছে!');
+    }
+
+    function deleteSeniorOfficer(id) {
+      if (confirm('আপনি কি এই কর্মকর্তাকে তালিকা থেকে বাদ দিতে চান?')) {
+        appState.seniors = (appState.seniors || []).filter(function(s){ return s.id !== id; });
+        saveState();
+        renderSeniorOfficers();
+      }
+    }
+
+    // 13. WHATSAPP & NOTICE
+    function triggerWhatsApp(memberId, friDateStr, satDateStr, isReplaced) {
+      var member = getMemberById(memberId);
+      if (!member) return;
+
+      var dateText = 'শুক্রবার (' + friDateStr + ') এবং শনিবার (' + satDateStr + ')';
+      var template = isReplaced ? appState.templates.replace : appState.templates.regular;
+
+      var message = template
+        .replace(/{RANK}/g, member.rank || '')
+        .replace(/{RANK_NO}/g, member.rankNo ? ('(' + member.rankNo + ')') : '')
+        .replace(/{NAME}/g, member.name || '')
+        .replace(/{DATES}/g, dateText);
+
+      var phoneNum = member.phone.replace(/[^0-9]/g, '');
+      if (phoneNum.startsWith('0')) phoneNum = '88' + phoneNum;
+
+      pendingWhatsAppUrl = 'https://wa.me/' + phoneNum + '?text=' + encodeURIComponent(message);
+
+      var modal = document.getElementById('modalWhatsAppConfirm');
+      document.getElementById('waConfirmPromptText').innerHTML = 'আপনি কি <strong>' + member.rank + ' ' + member.name + '</strong>-কে আগামী <strong>' + dateText + '</strong>-এর রোস্টার ডিউটি জানাতে চান?';
+
+      document.getElementById('waModalConfirmBtn').onclick = function() {
+        if (pendingWhatsAppUrl) window.open(pendingWhatsAppUrl, '_blank');
+        closeWhatsAppModal();
+      };
+
+      modal.classList.remove('hidden');
+    }
+
+    function triggerQuickWhatsApp(phone, name) {
+      var phoneNum = phone.replace(/[^0-9]/g, '');
+      if (phoneNum.startsWith('0')) phoneNum = '88' + phoneNum;
+      var prompt = 'জনাব ' + name + ', পুলিশ হেডকোয়ার্টার্স কেন্দ্রীয় ডেসপাচ শাখা থেকে যোগাযোগ করা হচ্ছে।';
+      window.open('https://wa.me/' + phoneNum + '?text=' + encodeURIComponent(prompt), '_blank');
+    }
+
+    function closeWhatsAppModal() {
+      document.getElementById('modalWhatsAppConfirm').classList.add('hidden');
+      pendingWhatsAppUrl = null;
+    }
+
+    function openNoticeModal() {
+      document.getElementById('noticeInputArea').value = appState.noticeText;
+      document.getElementById('modalNoticeEdit').classList.remove('hidden');
+    }
+
+    function closeNoticeModal() {
+      document.getElementById('modalNoticeEdit').classList.add('hidden');
+    }
+
+    function saveNoticeText() {
+      var text = document.getElementById('noticeInputArea').value.trim();
+      if (!text) return;
+      appState.noticeText = text;
+      document.getElementById('dashNoticeText').innerText = text;
+      saveState();
+      closeNoticeModal();
+      alert('নোটিশ আপডেট হয়েছে!');
+    }
+
+    function saveMessageTemplates() {
+      appState.templates.regular = document.getElementById('templateRegularMsg').value;
+      appState.templates.replace = document.getElementById('templateReplaceMsg').value;
